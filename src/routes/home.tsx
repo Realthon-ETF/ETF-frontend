@@ -299,12 +299,11 @@ const LogoText = styled.p`
 
 export default function Home() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  // const [isUploading, setIsUploading] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  setName("");
-  setIsUploading(false);
   // Fetch user data on component mount
   // useEffect(() => {
   //   const fetchUserData = async () => {
@@ -387,7 +386,6 @@ export default function Home() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-  const [isAgreed, setIsAgreed] = useState(false);
 
   const handleAgreementClick = () => {
     setIsAgreed((prev) => !prev);
@@ -495,7 +493,7 @@ export default function Home() {
           <AnnouncmentBox>
             맞춤 정보를 드리기 위해서는
             <br />
-            {name}님의 정보가 담긴 이력서가 필요해요
+            김수겸님의 정보가 담긴 이력서가 필요해요
           </AnnouncmentBox>
           <Restriction>PDF, 10MB 이내만 업로드할 수 있어요</Restriction>
 
@@ -573,13 +571,11 @@ export default function Home() {
             </h5>
           </AgreementBox>
           <AnalyzeButton
-            active={isAgreed && !!selectedFile && !isUploading}
+            active={isAgreed && !!selectedFile}
             onClick={handleAnalyzeClick}
-            disabled={!isAgreed || !selectedFile || isUploading}
+            disabled={!isAgreed || !selectedFile}
           >
-            <AnalyzeText>
-              {isUploading ? "업로드 중..." : "AI 분석 받기"}
-            </AnalyzeText>
+            <AnalyzeText>{"AI 분석 받기"}</AnalyzeText>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

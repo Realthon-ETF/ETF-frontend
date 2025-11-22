@@ -179,9 +179,9 @@ export default function Login() {
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  setIsLoading(false);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { name, value },
@@ -308,7 +308,7 @@ export default function Login() {
                     placeholder="입력"
                     type="text"
                     required
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -320,14 +320,12 @@ export default function Login() {
                     placeholder="입력"
                     type="password"
                     required
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
               </InputWrapper>
               {error && <ErrorText>{error}</ErrorText>}
-              <SubmitButton type="submit" disabled={isLoading}>
-                {isLoading ? "로그인 중..." : "로그인"}
-              </SubmitButton>
+              <SubmitButton type="submit">{"로그인"}</SubmitButton>
             </LoginForm>
           </LoginWrapper>
           <Link to="/create-account">
