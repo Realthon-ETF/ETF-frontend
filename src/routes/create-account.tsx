@@ -295,90 +295,83 @@ export default function Login() {
     return `${formattedHour}:00:00`;
   };
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTimeout(() => {
+    setError("");
+
+    // Validate required fields
+    if (
+      !isAgreed ||
+      !id ||
+      !password ||
+      !name ||
+      !phone ||
+      !email ||
+      !school ||
+      !dept ||
+      !interest ||
+      !alarmPeriod ||
+      !alarmTime
+    ) {
+      setError("모든 필드를 입력하고 동의를 확인해주세요.");
+      return;
+    }
+
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // Format alarmTime from hour value to "HH:MM:SS" format
+      const formattedAlarmTime = formatAlarmTime(alarmTime);
+
+      // Prepare request body
+      const requestBody = {
+        loginId: id,
+        password: password,
+        username: name,
+        phoneNumber: phone,
+        email: email,
+        school: school,
+        major: dept,
+        interestField: interest,
+        intervalDays: parseInt(alarmPeriod, 10),
+        alarmTime: formattedAlarmTime,
+      };
+
+      // API request
+      const response = await fetch("https://api.etf.r-e.kr/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          message: "회원가입에 실패했습니다.",
+        }));
+        throw new Error(errorData.message || "회원가입에 실패했습니다.");
+      }
+
+      // Parse response to ensure it's valid JSON
+      await response.json();
+
+      // Navigate to login page on success
       navigate("/login");
-    }, 700);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("회원가입 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   setError("");
-
-  //   // Validate required fields
-  //   if (
-  //     !isAgreed ||
-  //     !id ||
-  //     !password ||
-  //     !name ||
-  //     !phone ||
-  //     !email ||
-  //     !school ||
-  //     !dept ||
-  //     !interest ||
-  //     !alarmPeriod ||
-  //     !alarmTime
-  //   ) {
-  //     setError("모든 필드를 입력하고 동의를 확인해주세요.");
-  //     return;
-  //   }
-
-  //   if (isLoading) {
-  //     return;
-  //   }
-
-  //   try {
-  //     setIsLoading(true);
-
-  //     // Format alarmTime from hour value to "HH:MM:SS" format
-  //     const formattedAlarmTime = formatAlarmTime(alarmTime);
-
-  //     // Prepare request body
-  //     const requestBody = {
-  //       loginId: id,
-  //       password: password,
-  //       username: name,
-  //       phoneNumber: phone,
-  //       email: email,
-  //       school: school,
-  //       major: dept,
-  //       interestField: interest,
-  //       intervalDays: parseInt(alarmPeriod, 10),
-  //       alarmTime: formattedAlarmTime,
-  //     };
-
-  //     // API request
-  //     const response = await fetch("https://api.etf.r-e.kr/auth/signup", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(requestBody),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json().catch(() => ({
-  //         message: "회원가입에 실패했습니다.",
-  //       }));
-  //       throw new Error(errorData.message || "회원가입에 실패했습니다.");
-  //     }
-
-  //     // Parse response to ensure it's valid JSON
-  //     await response.json();
-
-  //     // Navigate to login page on success
-  //     navigate("/login");
-  //   } catch (err) {
-  //     if (err instanceof Error) {
-  //       setError(err.message);
-  //     } else {
-  //       setError("회원가입 중 오류가 발생했습니다.");
-  //     }
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   return (
     <Wrapper>
       <LoginLayout>

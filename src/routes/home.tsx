@@ -304,48 +304,47 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch user data on component mount
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       if (!token) {
-  //         // If no token, redirect to login
-  //         navigate("/login");
-  //         return;
-  //       }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // If no token, redirect to login
+          navigate("/login");
+          return;
+        }
 
-  //       const response = await fetch("https://api.etf.r-e.kr/auth/me", {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
+        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  //       if (!response.ok) {
-  //         // If unauthorized, redirect to login
-  //         if (response.status === 401) {
-  //           localStorage.removeItem("token");
-  //           navigate("/login");
-  //           return;
-  //         }
-  //         throw new Error("사용자 정보를 가져오는데 실패했습니다.");
-  //       }
+        if (!response.ok) {
+          // If unauthorized, redirect to login
+          if (response.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+          }
+          throw new Error("사용자 정보를 가져오는데 실패했습니다.");
+        }
 
-  //       const data = await response.json();
-  //       if (data.username) {
-  //         setName(data.username);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //       // Optionally redirect to login on error
-  //       // navigate("/login");
-  //     }
-  //   };
+        const data = await response.json();
+        if (data.username) {
+          setName(data.username);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        // Optionally redirect to login on error
+        // navigate("/login");
+      }
+    };
 
-  //   fetchUserData();
-  // }, [navigate]);
+    fetchUserData();
+  }, [navigate]);
 
   // Handle file selection via button
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -392,57 +391,52 @@ export default function Home() {
     setIsAgreed((prev) => !prev);
   };
 
-  // const handleAnalyzeClick = async () => {
-  //   if (!isAgreed || !selectedFile || isUploading) {
-  //     return;
-  //   }
+  const handleAnalyzeClick = async () => {
+    if (!isAgreed || !selectedFile || isUploading) {
+      return;
+    }
 
-  //   try {
-  //     setIsUploading(true);
-  //     const token = localStorage.getItem("token");
+    try {
+      setIsUploading(true);
+      const token = localStorage.getItem("token");
 
-  //     if (!token) {
-  //       alert("로그인이 필요합니다.");
-  //       navigate("/login");
-  //       return;
-  //     }
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
 
-  //     // Create FormData for file upload
-  //     const formData = new FormData();
-  //     formData.append("file", selectedFile);
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("file", selectedFile);
 
-  //     // Upload PDF file
-  //     const response = await fetch("https://api.etf.r-e.kr/resume/pdf", {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: formData,
-  //     });
+      // Upload PDF file
+      const response = await fetch("https://api.etf.r-e.kr/resume/pdf", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-  //     if (!response.ok) {
-  //       const errorData = await response.json().catch(() => ({
-  //         message: "파일 업로드에 실패했습니다.",
-  //       }));
-  //       throw new Error(errorData.message || "파일 업로드에 실패했습니다.");
-  //     }
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          message: "파일 업로드에 실패했습니다.",
+        }));
+        throw new Error(errorData.message || "파일 업로드에 실패했습니다.");
+      }
 
-  //     // Navigate to result page on success
-  //     navigate("/result");
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       alert(error.message);
-  //     } else {
-  //       alert("파일 업로드 중 오류가 발생했습니다.");
-  //     }
-  //   } finally {
-  //     setIsUploading(false);
-  //   }
-  // };
-  const handleAnalyzeClick = () => {
-    setTimeout(() => {
+      // Navigate to result page on success
       navigate("/result");
-    }, 700);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("파일 업로드 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
