@@ -232,7 +232,7 @@ export default function Login() {
 
       // Store token if provided
       if (data.accessToken) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.accessToken);
       }
 
       // Navigate to home page on success

@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import Layout from "./components/layout";
 // import LoadingScreen from "./components/loading-screen";
 // import ProtectedRoute from "./components/protected-route";
-
+import AlarmLists from "./routes/alarm-lists";
 import Home from "./routes/home";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
@@ -16,6 +16,7 @@ import Result from "./routes/result";
 import reset from "styled-reset";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
+import Confirmed from "./routes/confirmed";
 
 const router = createBrowserRouter([
   // {
@@ -60,6 +61,8 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  { path: "/confirmed", element: <Confirmed /> },
+  { path: "/alarm-lists", element: <AlarmLists /> },
   // {
   //   path:"/reset-password",
   //   element: <ResetPassword />

@@ -104,7 +104,8 @@ const PageTitle = styled.h1`
 
 const MainContent = styled.main`
   position: absolute;
-  left: calc(37.5% + 25px);
+  left: 50%;
+  transform: translateX(-50%);
   top: 209px;
   width: 445px;
   display: flex;
@@ -203,6 +204,7 @@ const FieldValue = styled.div`
   padding: 8px 16px;
   display: flex;
   align-items: center;
+  // justify-content: center;
   gap: 10px;
   width: 346px;
   box-sizing: border-box;
@@ -212,8 +214,8 @@ const FieldText = styled.p`
   font-family: "Pretendard", sans-serif;
   font-weight: 500;
   font-size: 14px;
+  align-items: center;
   color: #5a5c63;
-  text-align: center;
   margin: 0;
   width: 100%;
 `;
@@ -238,18 +240,22 @@ const PhonePart = styled.div`
 
 const PhoneSeparator = styled.div`
   width: 10.5px;
-  height: 0;
+  // height: 0;
   position: relative;
   flex-shrink: 0;
+  display: flex; /* Add Flexbox */
+  align-items: center; /* Vertically center the content (SeparatorLine) */
+  justify-content: center;
 `;
 
-const SeparatorLine = styled.div`
-  position: absolute;
-  top: -0.5px;
-  bottom: -0.5px;
-  left: 0;
-  right: 0;
-`;
+// const SeparatorLine = styled.div`
+//   position: relative;
+//   /* Remove top: -0.5px; and bottom: -0.5px; */
+//   left: 0;
+//   right: 0;
+//   align-items: center;
+
+// `;
 
 const NotificationContainer = styled.div`
   display: flex;
@@ -458,47 +464,47 @@ export default function Profile() {
                   <FieldText>{phoneParts.part1 || "010"}</FieldText>
                 </PhonePart>
                 <PhoneSeparator>
-                  <SeparatorLine>
-                    <svg
-                      width="11"
-                      height="1"
-                      viewBox="0 0 11 1"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <line
-                        x1="0.5"
-                        y1="0.5"
-                        x2="10.5"
-                        y2="0.5"
-                        stroke="#AEB0B6"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </SeparatorLine>
+                  {/* <SeparatorLine> */}
+                  <svg
+                    width="11"
+                    height="1"
+                    viewBox="0 0 11 1"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line
+                      x1="0.5"
+                      y1="0.5"
+                      x2="10.5"
+                      y2="0.5"
+                      stroke="#AEB0B6"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  {/* </SeparatorLine> */}
                 </PhoneSeparator>
                 <PhonePart>
                   <FieldText>{phoneParts.part2 || "1234"}</FieldText>
                 </PhonePart>
                 <PhoneSeparator>
-                  <SeparatorLine>
-                    <svg
-                      width="11"
-                      height="1"
-                      viewBox="0 0 11 1"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <line
-                        x1="0.5"
-                        y1="0.5"
-                        x2="10.5"
-                        y2="0.5"
-                        stroke="#AEB0B6"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </SeparatorLine>
+                  {/* <SeparatorLine> */}
+                  <svg
+                    width="11"
+                    height="1"
+                    viewBox="0 0 11 1"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line
+                      x1="0.5"
+                      y1="0.5"
+                      x2="10.5"
+                      y2="0.5"
+                      stroke="#AEB0B6"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  {/* </SeparatorLine> */}
                 </PhoneSeparator>
                 <PhonePart>
                   <FieldText>{phoneParts.part3 || "5678"}</FieldText>

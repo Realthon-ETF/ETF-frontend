@@ -28,13 +28,6 @@ const LeftHeaderWrapper = styled.div`
   gap: 4rem;
 `;
 
-const Logo = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1d9bf0;
-  letter-spacing: -0.5px;
-`;
-
 const Nav = styled.nav`
   display: flex;
   gap: 32px;
@@ -280,6 +273,30 @@ const AnalyzeText = styled.h3`
   line-height: 150%;
 `;
 
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const LogoIcon = styled.div`
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LogoText = styled.p`
+  font-family: "BareunDotumOTFPro", sans-serif;
+  color: #2e3847;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  margin: 0;
+`;
+
 export default function Home() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -427,7 +444,39 @@ export default function Home() {
     <Wrapper>
       <Header>
         <LeftHeaderWrapper>
-          <Logo>로고</Logo>
+          <LogoContainer>
+            <LogoIcon>
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 78 78"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="77.76" height="77.76" fill="white" />
+                <path
+                  d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
+                  fill="url(#paint0_radial_profile)"
+                />
+                <defs>
+                  <radialGradient
+                    id="paint0_radial_profile"
+                    cx="0"
+                    cy="0"
+                    r="1"
+                    gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#4F95FF" />
+                    <stop offset="0.27707" stopColor="#5698F8" />
+                    <stop offset="0.518714" stopColor="#75A7D9" />
+                    <stop offset="1" stopColor="#FFEA4F" />
+                  </radialGradient>
+                </defs>
+              </svg>
+            </LogoIcon>
+            <LogoText>알려주잡</LogoText>
+          </LogoContainer>
           <Nav>
             <NavItem>정보설정</NavItem>
             <NavItem>수집함</NavItem>
