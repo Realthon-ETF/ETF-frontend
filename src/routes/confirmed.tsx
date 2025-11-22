@@ -347,37 +347,37 @@ export default function Confirmed() {
     alarmTime: "",
   });
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       if (!token) {
+  //         navigate("/login");
+  //         return;
+  //       }
 
-        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  //       const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        if (response.ok) {
-          const data = await response.json();
-          setUserData({
-            username: data.username || "",
-            alarmTime: data.alarmTime || "18:00",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setUserData({
+  //           username: data.username || "",
+  //           alarmTime: data.alarmTime || "18:00",
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, [navigate]);
+  //   fetchUserData();
+  // }, [navigate]);
 
   const formatAlarmTime = (time: string) => {
     if (!time) return "18";

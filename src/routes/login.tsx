@@ -197,56 +197,63 @@ export default function Login() {
     }
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
-
-    if (isLoading || id === "" || password === "") {
-      setError("아이디와 비밀번호를 입력해주세요.");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-
-      // API request
-      const response = await fetch("https://api.etf.r-e.kr/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          loginId: id,
-          password: password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({
-          message: "로그인에 실패했습니다.",
-        }));
-        throw new Error(errorData.message || "로그인에 실패했습니다.");
-      }
-
-      const data = await response.json();
-
-      // Store token if provided
-      if (data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-      }
-
-      // Navigate to home page on success
+    setTimeout(() => {
       navigate("/home");
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("로그인 중 오류가 발생했습니다.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    }, 700);
   };
+
+  // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   if (isLoading || id === "" || password === "") {
+  //     setError("아이디와 비밀번호를 입력해주세요.");
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsLoading(true);
+
+  //     // API request
+  //     const response = await fetch("https://api.etf.r-e.kr/auth/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         loginId: id,
+  //         password: password,
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json().catch(() => ({
+  //         message: "로그인에 실패했습니다.",
+  //       }));
+  //       throw new Error(errorData.message || "로그인에 실패했습니다.");
+  //     }
+
+  //     const data = await response.json();
+
+  //     // Store token if provided
+  //     if (data.accessToken) {
+  //       localStorage.setItem("token", data.accessToken);
+  //     }
+
+  //     // Navigate to home page on success
+  //     navigate("/home");
+  //   } catch (err) {
+  //     if (err instanceof Error) {
+  //       setError(err.message);
+  //     } else {
+  //       setError("로그인 중 오류가 발생했습니다.");
+  //     }
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <Wrapper>

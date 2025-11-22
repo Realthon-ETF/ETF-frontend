@@ -1,6 +1,7 @@
 // import React, { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
@@ -88,7 +89,7 @@ const RegisteredResume = styled.div`
   padding: 0.5rem 1.75rem;
   justify-content: center;
   align-items: center;
-  margin: 1.19rem auto 0 auto;
+  margin: 0 auto 0 auto;
   border-radius: 2.25rem;
   border: 1px solid #aeb0b6;
   background: #fff;
@@ -168,6 +169,15 @@ const ResumeWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
+  overflow: scroll;
+`;
+
+const AnalyzeResultText = styled.p`
+  color: #000;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 180%; /* 1.8rem */
 `;
 
 const AnalyzeResultContainer = styled.div`
@@ -206,6 +216,21 @@ const AnalyzeResultContainer = styled.div`
 // `;
 
 export default function Result() {
+  const [isReady, setIsReady] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isReady) {
+    return <div></div>; // Or return null to show nothing
+  }
+
   return (
     <Wrapper>
       <Header>
@@ -255,20 +280,41 @@ export default function Result() {
           <RegisteredResume>
             <ResumeName>
               <ResumeUpperName>등록된 이력서</ResumeUpperName>
-              <ResumeLowerName>길민경_이력서_최종.pdf</ResumeLowerName>
+              <ResumeLowerName>[KR] 이력서 최신본.pdf</ResumeLowerName>
             </ResumeName>
           </RegisteredResume>
           <AnalyzeResult>이력서 분석 결과</AnalyzeResult>
           <AnalyzeExplain>
-            AI가 이력서 분석을 완료하고 민경 님만을 위한 맞춤 정보를 자동
+            AI가 이력서 분석을 완료하고 김수겸 님만을 위한 맞춤 정보를 자동
             완성했습니다.
             <br />
             실제 커리어 목표와 다르거나 추가하고 싶은 내용이 있다면 수정하신 후
             서비스 시작 버튼을 눌러주세요.
           </AnalyzeExplain>
-          <AnalyzeResultContainer>tmptmptpmtmp</AnalyzeResultContainer>
+          <AnalyzeResultContainer>
+            <AnalyzeResultText>
+              수겸(Kyle) 김은 고려대학교 컴퓨터학과 재학 중인 2027년 졸업
+              예정자로, 머신러닝·데이터사이언스·파이썬·클라우드 기반 개발에
+              강점을 가지고 있으며 AWS Solutions Architect Associate와 AI
+              Practitioner 자격을 보유하고 있다. React, Next.js, Firebase, GCP,
+              LLM 파인튜닝 등을 활용해 유료 사용자 기반 웹서비스인 '1 Cup
+              English'를 처음부터 끝까지 직접 기획·개발·운영했고, Supabase와
+              PostgreSQL을 활용한 해커톤 우승 프로젝트 'K Saju'도 팀 기반
+              협업으로 완성했다. 또한 Sendbird, CJ Foods, 한미연합사에서 총 6년
+              이상 전문 통역 경험을 쌓았고, 경영진 미팅·고객 협상·엔지니어링
+              회의 등 고난도 환경에서 실시간 통역을 수행해왔다. 기술 역량과 실전
+              제품 개발 경험, 그리고 뛰어난 커뮤니케이션 능력이 결합된 드문
+              프로필이다.
+            </AnalyzeResultText>
+          </AnalyzeResultContainer>
         </ResumeWrapper>
-        <AnalyzeButton>
+        <AnalyzeButton
+          onClick={() => {
+            setTimeout(() => {
+              navigate("/confirmed");
+            }, 700);
+          }}
+        >
           <AnalyzeText>서비스 시작하기</AnalyzeText>
         </AnalyzeButton>
       </Main>

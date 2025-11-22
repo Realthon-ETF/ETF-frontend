@@ -290,6 +290,7 @@ const ResumeSummaryBox = styled.div`
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 2.81rem;
 `;
 
 const ResumeSummaryText = styled.div`
@@ -315,7 +316,7 @@ export default function Profile() {
     alarmTime: "",
   });
   const [resumeSummary] = useState(
-    "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다."
+    " 고려대학교 컴퓨터학과 재학 중인 2027년 졸업 예정자로, 머신러닝·데이터사이언스·파이썬·클라우드 기반 개발에 강점을 가지고 있으며 AWS Solutions Architect Associate와 AI Practitioner 자격을 보유하고 있다. React, Next.js, Firebase, GCP, LLM 파인튜닝 등을 활용해 유료 사용자 기반 웹서비스인 '1 Cup English'를 처음부터 끝까지 직접 기획·개발·운영했고, Supabase와 PostgreSQL을 활용한 해커톤 우승 프로젝트 'K Saju'도 팀 기반 협업으로 완성했다. 또한 Sendbird, CJ Foods, 한미연합사에서 총 6년 이상 전문 통역 경험을 쌓았고, 경영진 미팅·고객 협상·엔지니어링 회의 등 고난도 환경에서 실시간 통역을 수행해왔다. 기술 역량과 실전 제품 개발 경험, 그리고 뛰어난 커뮤니케이션 능력이 결합된 드문 프로필이다."
   );
 
   useEffect(() => {
@@ -454,7 +455,7 @@ export default function Profile() {
             <InfoField>
               <FieldLabel>이름</FieldLabel>
               <FieldValue>
-                <FieldText>{userData.username || "길민경"}</FieldText>
+                <FieldText>{userData.username || "김수겸"}</FieldText>
               </FieldValue>
             </InfoField>
             <InfoField gap="43px">
@@ -484,7 +485,7 @@ export default function Profile() {
                   {/* </SeparatorLine> */}
                 </PhoneSeparator>
                 <PhonePart>
-                  <FieldText>{phoneParts.part2 || "1234"}</FieldText>
+                  <FieldText>{phoneParts.part2 || "6858"}</FieldText>
                 </PhonePart>
                 <PhoneSeparator>
                   {/* <SeparatorLine> */}
@@ -507,7 +508,7 @@ export default function Profile() {
                   {/* </SeparatorLine> */}
                 </PhoneSeparator>
                 <PhonePart>
-                  <FieldText>{phoneParts.part3 || "5678"}</FieldText>
+                  <FieldText>{phoneParts.part3 || "4123"}</FieldText>
                 </PhonePart>
               </PhoneNumberContainer>
             </InfoField>
@@ -522,20 +523,20 @@ export default function Profile() {
             <InfoField>
               <FieldLabel>학교</FieldLabel>
               <FieldValue>
-                <FieldText>{userData.school || "한국대학교"}</FieldText>
+                <FieldText>{userData.school || "고려대학교"}</FieldText>
               </FieldValue>
             </InfoField>
             <InfoField>
               <FieldLabel>학과</FieldLabel>
               <FieldValue>
-                <FieldText>{userData.major || "경영학과"}</FieldText>
+                <FieldText>{userData.major || "컴퓨터과학과"}</FieldText>
               </FieldValue>
             </InfoField>
             <InfoField gap="43px">
               <FieldLabel>관심직무</FieldLabel>
               <FieldValue>
                 <FieldText>
-                  {userData.interestField || "UIUX디자인, UX디자인"}
+                  {userData.interestField || "ML, AI, Cloud"}
                 </FieldText>
               </FieldValue>
             </InfoField>
@@ -555,7 +556,7 @@ export default function Profile() {
               <NotificationContainer>
                 <NotificationValue>
                   <NotificationText>
-                    {formatAlarmTime(userData.alarmTime) || "18:00"}
+                    {formatAlarmTime(userData.alarmTime) || "08:00"}
                   </NotificationText>
                 </NotificationValue>
                 <NotificationText>시에 알람을 받아요</NotificationText>
