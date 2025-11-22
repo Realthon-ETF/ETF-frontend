@@ -254,9 +254,9 @@ export default function Login() {
   const [interest, setInterest] = useState("");
   const [alarmPeriod, setAlarmPeriod] = useState("");
   const [alarmTime, setAlarmTime] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  setIsLoading(true);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { name, value },
@@ -432,7 +432,7 @@ export default function Login() {
                     type="text"
                     required
                     placeholder="아이디를 입력하세요"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -444,7 +444,7 @@ export default function Login() {
                     type="password"
                     required
                     placeholder="비밀번호를 입력하세요"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
               </InputWrapper>
@@ -463,7 +463,7 @@ export default function Login() {
                     type="text"
                     required
                     placeholder="성함을 입력하세요"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -475,7 +475,7 @@ export default function Login() {
                     type="tel"
                     required
                     placeholder="입력"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -487,7 +487,7 @@ export default function Login() {
                     type="email"
                     required
                     placeholder="이메일을 입력하세요"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -499,7 +499,7 @@ export default function Login() {
                     type="text"
                     required
                     placeholder="예) 한국대학교"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -511,7 +511,7 @@ export default function Login() {
                     type="text"
                     required
                     placeholder="예) 경영학과, 컴퓨터공학과"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 <InputTypeHolder>
@@ -523,7 +523,7 @@ export default function Login() {
                     type="text"
                     required
                     placeholder="예) UI/UX 디자인, UX리서치, UX디자인"
-                    disabled={isLoading}
+                    // disabled={isLoading}
                   />
                 </InputTypeHolder>
                 {/* <InputTypeHolder>
@@ -537,7 +537,7 @@ export default function Login() {
                       value={alarmPeriod}
                       onChange={(e) => setAlarmPeriod(e.target.value)}
                       required
-                      disabled={isLoading}
+                      // disabled={isLoading}
                     >
                       <option value="">선택</option>
                       <option value="1">1</option>
@@ -560,7 +560,7 @@ export default function Login() {
                       value={alarmTime}
                       onChange={(e) => setAlarmTime(e.target.value)}
                       required
-                      disabled={isLoading}
+                      // disabled={isLoading}
                     >
                       <option value="">선택</option>
                       <option value="0">00:00</option>
@@ -599,7 +599,7 @@ export default function Login() {
               type="button"
               active={isAgreed}
               onClick={handleAgreementClick}
-              disabled={isLoading}
+              // disabled={isLoading}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -625,9 +625,9 @@ export default function Login() {
           <AnalyzeButton
             type="submit"
             active={isAgreed}
-            disabled={isLoading || !isAgreed}
+            // disabled={isLoading || !isAgreed}
           >
-            <AnalyzeText>{isLoading ? "처리 중..." : "회원가입"}</AnalyzeText>
+            <AnalyzeText>{"회원가입"}</AnalyzeText>
           </AnalyzeButton>
         </SignupForm>
         {/* <OuterWrapper>
