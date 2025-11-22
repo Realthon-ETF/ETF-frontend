@@ -379,14 +379,14 @@ export default function Confirmed() {
   //   fetchUserData();
   // }, [navigate]);
 
-  const formatAlarmTime = (time: string) => {
-    if (!time) return "18";
-    // Extract hour from "HH:MM:SS" or "HH:MM" format
-    if (time.includes(":")) {
-      return time.split(":")[0];
-    }
-    return time;
-  };
+  // const formatAlarmTime = (time: string) => {
+  //   if (!time) return "18";
+  //   // Extract hour from "HH:MM:SS" or "HH:MM" format
+  //   if (time.includes(":")) {
+  //     return time.split(":")[0];
+  //   }
+  //   return time;
+  // };
 
   const handleSettingsClick = () => {
     navigate("/profile");
