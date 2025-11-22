@@ -516,7 +516,7 @@ export default function Profile() {
               <FieldLabel>이메일</FieldLabel>
               <FieldValue>
                 <FieldText>
-                  {userData.email || "dkffuwnwkq@job.ac.kr"}
+                  {userData.email || "kyle.kim@nativept.kr"}
                 </FieldText>
               </FieldValue>
             </InfoField>
