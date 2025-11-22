@@ -231,7 +231,7 @@ export default function Login() {
       const data = await response.json();
 
       // Store token if provided
-      if (data.token) {
+      if (data.accessToken) {
         localStorage.setItem("token", data.token);
       }
 

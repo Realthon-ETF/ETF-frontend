@@ -1,309 +1,11 @@
-// // import { useEffect, useState } from "react";
-// // // import { auth, db } from "../firebase";
-// import styled from "styled-components";
-
-// // // import { updateDoc, doc } from "firebase/firestore";
-// // // import {
-// // //   query,
-// // //   collection,
-// // //   where,
-// // //   limit,
-// // //   orderBy,
-// // //   getDocs,
-// // // } from "firebase/firestore";
-// // // import type { ITweet } from "../components/timeline";
-// // // import Tweet from "../components/tweet";
-// // // import { updateProfile } from "firebase/auth";
-
-// // const Wrapper = styled.div`
-// //   display: flex;
-// //   align-items: center;
-// //   flex-direction: column;
-// //   gap: 20px;
-// // `;
-
-// // const AvatarUpload = styled.label`
-// //   width: 80px;
-// //   overflow: hidden;
-// //   height: 80px;
-// //   border-radius: 50%;
-// //   background-color: #1d9bf0;
-// //   cursor: pointer;
-// //   display: flex;
-// //   justify-content: center;
-// //   align-items: center;
-// //   svg {
-// //     width: 50px;
-// //   }
-// // `;
-
-// // const AvatarImg = styled.img`
-// //   width: 100%;
-// // `;
-
-// // const AvatarInput = styled.input`
-// //   display: none;
-// // `;
-
-// // const Name = styled.span`
-// //   font-size: 22px;
-// // `;
-
-// // const NameEditButton = styled.button`
-// //   cursor: pointer;
-// //   display: flex;
-// //   align-items: center;
-// //   justify-content: center;
-// //   border: 2px solid white;
-// //   height: 50px;
-// //   width: 50px;
-// //   border-radius: 25px;
-// //   svg {
-// //     width: 30px;
-// //     fill: white;
-// //   }
-// // `;
-
-// // const TextArea = styled.textarea`
-// //   border: 2px solid white;
-// //   padding: 20px;
-// //   border-radius: 20px;
-// //   font-size: 16px;
-// //   color: white;
-// //   background-color: black;
-// //   width: 100%;
-// //   resize: none;
-// //   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-// //     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-
-// //   &::placeholder {
-// //     font-size: 16px;
-// //   }
-// //   &:focus {
-// //     outline: none;
-// //     border-color: #1d9bf0;
-// //   }
-// // `;
-
-// // // const Tweets = styled.div`
-// // //   display: flex;
-// // //   flex-direction: column;
-// // //   gap: 10px;
-// // // `;
-
-// const Wrapper = styled.div`
-//   // display: flex;
-//   // flex-direction: column;
-//   gap: 20px;
-//   width: 100%;
-//   height: 100vh;
-// `;
-
-// const Header = styled.div`
-//   display: flex;
-//   // flex-direction: row;
-//   width: 100%;
-//   height: 4rem;
-//   padding: 0 3rem;
-//   justify-content: space-between;
-//   align-items: center;
-//   flex-shrink: 0;
-//   border-bottom: 1px solid #000;
-//   background: #fff;
-// `;
-
-// const MyProfile = styled.h2`
-//   flex: 1;
-//   color: #000;
-//   // font-family: Pretendard;
-//   font-size: 1.25rem;
-//   font-style: normal;
-//   font-weight: 500;
-//   line-height: normal;
-// `;
-
-// const LeftContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 4rem;
-// `;
-
-// const LeftInnerContainer = styled.div`
-//   display: flex;
-//   align-items: flex-start;
-//   gap: 1.25rem;
-// `;
-
-// const ContentsContainer = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   flex: 1;
-//   height: 100%;
-// `;
-
-// const EmptySpace = styled.div`
-//   flex: 3;
-//   height: 100%;
-// `;
-
-// const ChattingSpace = styled.div`
-//   flex: 84.9375;
-//   // height: 103.8125rem;
-//   height: 100%;
-//   // position: relative;
-//   // left: 3rem;
-//   flex-shrink: 0;
-//   // background-color: "tomato";
-// `;
-
-// const RegisteredInfo = styled.div`
-//   position: relative;
-//   // right: 0;
-//   flex: 32.06;
-//   height: 100%;
-//   // height: 103.8125rem;
-// `;
-
-// const SitesContainer = styled.div`
-//   position: absolute;
-//   width: 80.5%;
-//   top: 5.81rem;
-//   right: 3rem;
-// `;
-
-// export default function Profile() {
-//   return (
-//     <Wrapper>
-//       <Header>
-//         <LeftContainer>
-//           <MyProfile>로고</MyProfile>
-//           <LeftInnerContainer>
-//             <h4>정보설정</h4>
-//             <h4>수집함</h4>
-//           </LeftInnerContainer>
-//         </LeftContainer>
-//         <div>
-//           <MyProfile>내 프로필</MyProfile>
-//         </div>
-//       </Header>
-//       <ContentsContainer>
-//         <EmptySpace>tmp</EmptySpace>
-//         <ChattingSpace>tmp1</ChattingSpace>
-//         <RegisteredInfo>
-//           <SitesContainer>yap</SitesContainer>
-//         </RegisteredInfo>
-//       </ContentsContainer>
-//     </Wrapper>
-//   );
-// }
-
-// // export default function Profile({ id }: ITweet) {
-// //   const user = auth.currentUser;
-// //   const [avatar, setAvatar] = useState(user?.photoURL);
-// //   // const [tweets, setTweets] = useState<ITweet[]>([]);
-// //   const [edit, setEdit] = useState(false);
-// //   const [editedNickName, setEditedNickName] = useState("");
-// //   const [disable, setDisable] = useState(false);
-
-// //   const fetchTweets = async () => {
-// //     // const tweetQuery = query(
-// //     //   collection(db, "tweets"),
-// //     //   where("userId", "==", user?.uid),
-// //     //   orderBy("createdAt", "desc"),
-// //     //   limit(25)
-// //     // );
-// //     // const snapshot = await getDocs(tweetQuery);
-// //     // const tweets = snapshot.docs.map((doc) => {
-// //     //   const { tweet, createdAt, userId, username, photo } = doc.data();
-// //     //   return {
-// //     //     tweet,
-// //     //     createdAt,
-// //     //     userId,
-// //     //     username,
-// //     //     photo,
-// //     //     id: doc.id,
-// //     //   };
-// //     // });
-// //     // setTweets(tweets);
-// //   };
-
-// //   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-// //     setEditedNickName(e.target.value);
-// //   };
-
-// //   const onEdit = async () => {
-// //     try {
-// //     } catch (e) {
-// //       console.log(e);
-// //     }
-// //     setEdit(false);
-// //   };
-
-// //   useEffect(() => {
-// //     fetchTweets();
-// //   }, []);
-// //   return (
-// //     <Wrapper>
-// //       <AvatarUpload htmlFor="avatar">
-// //         {avatar ? (
-// //           <AvatarImg src={avatar} />
-// //         ) : (
-// //           <svg
-// //             data-slot="icon"
-// //             fill="currentColor"
-// //             viewBox="0 0 16 16"
-// //             xmlns="http://www.w3.org/2000/svg"
-// //             aria-hidden="true"
-// //           >
-// //             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"></path>
-// //           </svg>
-// //         )}
-// //       </AvatarUpload>
-// //       <AvatarInput id="avatar" type="file" accept="image/*" />
-
-// //       <Name>
-// //         {edit ? (
-// //           <TextArea
-// //             defaultValue={user?.displayName ?? "Anonymous"}
-// //             onChange={onChange}
-// //           ></TextArea>
-// //         ) : (
-// //           user?.displayName ?? "Anonymous"
-// //         )}
-// //       </Name>
-// //       {edit ? (
-// //         <NameEditButton onClick={onEdit} className="done" disabled={disable}>
-// //           Done
-// //         </NameEditButton>
-// //       ) : (
-// //         <NameEditButton onClick={() => setEdit(true)}>
-// //           <svg
-// //             data-slot="icon"
-// //             fill="currentColor"
-// //             viewBox="0 0 20 20"
-// //             xmlns="http://www.w3.org/2000/svg"
-// //             aria-hidden="true"
-// //           >
-// //             <path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z"></path>
-// //             <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z"></path>
-// //           </svg>
-// //         </NameEditButton>
-// //       )}
-// //       {/* <Tweets>
-// //         {tweets.map((tweet) => (
-// //           <Tweet key={tweet.id} {...tweet} />
-// //         ))}
-// //       </Tweets> */}
-// //     </Wrapper>
-// //   );
-// // }
-
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background: #f7f8fa;
+  background: #fff;
+  position: relative;
   display: flex;
   flex-direction: column;
 `;
@@ -312,301 +14,578 @@ const Header = styled.header`
   width: 100%;
   height: 64px;
   background: #fff;
-  border-bottom: 1px solid #e5e8eb;
+  border-bottom: 1px solid #e1e2e4;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 48px;
   box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 const LeftHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 4rem;
+  gap: 64px;
 `;
 
-const Logo = styled.div`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1d9bf0;
-  letter-spacing: -0.5px;
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const LogoIcon = styled.div`
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LogoText = styled.p`
+  font-family: "BareunDotumOTFPro", sans-serif;
+  color: #2e3847;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  margin: 0;
 `;
 
 const Nav = styled.nav`
   display: flex;
-  gap: 32px;
-  align-items: center;
+  gap: 20px;
+  align-items: flex-start;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #141618;
 `;
 
 const NavItem = styled.button`
   background: none;
   border: none;
-  color: #222;
-  font-size: 1rem;
+  color: #141618;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   padding: 0;
+  font-family: inherit;
   &:hover {
     color: #1d9bf0;
   }
 `;
 
-const ProfileTitle = styled.div`
-  color: #222;
-  font-size: 1.125rem;
-  font-weight: 600;
-`;
-
-const Main = styled.main`
-  flex: 1;
-  display: flex;
-  width: 100%;
-  min-height: 0;
-`;
-
-const LeftSidebar = styled.aside`
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #e5e8eb;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 40px 24px;
-  gap: 32px;
-`;
-
-const SidebarTitle = styled.h2`
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #1d9bf0;
-  margin-bottom: 16px;
-`;
-
-const SidebarMenu = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-`;
-
-const SidebarMenuItem = styled.button<{ active?: boolean }>`
-  background: ${({ active }) => (active ? "#f1f8fd" : "none")};
-  border: none;
-  color: ${({ active }) => (active ? "#1d9bf0" : "#222")};
-  font-size: 1rem;
+const ProfileTitle = styled.p`
+  font-family: "Pretendard", sans-serif;
   font-weight: 500;
-  text-align: left;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
-  &:hover {
-    background: #f1f8fd;
-    color: #1d9bf0;
-  }
+  font-size: 16px;
+  color: #141618;
+  line-height: 1.2;
+  margin: 0;
 `;
 
-const CenterContent = styled.section`
-  flex: 1.5;
-  padding: 48px 40px;
+const PageTitle = styled.h1`
+  position: absolute;
+  top: 118.96px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+  font-size: 38px;
+  color: #141618;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+`;
+
+const MainContent = styled.main`
+  position: absolute;
+  left: calc(37.5% + 25px);
+  top: 209px;
+  width: 445px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 86px;
+  align-items: flex-start;
 `;
 
-const ProfileCard = styled.div`
+const Section = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: flex-start;
+  width: 100%;
+`;
+
+const SectionHeader = styled.div<{ alignEnd?: boolean }>`
+  display: flex;
+  align-items: ${({ alignEnd }) => (alignEnd ? "flex-end" : "center")};
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const SectionTitle = styled.h2`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #141618;
+  line-height: 1.3;
+  margin: 0;
+`;
+
+const EditButton = styled.button`
   background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(29, 155, 240, 0.06);
-  padding: 40px 32px;
+  border: 1px solid #eaebec;
+  border-radius: 8px;
+  padding: 4px 8px;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 4px;
+  cursor: pointer;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #5a5c63;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f7f8fa;
+  }
 `;
 
-const Avatar = styled.div`
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: #e5e8eb;
+const EditButtonText = styled.span`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #5a5c63;
+`;
+
+const PencilIcon = styled.div`
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
-  color: #b0b8c1;
-  font-weight: 700;
+  position: relative;
 `;
 
-const ProfileInfo = styled.div`
+const InfoFields = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-`;
-
-const Name = styled.div`
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #222;
-`;
-
-const Email = styled.div`
-  font-size: 1rem;
-  color: #888;
-`;
-
-const RightPanel = styled.aside`
-  width: 320px;
-  background: #fff;
-  border-left: 1px solid #e5e8eb;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 40px 32px;
-  gap: 32px;
-`;
-
-const InfoContainer = styled.div`
-  display: flex;
-  // width: 26.8125rem;
+  gap: 24px;
   width: 100%;
-  padding: 1.5rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  border-radius: 0.75rem;
-  background: #f7f7f8;
+  height: 440px;
 `;
 
-const InfoContainerHeaderWrapper = styled.div`
+const InfoField = styled.div<{ gap?: string }>`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  align-self: stretch;
+  gap: ${({ gap }) => gap || "71px"};
+  width: 100%;
 `;
 
-const InfoContainerHeader = styled.div`
+const FieldLabel = styled.p`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #141618;
+  line-height: 1.3;
+  margin: 0;
+  flex-shrink: 0;
+`;
+
+const FieldValue = styled.div`
+  border-radius: 20px;
+  padding: 8px 16px;
   display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 346px;
+  box-sizing: border-box;
+`;
+
+const FieldText = styled.p`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #5a5c63;
+  text-align: center;
+  margin: 0;
+  width: 100%;
+`;
+
+const PhoneNumberContainer = styled.div`
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
+  height: 34px;
+  width: 346px;
 `;
 
-const InfoContents = styled.div`
+const PhonePart = styled.div`
+  border-radius: 20px;
+  padding: 8px 16px;
   display: flex;
-  // width: 18.9375rem;
+  align-items: center;
+  gap: 10px;
+  width: 84px;
+  box-sizing: border-box;
+`;
+
+const PhoneSeparator = styled.div`
+  width: 10.5px;
+  height: 0;
+  position: relative;
+  flex-shrink: 0;
+`;
+
+const SeparatorLine = styled.div`
+  position: absolute;
+  top: -0.5px;
+  bottom: -0.5px;
+  left: 0;
+  right: 0;
+`;
+
+const NotificationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+const NotificationValue = styled.div`
+  border-radius: 20px;
+  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const NotificationText = styled.p`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #5a5c63;
+  text-align: center;
+  margin: 0;
+`;
+
+const ResumeSummaryBox = styled.div`
+  background: #f7fbff;
+  border: 1px solid #eaf2fe;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 1rem;
-  width: 79.52%;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
-const InfoLink = styled.a`
-  word-break: break-all;
-  color: #1d9bf0;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
+const ResumeSummaryText = styled.div`
+  font-family: "Pretendard", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  flex: 1;
+  min-height: 0;
 `;
-
-// const InfoTitle = styled.h3`
-//   font-size: 1.125rem;
-//   font-weight: 700;
-//   color: #1d9bf0;
-//   margin-bottom: 16px;
-// `;
-
-// const InfoSection = styled.div`
-//   width: 100%;
-//   color: #222;
-//   font-size: 1rem;
-// `;
 
 export default function Profile() {
+  const [userData, setUserData] = useState({
+    username: "",
+    phoneNumber: "",
+    email: "",
+    school: "",
+    major: "",
+    interestField: "",
+    intervalDays: "",
+    alarmTime: "",
+  });
+  const [resumeSummary] = useState(
+    "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다."
+  );
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          return;
+        }
+
+        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData({
+            username: data.username || "",
+            phoneNumber: data.phoneNumber || "",
+            email: data.email || "",
+            school: data.school || "",
+            major: data.major || "",
+            interestField: data.interestField || "",
+            intervalDays: data.intervalDays?.toString() || "",
+            alarmTime: data.alarmTime || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const formatPhoneNumber = (phone: string) => {
+    if (!phone) return { part1: "", part2: "", part3: "" };
+    const cleaned = phone.replace(/-/g, "");
+    if (cleaned.length === 11) {
+      return {
+        part1: cleaned.substring(0, 3),
+        part2: cleaned.substring(3, 7),
+        part3: cleaned.substring(7, 11),
+      };
+    }
+    return { part1: phone.substring(0, 3), part2: "", part3: "" };
+  };
+
+  const formatAlarmTime = (time: string) => {
+    if (!time) return "";
+    // Convert "HH:MM:SS" to "HH:MM"
+    if (time.includes(":")) {
+      const parts = time.split(":");
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return time;
+  };
+
+  const phoneParts = formatPhoneNumber(userData.phoneNumber);
+
   return (
     <Wrapper>
       <Header>
         <LeftHeaderWrapper>
-          <Logo>로고</Logo>
+          <LogoContainer>
+            <LogoIcon>
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 78 78"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="77.76" height="77.76" fill="white" />
+                <path
+                  d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
+                  fill="url(#paint0_radial_profile)"
+                />
+                <defs>
+                  <radialGradient
+                    id="paint0_radial_profile"
+                    cx="0"
+                    cy="0"
+                    r="1"
+                    gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#4F95FF" />
+                    <stop offset="0.27707" stopColor="#5698F8" />
+                    <stop offset="0.518714" stopColor="#75A7D9" />
+                    <stop offset="1" stopColor="#FFEA4F" />
+                  </radialGradient>
+                </defs>
+              </svg>
+            </LogoIcon>
+            <LogoText>알려주잡</LogoText>
+          </LogoContainer>
           <Nav>
             <NavItem>정보설정</NavItem>
             <NavItem>수집함</NavItem>
           </Nav>
         </LeftHeaderWrapper>
-        <ProfileTitle>내 프로필</ProfileTitle>
+        <ProfileTitle>내프로필</ProfileTitle>
       </Header>
-      <Main>
-        <LeftSidebar>
-          <SidebarTitle>내 메뉴</SidebarTitle>
-          <SidebarMenu>
-            <SidebarMenuItem active>프로필</SidebarMenuItem>
-            <SidebarMenuItem>알림 설정</SidebarMenuItem>
-            <SidebarMenuItem>계정 관리</SidebarMenuItem>
-          </SidebarMenu>
-        </LeftSidebar>
-        <CenterContent>
-          <ProfileCard>
-            <Avatar>👤</Avatar>
-            <ProfileInfo>
-              <Name>홍길동</Name>
-              <Email>honggildong@email.com</Email>
-            </ProfileInfo>
-          </ProfileCard>
-          {/* Add more content sections here as needed */}
-        </CenterContent>
-        <RightPanel>
-          <InfoContainer>
-            <InfoContainerHeader>
-              <InfoContainerHeaderWrapper>
-                <h4>등록된 웹사이트</h4>
+      <PageTitle>내 프로필</PageTitle>
+      <MainContent>
+        <Section>
+          <SectionHeader>
+            <SectionTitle>기본정보</SectionTitle>
+            <EditButton>
+              <EditButtonText>수정</EditButtonText>
+              <PencilIcon>
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
                   fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M21.5898 11.7129C21.5898 12.7033 20.7904 13.5028 19.8 13.5028C18.8096 13.5028 18.0102 12.7033 18.0102 11.7129C18.0102 10.7226 18.8096 9.9231 19.8 9.9231C20.7904 9.9231 21.5898 10.7226 21.5898 11.7129ZM13.7797 11.7129C13.7797 12.7033 12.9802 13.5028 11.9898 13.5028C10.9995 13.5028 10.2 12.7033 10.2 11.7129C10.2 10.7226 10.9995 9.9231 11.9898 9.9231C12.9802 9.9231 13.7797 10.7226 13.7797 11.7129ZM4.17967 13.5028C5.17004 13.5028 5.9695 12.7033 5.9695 11.7129C5.9695 10.7226 5.17004 9.92309 4.17967 9.92309C3.18929 9.92309 2.38984 10.7226 2.38984 11.7129C2.38984 12.7033 3.18929 13.5028 4.17967 13.5028Z"
-                    fill="#141618"
+                    d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
+                    stroke="#5a5c63"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
-              </InfoContainerHeaderWrapper>
-              <h4>4개</h4>
-            </InfoContainerHeader>
-            <InfoContents>
-              <div>
-                <h2>서강대학교 공지</h2>
-                <InfoLink href="https://creative.sognag.ac.kr/blog/newsevents/">
-                  https://creative.sognag.ac.kr/blog/newsevents/
-                </InfoLink>
-              </div>
-              <div>
-                <h2>서강대학교 공지</h2>
-                <InfoLink href="https://creative.sognag.ac.kr/blog/newsevents/">
-                  https://creative.sognag.ac.kr/blog/newsevents/
-                </InfoLink>
-              </div>
-              <div>
-                <h2>서강대학교 공지</h2>
-                <InfoLink href="https://creative.sognag.ac.kr/blog/newsevents/">
-                  https://creative.sognag.ac.kr/blog/newsevents/
-                </InfoLink>
-              </div>
-            </InfoContents>
-          </InfoContainer>
-          {/* <InfoTitle>등록 정보</InfoTitle>
-          <InfoSection>
-            <div>이메일 인증 완료</div>
-            <div>마지막 로그인: 2025-11-22</div>
-          </InfoSection> */}
-        </RightPanel>
-      </Main>
+              </PencilIcon>
+            </EditButton>
+          </SectionHeader>
+          <InfoFields>
+            <InfoField>
+              <FieldLabel>이름</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.username || "길민경"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="43px">
+              <FieldLabel>전화번호</FieldLabel>
+              <PhoneNumberContainer>
+                <PhonePart>
+                  <FieldText>{phoneParts.part1 || "010"}</FieldText>
+                </PhonePart>
+                <PhoneSeparator>
+                  <SeparatorLine>
+                    <svg
+                      width="11"
+                      height="1"
+                      viewBox="0 0 11 1"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <line
+                        x1="0.5"
+                        y1="0.5"
+                        x2="10.5"
+                        y2="0.5"
+                        stroke="#AEB0B6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </SeparatorLine>
+                </PhoneSeparator>
+                <PhonePart>
+                  <FieldText>{phoneParts.part2 || "1234"}</FieldText>
+                </PhonePart>
+                <PhoneSeparator>
+                  <SeparatorLine>
+                    <svg
+                      width="11"
+                      height="1"
+                      viewBox="0 0 11 1"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <line
+                        x1="0.5"
+                        y1="0.5"
+                        x2="10.5"
+                        y2="0.5"
+                        stroke="#AEB0B6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </SeparatorLine>
+                </PhoneSeparator>
+                <PhonePart>
+                  <FieldText>{phoneParts.part3 || "5678"}</FieldText>
+                </PhonePart>
+              </PhoneNumberContainer>
+            </InfoField>
+            <InfoField gap="57px">
+              <FieldLabel>이메일</FieldLabel>
+              <FieldValue>
+                <FieldText>
+                  {userData.email || "dkffuwnwkq@job.ac.kr"}
+                </FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField>
+              <FieldLabel>학교</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.school || "한국대학교"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField>
+              <FieldLabel>학과</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.major || "경영학과"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="43px">
+              <FieldLabel>관심직무</FieldLabel>
+              <FieldValue>
+                <FieldText>
+                  {userData.interestField || "UIUX디자인, UX디자인"}
+                </FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="53px">
+              <FieldLabel>알림주기</FieldLabel>
+              <NotificationContainer>
+                <NotificationValue>
+                  <NotificationText>
+                    {userData.intervalDays || "1"}
+                  </NotificationText>
+                </NotificationValue>
+                <NotificationText>일 마다 한 번씩</NotificationText>
+              </NotificationContainer>
+            </InfoField>
+            <InfoField gap="53px">
+              <FieldLabel>알림시간</FieldLabel>
+              <NotificationContainer>
+                <NotificationValue>
+                  <NotificationText>
+                    {formatAlarmTime(userData.alarmTime) || "18:00"}
+                  </NotificationText>
+                </NotificationValue>
+                <NotificationText>시에 알람을 받아요</NotificationText>
+              </NotificationContainer>
+            </InfoField>
+          </InfoFields>
+        </Section>
+        <Section>
+          <SectionHeader alignEnd>
+            <SectionTitle>이력서 요약 정보</SectionTitle>
+            <EditButton>
+              <EditButtonText>수정</EditButtonText>
+              <PencilIcon>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
+                    stroke="#5a5c63"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </PencilIcon>
+            </EditButton>
+          </SectionHeader>
+          <ResumeSummaryBox>
+            <ResumeSummaryText>{resumeSummary}</ResumeSummaryText>
+          </ResumeSummaryBox>
+        </Section>
+      </MainContent>
     </Wrapper>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -282,8 +282,53 @@ const AnalyzeText = styled.h3`
 
 export default function Home() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // If no token, redirect to login
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          // If unauthorized, redirect to login
+          if (response.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+          }
+          throw new Error("사용자 정보를 가져오는데 실패했습니다.");
+        }
+
+        const data = await response.json();
+        if (data.username) {
+          setName(data.username);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        // Optionally redirect to login on error
+        // navigate("/login");
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   // Handle file selection via button
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -330,9 +375,51 @@ export default function Home() {
     setIsAgreed((prev) => !prev);
   };
 
-  const handleAnalyzeClick = () => {
-    if (isAgreed && selectedFile) {
+  const handleAnalyzeClick = async () => {
+    if (!isAgreed || !selectedFile || isUploading) {
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      // Upload PDF file
+      const response = await fetch("https://api.etf.r-e.kr/resume/pdf", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          message: "파일 업로드에 실패했습니다.",
+        }));
+        throw new Error(errorData.message || "파일 업로드에 실패했습니다.");
+      }
+
+      // Navigate to result page on success
       navigate("/result");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("파일 업로드 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -353,7 +440,7 @@ export default function Home() {
           <AnnouncmentBox>
             맞춤 정보를 드리기 위해서는
             <br />
-            민경님의 정보가 담긴 이력서가 필요해요
+            {name}님의 정보가 담긴 이력서가 필요해요
           </AnnouncmentBox>
           <Restriction>PDF, 10MB 이내만 업로드할 수 있어요</Restriction>
 
@@ -431,11 +518,13 @@ export default function Home() {
             </h5>
           </AgreementBox>
           <AnalyzeButton
-            active={isAgreed && !!selectedFile}
+            active={isAgreed && !!selectedFile && !isUploading}
             onClick={handleAnalyzeClick}
-            disabled={!isAgreed || !selectedFile}
+            disabled={!isAgreed || !selectedFile || isUploading}
           >
-            <AnalyzeText>AI 분석 받기</AnalyzeText>
+            <AnalyzeText>
+              {isUploading ? "업로드 중..." : "AI 분석 받기"}
+            </AnalyzeText>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
