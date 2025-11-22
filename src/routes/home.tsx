@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -257,6 +258,17 @@ const AnalyzeButton = styled.button<{ active: boolean }>`
   border-width: 0;
   background-color: ${({ active }) => (active ? "#06F" : "#c2c5c8")};
   margin-top: 1.38rem;
+  cursor: ${({ active }) => (active ? "pointer" : "not-allowed")};
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: ${({ active }) => (active ? "#0052cc" : "#c2c5c8")};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 `;
 
 const AnalyzeText = styled.h3`
@@ -269,6 +281,7 @@ const AnalyzeText = styled.h3`
 `;
 
 export default function Home() {
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -315,6 +328,12 @@ export default function Home() {
 
   const handleAgreementClick = () => {
     setIsAgreed((prev) => !prev);
+  };
+
+  const handleAnalyzeClick = () => {
+    if (isAgreed && selectedFile) {
+      navigate("/result");
+    }
   };
 
   return (
@@ -411,7 +430,11 @@ export default function Home() {
               정보를 받는 데 동의합니다.
             </h5>
           </AgreementBox>
-          <AnalyzeButton active={isAgreed}>
+          <AnalyzeButton
+            active={isAgreed && !!selectedFile}
+            onClick={handleAnalyzeClick}
+            disabled={!isAgreed || !selectedFile}
+          >
             <AnalyzeText>AI 분석 받기</AnalyzeText>
             <svg
               xmlns="http://www.w3.org/2000/svg"

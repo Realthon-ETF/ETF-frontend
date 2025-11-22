@@ -1,91 +1,5 @@
-// import { useState } from "react";
-// // import { useNavigate } from "react-router-dom";
-// // import { FirebaseError } from "firebase/app";
-// // import { signInWithEmailAndPassword } from "firebase/auth";
-// // import { auth } from "../firebase";
-// import { Link } from "react-router-dom";
-// import {
-//   Wrapper,
-//   Title,
-//   Form,
-//   Input,
-//   // Error,
-//   Switcher,
-// } from "../components/auth-components";
-
-// export default function CreateAccount() {
-//   // const navigate = useNavigate();
-//   // const [isLoading, setLoading] = useState(false);
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   // const [error, setError] = useState("");
-
-//   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const {
-//       target: { name, value },
-//     } = e;
-//     // 아래 코드에서 모든 input에 name을 넣음으로써 input이 변경되었을 때 어떤 input이 변경되었는지 찾을 수 있다.
-//     if (name === "email") {
-//       setEmail(value);
-//     } else if (name === "password") {
-//       setPassword(value);
-//     }
-//   };
-
-//   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     // setError("");
-//     // if (isLoading || email === "" || password === "") return;
-//     // try {
-//     //   setLoading(true);
-//     //   await signInWithEmailAndPassword(auth, email, password);
-//     //   navigate("/");
-//     // } catch (e) {
-//     //   if (e instanceof FirebaseError) {
-//     //     setError(e.message);
-//     //   }
-//     // } finally {
-//     //   setLoading(false);
-//     // }
-//     console.log(email, password);
-//   };
-
-//   return (
-//     <Wrapper>
-//       <Title>로그인</Title>
-//       <Form onSubmit={onSubmit}>
-//         <Input
-//           onChange={onChange}
-//           name="email"
-//           value={email}
-//           placeholder="Email"
-//           type="email"
-//           required
-//         />
-//         <Input
-//           onChange={onChange}
-//           name="password"
-//           value={password}
-//           placeholder="Password"
-//           type="password"
-//           required
-//         />
-//         {/* <Input type="submit" value={isLoading ? "Loading..." : "Log In"} /> */}
-//         <Input type="submit" value="Loading..." />
-//       </Form>
-//       {/* {error !== "" ? <Error>{error}</Error> : null} */}
-//       <Switcher>
-//         Don't have account? <Link to="/create-account">Create one &rarr;</Link>
-//       </Switcher>
-//       <Switcher>
-//         Forgot Password?{" "}
-//         <Link to="/reset-password">Reset Password via Email &rarr;</Link>
-//       </Switcher>
-//     </Wrapper>
-//   );
-// }
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -122,11 +36,11 @@ const LoginHeader = styled.div`
   align-self: stretch;
 `;
 
-const LogoHolder = styled.div`
-  width: 10.8rem;
-  height: 10.8rem;
-  background-color: "tomato";
-`;
+// const LogoHolder = styled.div`
+//   width: 10.8rem;
+//   height: 10.8rem;
+//   background-color: "tomato";
+// `;
 
 const LogoHeaderHolder = styled.div`
   display: flex;
@@ -154,18 +68,9 @@ const IntroText = styled.h2`
   line-height: 130%; /* 1.95rem */
 `;
 
-const FormWrapper = styled.div`
-  display: flex;
-  width: 15.0625rem;
-  flex-direction: column;
-  align-items: center;
-  gap: 3.25rem;
-  flex-shrink: 0;
-`;
-
 const RegisterText = styled.h4`
   color: #70737c;
-  text-align: center
+  text-align: center;
   font-size: 1rem;
   font-style: normal;
   font-weight: 500;
@@ -223,7 +128,126 @@ const OuterWrapper = styled.div`
   flex-shrink: 0;
 `;
 
+const LoginForm = styled.form`
+  display: flex;
+  width: 15.0625rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.25rem;
+  flex-shrink: 0;
+`;
+
+const SubmitButton = styled.button`
+  display: flex;
+  padding: 0.625rem 1.25rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  align-self: stretch;
+  border-radius: 1.25rem;
+  border: none;
+  background-color: #06f;
+  color: #fff;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: #0052cc;
+  }
+
+  &:disabled {
+    background-color: #c2c5c8;
+    cursor: not-allowed;
+  }
+`;
+
+const ErrorText = styled.p`
+  color: #ff4444;
+  text-align: center;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  margin: 0;
+`;
+
 export default function Login() {
+  const navigate = useNavigate();
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { name, value },
+    } = e;
+    if (name === "id") {
+      setId(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    if (isLoading || id === "" || password === "") {
+      setError("아이디와 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // API request
+      const response = await fetch("https://api.etf.r-e.kr/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          loginId: id,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({
+          message: "로그인에 실패했습니다.",
+        }));
+        throw new Error(errorData.message || "로그인에 실패했습니다.");
+      }
+
+      const data = await response.json();
+
+      // Store token if provided
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      // Navigate to home page on success
+      navigate("/home");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("로그인 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Wrapper>
       <LoginLayout>
@@ -266,18 +290,38 @@ export default function Login() {
                 먼저 알아서 찾아주는 AI 서비스
               </IntroText>
             </LoginHeader>
-            <FormWrapper>
+            <LoginForm onSubmit={onSubmit}>
               <InputWrapper>
                 <InputTypeHolder>
                   <InputText>아이디</InputText>
-                  <InputHolder placeholder="입력" />
+                  <InputHolder
+                    name="id"
+                    value={id}
+                    onChange={onChange}
+                    placeholder="입력"
+                    type="text"
+                    required
+                    disabled={isLoading}
+                  />
                 </InputTypeHolder>
                 <InputTypeHolder>
                   <InputText>비밀번호</InputText>
-                  <InputHolder placeholder="입력" />
+                  <InputHolder
+                    name="password"
+                    value={password}
+                    onChange={onChange}
+                    placeholder="입력"
+                    type="password"
+                    required
+                    disabled={isLoading}
+                  />
                 </InputTypeHolder>
               </InputWrapper>
-            </FormWrapper>
+              {error && <ErrorText>{error}</ErrorText>}
+              <SubmitButton type="submit" disabled={isLoading}>
+                {isLoading ? "로그인 중..." : "로그인"}
+              </SubmitButton>
+            </LoginForm>
           </LoginWrapper>
           <Link to="/create-account">
             <RegisterText>회원가입</RegisterText>
