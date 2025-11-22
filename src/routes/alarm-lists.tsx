@@ -13,33 +13,33 @@ const Wrapper = styled.div`
   overflow-x: hidden;
 `;
 
-const StatusBar = styled.div`
-  width: 100%;
-  height: 46.642px;
-  background: #fff;
-  padding: 19.59px 0 0 0;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 14.925px;
-  padding-right: 14.925px;
-`;
+// const StatusBar = styled.div`
+//   width: 100%;
+//   height: 46.642px;
+//   background: #fff;
+//   padding: 19.59px 0 0 0;
+//   box-sizing: border-box;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   padding-left: 14.925px;
+//   padding-right: 14.925px;
+// `;
 
-const StatusTime = styled.p`
-  font-family: "SF Pro", sans-serif;
-  font-weight: 600;
-  font-size: 15.86px;
-  color: #000;
-  line-height: 20.522px;
-  margin: 0;
-`;
+// const StatusTime = styled.p`
+//   font-family: "SF Pro", sans-serif;
+//   font-weight: 600;
+//   font-size: 15.86px;
+//   color: #000;
+//   line-height: 20.522px;
+//   margin: 0;
+// `;
 
-const StatusIcons = styled.div`
-  display: flex;
-  gap: 6.53px;
-  align-items: center;
-`;
+// const StatusIcons = styled.div`
+//   display: flex;
+//   gap: 6.53px;
+//   align-items: center;
+// `;
 
 const Header = styled.header`
   width: 100%;
@@ -268,6 +268,7 @@ interface AlarmItem {
   title: string;
   sourceLogo?: string;
   sourceName: string;
+  link: string;
 }
 
 const mockAlarms: AlarmItem[] = [
@@ -281,6 +282,7 @@ const mockAlarms: AlarmItem[] = [
     sourceLogo:
       "https://www.figma.com/api/mcp/asset/2fc9871e-8296-4c4a-9c09-0d26347447d2",
     sourceName: "고려대학교 기술대학",
+    link: "https://cse.korea.ac.kr/community/notice/?mode=view&number=24385",
   },
   {
     id: 2,
@@ -292,6 +294,7 @@ const mockAlarms: AlarmItem[] = [
     sourceLogo:
       "https://www.figma.com/api/mcp/asset/2fc9871e-8296-4c4a-9c09-0d26347447d2",
     sourceName: "고려대학교 기술대학",
+    link: "https://cse.korea.ac.kr/community/notice/?mode=view&number=24384",
   },
   {
     id: 3,
@@ -302,6 +305,7 @@ const mockAlarms: AlarmItem[] = [
     sourceLogo:
       "https://www.figma.com/api/mcp/asset/c9da8f0d-ce6e-4ece-8477-2687e81c0c94",
     sourceName: "토스 채용",
+    link: "https://toss.im/builder/to/ecec6cbba9344082920c82ba28698bfb",
   },
   {
     id: 4,
@@ -312,6 +316,7 @@ const mockAlarms: AlarmItem[] = [
     sourceLogo:
       "https://www.figma.com/api/mcp/asset/65c3d510-9e5b-4bf2-8821-0b3cce568b98",
     sourceName: "잡코리아",
+    link: "https://www.jobkorea.co.kr/goodjob/tip/view?News_No=22473",
   },
   {
     id: 5,
@@ -322,14 +327,7 @@ const mockAlarms: AlarmItem[] = [
     sourceLogo:
       "https://www.figma.com/api/mcp/asset/65c3d510-9e5b-4bf2-8821-0b3cce568b98",
     sourceName: "잡코리아",
-  },
-  {
-    id: 6,
-    isNew: false,
-    category: "portal",
-    categoryLabel: "취업 포털",
-    title: "게시글 제목입니다",
-    sourceName: "웹사이트 이름",
+    link: "https://www.jobkorea.co.kr/Recruit/GI_Read/48078011?Oem_Code=C1&rPageCode=TL",
   },
 ];
 
@@ -339,7 +337,7 @@ export default function AlarmLists() {
 
   return (
     <Wrapper>
-      <StatusBar>
+      {/* <StatusBar>
         <StatusTime>9:41</StatusTime>
         <StatusIcons>
           <svg width="18" height="11" viewBox="0 0 18 11" fill="none">
@@ -377,7 +375,7 @@ export default function AlarmLists() {
             />
           </svg>
         </StatusIcons>
-      </StatusBar>
+      </StatusBar> */}
       <Header>
         <LogoContainer>
           <LogoIcon>
@@ -462,34 +460,41 @@ export default function AlarmLists() {
       </FilterSection>
       <ContentList>
         {mockAlarms.map((item) => (
-          <HistoryItem key={item.id}>
-            <TagsContainer>
-              {item.isNew && (
-                <NewBadge>
-                  <NewBadgeText>new</NewBadgeText>
-                </NewBadge>
-              )}
-              <CategoryBadge category={item.category}>
-                <CategoryBadgeText>{item.categoryLabel}</CategoryBadgeText>
-              </CategoryBadge>
-            </TagsContainer>
-            <ItemContent>
-              <ItemTitle>{item.title}</ItemTitle>
-              <ItemSource>
-                {item.sourceLogo ? (
-                  <SourceLogo>
-                    <SourceLogoImage
-                      src={item.sourceLogo}
-                      alt={item.sourceName}
-                    />
-                  </SourceLogo>
-                ) : (
-                  <SourceLogo />
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none" }}
+          >
+            <HistoryItem key={item.id}>
+              <TagsContainer>
+                {item.isNew && (
+                  <NewBadge>
+                    <NewBadgeText>new</NewBadgeText>
+                  </NewBadge>
                 )}
-                <SourceText>{item.sourceName}</SourceText>
-              </ItemSource>
-            </ItemContent>
-          </HistoryItem>
+                <CategoryBadge category={item.category}>
+                  <CategoryBadgeText>{item.categoryLabel}</CategoryBadgeText>
+                </CategoryBadge>
+              </TagsContainer>
+              <ItemContent>
+                <ItemTitle>{item.title}</ItemTitle>
+                <ItemSource>
+                  {item.sourceLogo ? (
+                    <SourceLogo>
+                      <SourceLogoImage
+                        src={item.sourceLogo}
+                        alt={item.sourceName}
+                      />
+                    </SourceLogo>
+                  ) : (
+                    <SourceLogo />
+                  )}
+                  <SourceText>{item.sourceName}</SourceText>
+                </ItemSource>
+              </ItemContent>
+            </HistoryItem>
+          </a>
         ))}
       </ContentList>
     </Wrapper>
