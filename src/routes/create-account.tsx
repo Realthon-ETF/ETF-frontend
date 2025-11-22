@@ -254,7 +254,7 @@ export default function Login() {
   const [interest, setInterest] = useState("");
   const [alarmPeriod, setAlarmPeriod] = useState("");
   const [alarmTime, setAlarmTime] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -289,11 +289,11 @@ export default function Login() {
     setIsAgreed((prev) => !prev);
   };
 
-  // const formatAlarmTime = (hour: string): string => {
-  //   const hourNum = parseInt(hour, 10);
-  //   const formattedHour = hourNum.toString().padStart(2, "0");
-  //   return `${formattedHour}:00:00`;
-  // };
+  const formatAlarmTime = (hour: string): string => {
+    const hourNum = parseInt(hour, 10);
+    const formattedHour = hourNum.toString().padStart(2, "0");
+    return `${formattedHour}:00:00`;
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
