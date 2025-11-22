@@ -24,7 +24,7 @@ const LoginWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6.25rem;
+  gap: 4.25rem;
   align-self: stretch;
 `;
 
