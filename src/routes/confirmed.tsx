@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -342,10 +342,10 @@ const SettingsButtonText = styled.p`
 
 export default function Confirmed() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
-    username: "",
-    alarmTime: "",
-  });
+  // const [userData, setUserData] = useState({
+  //   username: "",
+  //   alarmTime: "",
+  // });
 
   // useEffect(() => {
   //   const fetchUserData = async () => {
@@ -392,7 +392,7 @@ export default function Confirmed() {
     navigate("/profile");
   };
 
-  const alarmHour = formatAlarmTime(userData.alarmTime);
+  // const alarmHour = formatAlarmTime(userData.alarmTime);
 
   return (
     <Wrapper>
@@ -457,7 +457,7 @@ export default function Confirmed() {
                 </NotificationHeader>
                 <NotificationBody>
                   <NotificationText>
-                    {userData.username || "이디안"} 님, 안녕하세요!
+                    {"김수겸"} 님, 안녕하세요!
                     {"\n"}오늘 AI가 선별한 새로운 게시글 3건이 도착했습니다.
                     {"\n"} {"\n"}
                     <NotificationList>
@@ -504,7 +504,7 @@ export default function Confirmed() {
           </SuccessMessageContainer>
           <NotificationTimeText>
             <TimeText>
-              <TimeNumber>{alarmHour}</TimeNumber>시에 알림톡을 통해 필요 정보를
+              <TimeNumber>{"08:00"}</TimeNumber>시에 알림톡을 통해 필요 정보를
               확인할 수 있어요
             </TimeText>
           </NotificationTimeText>
