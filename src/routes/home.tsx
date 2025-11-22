@@ -302,6 +302,7 @@ export default function Home() {
   const [name, setName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -385,7 +386,6 @@ export default function Home() {
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-  const [isAgreed, setIsAgreed] = useState(false);
 
   const handleAgreementClick = () => {
     setIsAgreed((prev) => !prev);
@@ -488,7 +488,7 @@ export default function Home() {
           <AnnouncmentBox>
             맞춤 정보를 드리기 위해서는
             <br />
-            {name}님의 정보가 담긴 이력서가 필요해요
+            {name || "민경"}님의 정보가 담긴 이력서가 필요해요
           </AnnouncmentBox>
           <Restriction>PDF, 10MB 이내만 업로드할 수 있어요</Restriction>
 
