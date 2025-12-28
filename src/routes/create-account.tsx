@@ -365,6 +365,7 @@ export default function Login() {
   // );
   return (
     <Wrapper>
+<<<<<<< HEAD
       <SignupForm onSubmit={onSubmit}>
         <SignupLayout>
           <div className="intro-area">
@@ -427,6 +428,77 @@ export default function Login() {
               {/* </form> */}
             </div>
           </LoginInfoContainer>
+=======
+      <LoginLayout>
+        <SignupForm onSubmit={onSubmit}>
+          <HeaderContainer>
+            <LogoTitleHolder>
+              <LogoHolder>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="78"
+                  height="78"
+                  viewBox="0 0 78 78"
+                  fill="none"
+                >
+                  <rect width="77.76" height="77.76" fill="white" />
+                  <path
+                    d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
+                    fill="url(#paint0_radial_102_263)"
+                  />
+                  <defs>
+                    <radialGradient
+                      id="paint0_radial_102_263"
+                      cx="0"
+                      cy="0"
+                      r="1"
+                      gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#4F95FF" />
+                      <stop offset="0.27707" stop-color="#5698F8" />
+                      <stop offset="0.518714" stop-color="#75A7D9" />
+                      <stop offset="1" stop-color="#FFEA4F" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+              </LogoHolder>
+              <TitleText>알려주잡</TitleText>
+            </LogoTitleHolder>
+            <RegisterText>회원가입</RegisterText>
+          </HeaderContainer>
+          <LoginFormContainer>
+            <LoginInfo>로그인 정보</LoginInfo>
+            <FormWrapper>
+              <InputWrapper>
+                <InputTypeHolder>
+                  <InputText>아이디</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="id"
+                    value={id}
+                    type="text"
+                    required
+                    placeholder="아이디를 입력하세요"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>비밀번호</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="password"
+                    value={password}
+                    type="password"
+                    required
+                    placeholder="비밀번호를 입력하세요"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+              </InputWrapper>
+            </FormWrapper>
+          </LoginFormContainer>
+>>>>>>> d201901e9c44ca2451bf2d17435b18803f3990af
           <BasicInfoContainer>
             <span>기본 정보</span>
             {/* <form className="basic-info-area" onSubmit={onSubmit}> */}
@@ -571,6 +643,7 @@ export default function Login() {
                     value={alarmPeriod}
                     onChange={(e) => setAlarmPeriod(e.target.value)}
                     required
+<<<<<<< HEAD
                     disabled={isLoading}
                   >
                     <option value="">선택</option>
@@ -607,14 +680,151 @@ export default function Login() {
               </div>
               {/* </form> */}
             </div>
+=======
+                    placeholder="성함을 입력하세요"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>전화번호</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="phone"
+                    value={phone}
+                    type="tel"
+                    required
+                    placeholder="입력"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>이메일</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="email"
+                    value={email}
+                    type="email"
+                    required
+                    placeholder="이메일을 입력하세요"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>학교</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="school"
+                    value={school}
+                    type="text"
+                    required
+                    placeholder="예) 한국대학교"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>학과</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="dept"
+                    value={dept}
+                    type="text"
+                    required
+                    placeholder="예) 경영학과, 컴퓨터공학과"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>관심 직무</InputText>
+                  <InputHolder
+                    onChange={onChange}
+                    name="interest"
+                    value={interest}
+                    type="text"
+                    required
+                    placeholder="예) UI/UX 디자인, UX리서치, UX디자인"
+                    // disabled={isLoading}
+                  />
+                </InputTypeHolder>
+                {/* <InputTypeHolder>
+                <InputText>알림 주기</InputText> */}
+                {/* <InputHolder placeholder="예) UI/UX 디자인, UX리서치, UX디자인" /> */}
+                <InputTypeHolder>
+                  <InputText>알림 주기</InputText>
+                  <PeriodHolder>
+                    <SelectHolder
+                      name="alarmPeriod"
+                      value={alarmPeriod}
+                      onChange={(e) => setAlarmPeriod(e.target.value)}
+                      required
+                      // disabled={isLoading}
+                    >
+                      <option value="">선택</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                    </SelectHolder>
+                    <h5> 일마다 한 번씩</h5>
+                  </PeriodHolder>
+                </InputTypeHolder>
+                {/* </InputTypeHolder> */}
+                <InputTypeHolder>
+                  <InputText>알림 시간</InputText>
+                  <PeriodHolder>
+                    <SelectHolder
+                      name="alarmTime"
+                      value={alarmTime}
+                      onChange={(e) => setAlarmTime(e.target.value)}
+                      required
+                      // disabled={isLoading}
+                    >
+                      <option value="">선택</option>
+                      <option value="0">00:00</option>
+                      <option value="1">01:00</option>
+                      <option value="2">02:00</option>
+                      <option value="3">03:00</option>
+                      <option value="4">04:00</option>
+                      <option value="5">05:00</option>
+                      <option value="6">06:00</option>
+                      <option value="7">07:00</option>
+                      <option value="8">08:00</option>
+                      <option value="9">09:00</option>
+                      <option value="10">10:00</option>
+                      <option value="11">11:00</option>
+                      <option value="12">12:00</option>
+                      <option value="13">13:00</option>
+                      <option value="14">14:00</option>
+                      <option value="15">15:00</option>
+                      <option value="16">16:00</option>
+                      <option value="17">17:00</option>
+                      <option value="18">18:00</option>
+                      <option value="19">19:00</option>
+                      <option value="20">20:00</option>
+                      <option value="21">21:00</option>
+                      <option value="22">22:00</option>
+                      <option value="23">23:00</option>
+                    </SelectHolder>
+                    <h5> 에 알림을 받아요</h5>
+                  </PeriodHolder>
+                </InputTypeHolder>
+              </InputWrapper>
+            </FormWrapper>
+>>>>>>> d201901e9c44ca2451bf2d17435b18803f3990af
           </BasicInfoContainer>
           <AgreementContainer>
             {/* <button
               id="agreement"
               type="button"
               onClick={handleAgreementClick}
+<<<<<<< HEAD
               disabled={isLoading}
               isAgreed={isAgreed}
+=======
+              // disabled={isLoading}
+>>>>>>> d201901e9c44ca2451bf2d17435b18803f3990af
             >
 
               <svg
@@ -632,6 +842,7 @@ export default function Login() {
                   fill="white"
                 />
               </svg>
+<<<<<<< HEAD
             </button> */}
             <StyledCheckButton
               onClick={handleAgreementClick}
@@ -646,6 +857,78 @@ export default function Login() {
           <SignupFinishButton type="submit">회원가입</SignupFinishButton>
         </SignupLayout>
       </SignupForm>
+=======
+            </CheckButton>
+            <h5>
+              이력서 내용을 AI 분석용 데이터로 활용하고, 분석 결과 기반 맞춤
+              정보를 받는 데 동의합니다.
+            </h5>
+          </AgreementBox>
+          {error && <ErrorText>{error}</ErrorText>}
+          <AnalyzeButton
+            type="submit"
+            active={isAgreed}
+            // disabled={isLoading || !isAgreed}
+          >
+            <AnalyzeText>{"회원가입"}</AnalyzeText>
+          </AnalyzeButton>
+        </SignupForm>
+        {/* <OuterWrapper>
+          <LoginWrapper>
+            <LoginHeader>
+              <LogoHeaderHolder>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="142"
+                  height="137"
+                  viewBox="0 0 142 137"
+                  fill="none"
+                >
+                  <path
+                    d="M89.1621 45.9844C87.926 38.1457 98.4224 34.3656 102.468 41.1924L117.438 66.458L122.37 57.0449C127.17 47.8844 141.013 51.1098 141.27 61.4482C141.753 80.9322 134.226 99.7625 120.444 113.544L118.398 115.59C104.582 129.406 85.7042 136.953 66.1709 136.468C55.818 136.211 52.574 122.357 61.7363 117.53L71.5195 112.376L46.1152 97.5068C39.2658 93.4974 42.9918 82.9792 50.8379 84.1758L71.5195 87.3301L55.8145 63.4893C50.3755 55.2322 60.1251 45.4342 68.4092 50.832L92.3916 66.458L89.1621 45.9844ZM25.1924 1.96484C25.6753 -0.654908 29.43 -0.654821 29.9131 1.96484L33.2275 19.9531C33.4079 20.9321 34.1735 21.6984 35.1523 21.8789L53.1406 25.1924C55.7609 25.6751 55.7609 29.4304 53.1406 29.9131L35.1523 33.2275C34.1736 33.408 33.408 34.1736 33.2275 35.1523L29.9131 53.1406C29.4304 55.7609 25.6751 55.7609 25.1924 53.1406L21.8789 35.1523C21.6984 34.1734 20.9321 33.4079 19.9531 33.2275L1.96484 29.9131C-0.65476 29.43 -0.654847 25.6754 1.96484 25.1924L19.9531 21.8789C20.9322 21.6985 21.6985 20.9322 21.8789 19.9531L25.1924 1.96484Z"
+                    fill="url(#paint0_radial_102_203)"
+                  />
+                  <defs>
+                    <radialGradient
+                      id="paint0_radial_102_203"
+                      cx="0"
+                      cy="0"
+                      r="1"
+                      gradientTransform="matrix(65.3953 65.3987 -65.3953 65.3956 64.2266 64.2263)"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="#4F95FF" />
+                      <stop offset="0.27707" stop-color="#5698F8" />
+                      <stop offset="0.518714" stop-color="#75A7D9" />
+                      <stop offset="1" stop-color="#FFEA4F" />
+                    </radialGradient>
+                  </defs>
+                </svg>
+                <HeaderText>알려주잡</HeaderText>
+              </LogoHeaderHolder>
+              <IntroText>
+                나에게 필요한 정보를
+                <br />
+                먼저 알아서 찾아주는 AI 서비스
+              </IntroText>
+            </LoginHeader>
+            <FormWrapper>
+              <InputWrapper>
+                <InputTypeHolder>
+                  <InputText>아이디</InputText>
+                  <InputHolder placeholder="입력" />
+                </InputTypeHolder>
+                <InputTypeHolder>
+                  <InputText>비밀번호</InputText>
+                  <InputHolder placeholder="입력" />
+                </InputTypeHolder>
+              </InputWrapper>
+            </FormWrapper>
+          </LoginWrapper>
+          <RegisterText>회원가입</RegisterText>
+        </OuterWrapper> */}
+      </LoginLayout>
+>>>>>>> d201901e9c44ca2451bf2d17435b18803f3990af
     </Wrapper>
   );
 }

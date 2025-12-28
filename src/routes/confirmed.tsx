@@ -7,10 +7,10 @@ import { Button } from "../components/Button";
 
 export default function Confirmed() {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({
-    username: "",
-    alarmTime: "",
-  });
+  // const [userData, setUserData] = useState({
+  //   username: "",
+  //   alarmTime: "",
+  // });
 
   // uncomment after login logic developed
   // useEffect(() => {
@@ -45,20 +45,20 @@ export default function Confirmed() {
   //   fetchUserData();
   // }, [navigate]);
 
-  const formatAlarmTime = (time: string) => {
-    if (!time) return "18";
-    // Extract hour from "HH:MM:SS" or "HH:MM" format
-    if (time.includes(":")) {
-      return time.split(":")[0];
-    }
-    return time;
-  };
+  // const formatAlarmTime = (time: string) => {
+  //   if (!time) return "18";
+  //   // Extract hour from "HH:MM:SS" or "HH:MM" format
+  //   if (time.includes(":")) {
+  //     return time.split(":")[0];
+  //   }
+  //   return time;
+  // };
 
   const handleSettingsClick = () => {
     navigate("/profile");
   };
 
-  const alarmHour = formatAlarmTime(userData.alarmTime);
+  // const alarmHour = formatAlarmTime(userData.alarmTime);
 
   return (
     <Wrapper>

@@ -637,6 +637,7 @@ const ResumeSummaryBox = styled.div`
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 2.81rem;
 `;
 
 const ResumeSummaryText = styled.div`
@@ -649,3 +650,299 @@ const ResumeSummaryText = styled.div`
   flex: 1;
   min-height: 0;
 `;
+<<<<<<< HEAD
+=======
+
+export default function Profile() {
+  const [userData, setUserData] = useState({
+    username: "",
+    phoneNumber: "",
+    email: "",
+    school: "",
+    major: "",
+    interestField: "",
+    intervalDays: "",
+    alarmTime: "",
+  });
+  const [resumeSummary] = useState(
+    " 고려대학교 컴퓨터학과 재학 중인 2027년 졸업 예정자로, 머신러닝·데이터사이언스·파이썬·클라우드 기반 개발에 강점을 가지고 있으며 AWS Solutions Architect Associate와 AI Practitioner 자격을 보유하고 있다. React, Next.js, Firebase, GCP, LLM 파인튜닝 등을 활용해 유료 사용자 기반 웹서비스인 '1 Cup English'를 처음부터 끝까지 직접 기획·개발·운영했고, Supabase와 PostgreSQL을 활용한 해커톤 우승 프로젝트 'K Saju'도 팀 기반 협업으로 완성했다. 또한 Sendbird, CJ Foods, 한미연합사에서 총 6년 이상 전문 통역 경험을 쌓았고, 경영진 미팅·고객 협상·엔지니어링 회의 등 고난도 환경에서 실시간 통역을 수행해왔다. 기술 역량과 실전 제품 개발 경험, 그리고 뛰어난 커뮤니케이션 능력이 결합된 드문 프로필이다."
+  );
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          return;
+        }
+
+        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData({
+            username: data.username || "",
+            phoneNumber: data.phoneNumber || "",
+            email: data.email || "",
+            school: data.school || "",
+            major: data.major || "",
+            interestField: data.interestField || "",
+            intervalDays: data.intervalDays?.toString() || "",
+            alarmTime: data.alarmTime || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const formatPhoneNumber = (phone: string) => {
+    if (!phone) return { part1: "", part2: "", part3: "" };
+    const cleaned = phone.replace(/-/g, "");
+    if (cleaned.length === 11) {
+      return {
+        part1: cleaned.substring(0, 3),
+        part2: cleaned.substring(3, 7),
+        part3: cleaned.substring(7, 11),
+      };
+    }
+    return { part1: phone.substring(0, 3), part2: "", part3: "" };
+  };
+
+  const formatAlarmTime = (time: string) => {
+    if (!time) return "";
+    // Convert "HH:MM:SS" to "HH:MM"
+    if (time.includes(":")) {
+      const parts = time.split(":");
+      return `${parts[0]}:${parts[1]}`;
+    }
+    return time;
+  };
+
+  const phoneParts = formatPhoneNumber(userData.phoneNumber);
+
+  return (
+    <Wrapper>
+      <Header>
+        <LeftHeaderWrapper>
+          <LogoContainer>
+            <LogoIcon>
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 78 78"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect width="77.76" height="77.76" fill="white" />
+                <path
+                  d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
+                  fill="url(#paint0_radial_profile)"
+                />
+                <defs>
+                  <radialGradient
+                    id="paint0_radial_profile"
+                    cx="0"
+                    cy="0"
+                    r="1"
+                    gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#4F95FF" />
+                    <stop offset="0.27707" stopColor="#5698F8" />
+                    <stop offset="0.518714" stopColor="#75A7D9" />
+                    <stop offset="1" stopColor="#FFEA4F" />
+                  </radialGradient>
+                </defs>
+              </svg>
+            </LogoIcon>
+            <LogoText>알려주잡</LogoText>
+          </LogoContainer>
+          <Nav>
+            <NavItem>정보설정</NavItem>
+            <NavItem>수집함</NavItem>
+          </Nav>
+        </LeftHeaderWrapper>
+        <ProfileTitle>내프로필</ProfileTitle>
+      </Header>
+      <PageTitle>내 프로필</PageTitle>
+      <MainContent>
+        <Section>
+          <SectionHeader>
+            <SectionTitle>기본정보</SectionTitle>
+            <EditButton>
+              <EditButtonText>수정</EditButtonText>
+              <PencilIcon>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
+                    stroke="#5a5c63"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </PencilIcon>
+            </EditButton>
+          </SectionHeader>
+          <InfoFields>
+            <InfoField>
+              <FieldLabel>이름</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.username || "김수겸"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="43px">
+              <FieldLabel>전화번호</FieldLabel>
+              <PhoneNumberContainer>
+                <PhonePart>
+                  <FieldText>{phoneParts.part1 || "010"}</FieldText>
+                </PhonePart>
+                <PhoneSeparator>
+                  {/* <SeparatorLine> */}
+                  <svg
+                    width="11"
+                    height="1"
+                    viewBox="0 0 11 1"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line
+                      x1="0.5"
+                      y1="0.5"
+                      x2="10.5"
+                      y2="0.5"
+                      stroke="#AEB0B6"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  {/* </SeparatorLine> */}
+                </PhoneSeparator>
+                <PhonePart>
+                  <FieldText>{phoneParts.part2 || "6858"}</FieldText>
+                </PhonePart>
+                <PhoneSeparator>
+                  {/* <SeparatorLine> */}
+                  <svg
+                    width="11"
+                    height="1"
+                    viewBox="0 0 11 1"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <line
+                      x1="0.5"
+                      y1="0.5"
+                      x2="10.5"
+                      y2="0.5"
+                      stroke="#AEB0B6"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  {/* </SeparatorLine> */}
+                </PhoneSeparator>
+                <PhonePart>
+                  <FieldText>{phoneParts.part3 || "4123"}</FieldText>
+                </PhonePart>
+              </PhoneNumberContainer>
+            </InfoField>
+            <InfoField gap="57px">
+              <FieldLabel>이메일</FieldLabel>
+              <FieldValue>
+                <FieldText>
+                  {userData.email || "kyle.kim@nativept.kr"}
+                </FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField>
+              <FieldLabel>학교</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.school || "고려대학교"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField>
+              <FieldLabel>학과</FieldLabel>
+              <FieldValue>
+                <FieldText>{userData.major || "컴퓨터과학과"}</FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="43px">
+              <FieldLabel>관심직무</FieldLabel>
+              <FieldValue>
+                <FieldText>
+                  {userData.interestField || "ML, AI, Cloud"}
+                </FieldText>
+              </FieldValue>
+            </InfoField>
+            <InfoField gap="53px">
+              <FieldLabel>알림주기</FieldLabel>
+              <NotificationContainer>
+                <NotificationValue>
+                  <NotificationText>
+                    {userData.intervalDays || "1"}
+                  </NotificationText>
+                </NotificationValue>
+                <NotificationText>일 마다 한 번씩</NotificationText>
+              </NotificationContainer>
+            </InfoField>
+            <InfoField gap="53px">
+              <FieldLabel>알림시간</FieldLabel>
+              <NotificationContainer>
+                <NotificationValue>
+                  <NotificationText>
+                    {formatAlarmTime(userData.alarmTime) || "08:00"}
+                  </NotificationText>
+                </NotificationValue>
+                <NotificationText>시에 알람을 받아요</NotificationText>
+              </NotificationContainer>
+            </InfoField>
+          </InfoFields>
+        </Section>
+        <Section>
+          <SectionHeader alignEnd>
+            <SectionTitle>이력서 요약 정보</SectionTitle>
+            <EditButton>
+              <EditButtonText>수정</EditButtonText>
+              <PencilIcon>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
+                    stroke="#5a5c63"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </PencilIcon>
+            </EditButton>
+          </SectionHeader>
+          <ResumeSummaryBox>
+            <ResumeSummaryText>{resumeSummary}</ResumeSummaryText>
+          </ResumeSummaryBox>
+        </Section>
+      </MainContent>
+    </Wrapper>
+  );
+}
+>>>>>>> d201901e9c44ca2451bf2d17435b18803f3990af
