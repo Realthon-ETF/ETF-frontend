@@ -2,10 +2,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { auth } from "./firebase";
 
-// import Layout from "./components/layout";
+import Layout from "./components/layout";
 // import LoadingScreen from "./components/loading-screen";
 // import ProtectedRoute from "./components/protected-route";
-import AlarmLists from "./routes/alarm-lists";
+// import AlarmLists from "./routes/alarm-lists";
 import Home from "./routes/home";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
@@ -17,8 +17,69 @@ import reset from "styled-reset";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import Confirmed from "./routes/confirmed";
+import ProtectedRoute from "./components/protected-route";
+
+// Nomad Coders' Layout(router)
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: (
+//       <ProtectedRoute>
+//         <Layout />
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       {
+//         path: "",
+//         element: <Home />,
+//       },
+//       {
+//         path: "/profile",
+//         element: <Profile />,
+//       },
+//     ],
+//   },
+//   {
+//     path:"/reset-password",
+//     element: <ResetPassword />
+//   }
+// ]);
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/result",
+        element: <Result />,
+      },
+      {
+        path: "/confirmed",
+        element: <Confirmed />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/create-account",
+    element: <CreateAccount />,
+  },
   // {
   //   path: "/",
   //   element: (
@@ -27,46 +88,26 @@ const router = createBrowserRouter([
   //     </ProtectedRoute>
   //   ),
   //   children: [
-  //     // {
-  //     //   path: "",
-  //     //   element: <Home />,
-  //     // },
+  //     {
+  //       path: "",
+  //       element: <Home />,
+  //     },
   //     {
   //       path: "/profile",
   //       element: <Profile />,
   //     },
   //   ],
   // },
-  {
-    path: "/",
-    element: <Login />,
-  },
-  {
-    path: "/home",
-    element: <Home />,
-  },
-  {
-    path: "/profile",
-    element: <Profile />,
-  },
-  {
-    path: "/create-account",
-    element: <CreateAccount />,
-  },
-  {
-    path: "/result",
-    element: <Result />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  { path: "/confirmed", element: <Confirmed /> },
-  { path: "/alarm-lists", element: <AlarmLists /> },
   // {
   //   path:"/reset-password",
   //   element: <ResetPassword />
   // }
+  // {
+  //   path: "/result",
+  //   element: <Result />,
+  // },
+  // { path: "/confirmed", element: <Confirmed /> },
+  // { path: "/alarm-lists", element: <AlarmLists /> },
 ]);
 
 // 이 아래의 reset은 브라우저마다 기본적으로 설치되어 있는 스타일을 지워주는 Node.js 패키지이다.
@@ -85,9 +126,11 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Wrapper = styled.div`
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column; // 위에서 아래로 쌓이도록 변경
+  align-items: center; // 중앙 정렬이 필요하다면 유지
 `;
 
 export default function App() {
@@ -103,11 +146,11 @@ export default function App() {
 
   return (
     <Wrapper>
-      <>
-        <GlobalStyles />
-        {/* {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
-        {<RouterProvider router={router} />}
-      </>
+      {/* <> */}
+      <GlobalStyles />
+      {/* {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
+      {<RouterProvider router={router} />}
+      {/* </> */}
     </Wrapper>
   );
 }

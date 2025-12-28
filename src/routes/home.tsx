@@ -1,351 +1,60 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
-const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background: #f7f8fa;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.header`
-  width: 100%;
-  height: 64px;
-  background: #fff;
-  border-bottom: 1px solid #e5e8eb;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 48px;
-  box-sizing: border-box;
-`;
-
-const LeftHeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4rem;
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  gap: 32px;
-  align-items: center;
-`;
-
-const NavItem = styled.button`
-  background: none;
-  border: none;
-  color: #222;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  &:hover {
-    color: #1d9bf0;
-  }
-`;
-
-const ProfileTitle = styled.div`
-  color: #222;
-  font-size: 1.125rem;
-  font-weight: 600;
-`;
-
-const Main = styled.main`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  min-height: 0;
-`;
-
-const ResumeWrapper = styled.div`
-  width: 90%;
-  height: 100%;
-  display: flex;
-  // justify-content: center;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const AnnouncmentBox = styled.div`
-  color: #141618;
-  text-align: center;
-  font-size: 2.375rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%; /* 3.5625rem */
-  margin-top: 7.06rem;
-`;
-
-const Restriction = styled.div`
-  color: #141618;
-  text-align: center;
-  font-size: 1.5rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 130%;
-  margin-top: 1.69rem;
-  opacity: 0.6;
-`;
-
-const FileUploadBox = styled.div`
-  display: flex;
-  width: 49.72%;
-  padding: 1.3125rem 0 1.0625rem 0;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2.19rem;
-  border-radius: 0.75rem;
-  border: 2px dashed #4f95ff;
-  background: #fff;
-`;
-
-const FileUploaderContainer = styled.div`
-  display: flex;
-  width: 11.125rem;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.375rem;
-  flex-shrink: 0;
-`;
-
-const FileUploadButton = styled.button`
-  display: flex;
-  padding: 0.625rem 0.75rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.625rem;
-  border-radius: 0.25rem;
-  background: #06f;
-  // border-color: #06f;
-  border: none;
-`;
-
-const FileUploadText = styled.h4`
-  color: #fff;
-  text-align: center;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-`;
-
-const FileUploadedBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 49.72%;
-  height: 8rem; /* Adjust as needed to match Figma */
-  justify-content: flex-start;
-  align-items: stretch;
-  margin-top: 2.19rem;
-  border-radius: 0.75rem;
-  border: 2px solid #4f95ff;
-  background: #fff;
-  overflow: hidden;
-  padding: 0;
-`;
-
-const FileMetadata = styled.div`
-  display: flex;
-  width: 100%;
-  height: 50%;
-  padding: 0.75rem 2.875rem;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #c9defe;
-`;
-
-const FileMetadataText = styled.h4`
-  color: #141618;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 150%;
-  // white-space: nowrap; // Prevents line breaks
-  // overflow: hidden; // Hides overflow
-  // text-overflow: ellipsis;
-`;
-
-// Add this for the lower half if you want to display file info or actions
-const FileUploadedBottom = styled.div`
-  display: flex;
-  width: 100%;
-  height: 50%;
-  padding: 0.75rem 2.875rem;
-  align-items: center;
-  background: #fff;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-// const FileUploadedBox = styled.div`
-//   display: flex;
-
-//   width: 49.72%;
-//   padding: 1.3125rem 0 1.0625rem 0;
-//   justify-content: center;
-//   align-items: center;
-//   margin-top: 2.19rem;
-//   border-radius: 0.75rem;
-//   border: 2px solid #4f95ff;
-//   background: #fff;
-// `;
-
-// const FileMetadata = styled.div`
-//   display: flex;
-//   width: 56.6875rem;
-//   height: 50%;
-//   padding: 0.75rem 2.875rem;
-//   justify-content: space-between;
-//   align-items: center;
-//   background-color: #c9defe;
-// `;
-
-const FileSizeAndUploaded = styled.div`
-  display: flex;
-  // width: 9.4375rem;
-  align-items: center;
-  gap: 5rem;
-  flex-shrink: 0;
-`;
-
-const DragNotification = styled.h6`
-  color: #141618;
-  text-align: center;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 130%;
-  opacity: 0.6;
-`;
-
-const AgreementBox = styled.div`
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.375rem;
-  margin-top: 8.06rem;
-`;
-
-const CheckButton = styled.button<{ active: boolean }>`
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-  border-radius: 0.75rem;
-  background-color: ${({ active }) => (active ? "#06F" : "#c2c5c8")};
-  align-items: center;
-  justify-content: center;
-  border: none;
-  padding: 0;
-`;
-
-const AnalyzeButton = styled.button<{ active: boolean }>`
-  display: inline-flex;
-  padding: 0.625rem 1.25rem;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.5rem;
-  border-width: 0;
-  background-color: ${({ active }) => (active ? "#06F" : "#c2c5c8")};
-  margin-top: 1.38rem;
-  cursor: ${({ active }) => (active ? "pointer" : "not-allowed")};
-  transition: background-color 0.2s;
-
-  &:hover:not(:disabled) {
-    background-color: ${({ active }) => (active ? "#0052cc" : "#c2c5c8")};
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-`;
-
-const AnalyzeText = styled.h3`
-  color: #eaebec;
-  text-align: center;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 150%;
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const LogoIcon = styled.div`
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const LogoText = styled.p`
-  font-family: "BareunDotumOTFPro", sans-serif;
-  color: #2e3847;
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.8px;
-  margin: 0;
-`;
+import { Button } from "../components/Button";
+import StyledCheckButton from "../components/check-button";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isAgreed, setIsAgreed] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Uncomment it after API developed
   // Fetch user data on component mount
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          // If no token, redirect to login
-          navigate("/login");
-          return;
-        }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       if (!token) {
+  //         // If no token, redirect to login
+  //         navigate("/login");
+  //         return;
+  //       }
 
-        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  //       const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        if (!response.ok) {
-          // If unauthorized, redirect to login
-          if (response.status === 401) {
-            localStorage.removeItem("token");
-            navigate("/login");
-            return;
-          }
-          throw new Error("사용자 정보를 가져오는데 실패했습니다.");
-        }
+  //       if (!response.ok) {
+  //         // If unauthorized, redirect to login
+  //         if (response.status === 401) {
+  //           localStorage.removeItem("token");
+  //           navigate("/login");
+  //           return;
+  //         }
+  //         throw new Error("사용자 정보를 가져오는데 실패했습니다.");
+  //       }
 
-        const data = await response.json();
-        if (data.username) {
-          setName(data.username);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        // Optionally redirect to login on error
-        // navigate("/login");
-      }
-    };
+  //       const data = await response.json();
+  //       if (data.username) {
+  //         setName(data.username);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       // Optionally redirect to login on error
+  //       // navigate("/login");
+  //     }
+  //   };
 
-    fetchUserData();
-  }, [navigate]);
+  //   fetchUserData();
+  // }, [navigate]);
 
   // Handle file selection via button
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -356,9 +65,8 @@ export default function Home() {
       file.size <= 10 * 1024 * 1024
     ) {
       setSelectedFile(file);
-      // handle upload logic here
     } else {
-      alert("PDF 파일만 10MB 이내로 업로드할 수 있습니다.");
+      alert("10MB 이내의 PDF 파일만 업로드할 수 있습니다.");
     }
   };
 
@@ -379,14 +87,13 @@ export default function Home() {
       setSelectedFile(file);
       // handle upload logic here
     } else {
-      alert("PDF 파일만 10MB 이내로 업로드할 수 있습니다.");
+      alert("10MB 이내의 PDF 파일만 업로드할 수 있습니다.");
     }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
-  const [isAgreed, setIsAgreed] = useState(false);
 
   const handleAgreementClick = () => {
     setIsAgreed((prev) => !prev);
@@ -442,153 +149,269 @@ export default function Home() {
 
   return (
     <Wrapper>
-      <Header>
-        <LeftHeaderWrapper>
-          <LogoContainer>
-            <LogoIcon>
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 78 78"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="77.76" height="77.76" fill="white" />
-                <path
-                  d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
-                  fill="url(#paint0_radial_profile)"
-                />
-                <defs>
-                  <radialGradient
-                    id="paint0_radial_profile"
-                    cx="0"
-                    cy="0"
-                    r="1"
-                    gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stopColor="#4F95FF" />
-                    <stop offset="0.27707" stopColor="#5698F8" />
-                    <stop offset="0.518714" stopColor="#75A7D9" />
-                    <stop offset="1" stopColor="#FFEA4F" />
-                  </radialGradient>
-                </defs>
-              </svg>
-            </LogoIcon>
-            <LogoText>알려주잡</LogoText>
-          </LogoContainer>
-          <Nav>
-            <NavItem>정보설정</NavItem>
-            <NavItem>수집함</NavItem>
-          </Nav>
-        </LeftHeaderWrapper>
-        <ProfileTitle>내 프로필</ProfileTitle>
-      </Header>
-      <Main>
-        <ResumeWrapper>
-          <AnnouncmentBox>
-            맞춤 정보를 드리기 위해서는
-            <br />
-            {name}님의 정보가 담긴 이력서가 필요해요
-          </AnnouncmentBox>
-          <Restriction>PDF, 10MB 이내만 업로드할 수 있어요</Restriction>
-
-          {!selectedFile && (
-            <FileUploadBox onDrop={handleDrop} onDragOver={handleDragOver}>
-              <FileUploaderContainer>
-                <FileUploadButton onClick={handleButtonClick}>
-                  <FileUploadText>파일 추가 +</FileUploadText>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="application/pdf"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                </FileUploadButton>
-                <DragNotification>드래그로 가져올 수 있어요</DragNotification>
-              </FileUploaderContainer>
-            </FileUploadBox>
-          )}
-
-          {/* Show FileUploadedBox only when a file is uploaded */}
-          {selectedFile && (
-            <FileUploadedBox>
-              <FileMetadata>
-                <div>
-                  <FileMetadataText>파일명</FileMetadataText>
-                </div>
-                <FileSizeAndUploaded>
-                  <FileMetadataText>용량</FileMetadataText>
-                  <FileMetadataText>업로드</FileMetadataText>
-                </FileSizeAndUploaded>
-              </FileMetadata>
-              <FileUploadedBottom>
-                <div>
-                  <FileMetadataText>
-                    {selectedFile.name.length > 20
-                      ? selectedFile.name.slice(0, 17) + "..."
-                      : selectedFile.name}
-                  </FileMetadataText>
-                </div>
-                <FileSizeAndUploaded>
-                  {/* <FileMetadataText>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</FileMetadataText>
-                  <FileMetadataText>
-                    완료
-                  </FileMetadataText> */}
-                  <FileMetadataText>
-                    {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                  </FileMetadataText>
-                  <FileMetadataText>완료</FileMetadataText>
-                </FileSizeAndUploaded>
-              </FileUploadedBottom>
-            </FileUploadedBox>
-          )}
-          <AgreementBox>
-            <CheckButton active={isAgreed} onClick={handleAgreementClick}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="9"
-                viewBox="0 0 12 9"
-                fill="none"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M10.978 0.863948C11.0936 0.979522 11.0936 1.1669 10.978 1.28248L3.84718 8.41332C3.73161 8.52889 3.54423 8.52889 3.42865 8.41332L0.0866802 5.07135C-0.0288934 4.95577 -0.0288934 4.76839 0.0866802 4.65282L0.863948 3.87555C0.979521 3.75998 1.1669 3.75998 1.28248 3.87555L3.63792 6.23099L9.78223 0.0866802C9.8978 -0.0288934 10.0852 -0.0288934 10.2008 0.0866802L10.978 0.863948Z"
-                  fill="white"
-                />
-              </svg>
-            </CheckButton>
-            <h5>
-              이력서 내용을 AI 분석용 데이터로 활용하고, 분석 결과 기반 맞춤
-              정보를 받는 데 동의합니다.
-            </h5>
-          </AgreementBox>
-          <AnalyzeButton
-            active={isAgreed && !!selectedFile && !isUploading}
-            onClick={handleAnalyzeClick}
+      <ResumeUploadLayout>
+        <div className="intro-text">
+          맞춤 정보를 드리기 위해서는
+          <br />
+          {name}님의 정보가 담긴 이력서가 필요해요
+        </div>
+        <div className="limit-text">
+          10MB 이내의 PDF 파일만 업로드할 수 있어요
+        </div>
+        {!selectedFile && (
+          <div
+            className="file-upload-area"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            <ResumeUploadButton onClick={handleButtonClick}>
+              파일 추가 +
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </ResumeUploadButton>
+            <span>드래그로 가져올 수 있어요</span>
+          </div>
+        )}
+        {selectedFile && (
+          <div className="file-uploaded-area">
+            <div className="file-header-area">
+              <span>용량</span>
+              <div className="file-info-group">
+                <span>파일명</span>
+                <span>업로드</span>
+              </div>
+            </div>
+            <div className="file-metadata-area">
+              <span>
+                {selectedFile.name.length > 50
+                  ? selectedFile.name.slice(0, 49) + "..."
+                  : selectedFile.name}
+              </span>
+              <div className="file-info-group">
+                <span>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                <span> 완료</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <AgreementContainer>
+          <StyledCheckButton
+            onClick={handleAgreementClick}
+            disabled={isUploading}
+            $isAgreed={isAgreed}
+          />
+          <span>
+            본 서비스 제공(회원 관리, 알림톡 발송 등)을 위해 이름, 학교, 연락처
+            등의 기본 정보 수집 및 이용에 동의합니다.
+          </span>
+        </AgreementContainer>
+        <ResumeSubmitButton
+          onClick={handleAnalyzeClick}
+          $active={isAgreed && !!selectedFile && !isUploading}
+        >
+          {isUploading ? "업로드 중..." : "AI 분석 받기"}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              d="M12.175 9H0V7H12.175L6.575 1.4L8 0L16 8L8 16L6.575 14.6L12.175 9Z"
+              fill="#EAEBEC"
+            />
+          </svg>
+        </ResumeSubmitButton>
+        {/* <AnalyzeButton            
             disabled={!isAgreed || !selectedFile || isUploading}
           >
-            <AnalyzeText>
-              {isUploading ? "업로드 중..." : "AI 분석 받기"}
-            </AnalyzeText>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <path
-                d="M12.175 9H0V7H12.175L6.575 1.4L8 0L16 8L8 16L6.575 14.6L12.175 9Z"
-                fill="#EAEBEC"
-              />
-            </svg>
-          </AnalyzeButton>
-        </ResumeWrapper>
-      </Main>
+          </AnalyzeButton> */}
+      </ResumeUploadLayout>
     </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  // height: 100vh;
+  background: #f7f8fa;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  min-height: calc(100vh - 4rem);
+`;
+
+const ResumeUploadLayout = styled.main`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  min-height: 0;
+
+  .intro-text {
+    color: #141618;
+    text-align: center;
+    font-size: 2.375rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%;
+    margin-top: 7.0625rem;
+  }
+
+  .limit-text {
+    color: #141618;
+    text-align: center;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    opacity: 0.6;
+    margin-top: 1.6875rem;
+    margin-bottom: 2.1875rem;
+  }
+
+  .file-upload-area {
+    // width: 49.72%;
+    display: flex;
+    flex-direction: column;
+    width: 56.6875rem;
+    padding: 1.3125rem 0 1.0625rem 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.75rem;
+    border: 2px dashed #4f95ff;
+    background: #fff;
+    gap: 0.375rem;
+    margin-bottom: 8.0625rem;
+
+    span {
+      color: #141618;
+      text-align: center;
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 130%;
+      opacity: 0.6;
+    }
+  }
+
+  .file-uploaded-area {
+    display: flex;
+    flex-direction: column;
+    width: 56.6875rem;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    // justify-content: center;
+    // align-items: center;
+    border-radius: 0.75rem;
+    border: 2px solid #4f95ff;
+    background: #fff;
+    margin-bottom: 8.0625rem;
+
+    // width: 49.72%;
+    // height: 8rem; /* Adjust as needed to match Figma */
+    overflow: hidden;
+    // padding: 0;
+
+    .file-metadata-area,
+    .file-header-area {
+      display: flex;
+      width: 100%;
+      height: 50%;
+      padding: 0.75rem 2.875rem;
+      justify-content: space-between;
+      align-items: center;
+
+      span {
+        color: #141618;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%;
+      }
+    }
+
+    .file-header-area {
+      background-color: #c9defe;
+    }
+    .file-metadata-area {
+      background-color: #fff;
+    }
+
+    .file-info-group {
+      display: flex;
+      gap: 5rem;
+      align-items: center;
+    }
+  }
+`;
+
+const AgreementContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 1.75rem;
+
+  span {
+    color: #000;
+    text-align: center;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+  }
+`;
+
+const ResumeUploadButton = styled(Button)`
+  display: flex;
+  padding: 0.625rem 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  background: #06f;
+  border-radius: 0.25rem;
+  color: #fff;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const ResumeSubmitButton = styled(Button)<{ $active: boolean }>`
+  display: inline-flex;
+  padding: 0.625rem 1.25rem;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.5rem;
+  background-color: ${({ $active }) => ($active ? "#06F" : "#c2c5c8")};
+  cursor: ${({ $active }) => ($active ? "pointer" : "not-allowed")};
+  transition: background-color 0.2s;
+  color: #eaebec;
+  text-align: center;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%;
+`;
+
+//   &:hover:not(:disabled) {
+//     background-color: ${({ active }) => (active ? "#0052cc" : "#c2c5c8")};
+//   }
+
+//   &:disabled {
+//     cursor: not-allowed;
+//     opacity: 0.6;
+//   }
+// `;
