@@ -147,7 +147,7 @@ export default function Login() {
   // `;
 
   return (
-    <Wrapper>
+    <PageWrapper>
       <LoginLayout>
         <div className="intro-area">
           <img src={logo} alt="Logo" />
@@ -187,16 +187,19 @@ export default function Login() {
           회원가입
         </Link>
       </LoginLayout>
-    </Wrapper>
+    </PageWrapper>
   );
 }
 
-const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
+const PageWrapper = styled.div`
+  width: 100%;
+  min-height: calc(100vh - 4rem);
   background: #fff;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+
+  /* Responsive: Add padding for mobile screens */
+  padding: 0 1rem;
 `;
 
 const LoginLayout = styled.main`
