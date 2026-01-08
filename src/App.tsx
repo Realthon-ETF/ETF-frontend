@@ -19,32 +19,6 @@ import { createGlobalStyle } from "styled-components";
 import Confirmed from "./routes/confirmed";
 import ProtectedRoute from "./components/protected-route";
 
-// Nomad Coders' Layout(router)
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: (
-//       <ProtectedRoute>
-//         <Layout />
-//       </ProtectedRoute>
-//     ),
-//     children: [
-//       {
-//         path: "",
-//         element: <Home />,
-//       },
-//       {
-//         path: "/profile",
-//         element: <Profile />,
-//       },
-//     ],
-//   },
-//   {
-//     path:"/reset-password",
-//     element: <ResetPassword />
-//   }
-// ]);
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -80,34 +54,6 @@ const router = createBrowserRouter([
     path: "/create-account",
     element: <CreateAccount />,
   },
-  // {
-  //   path: "/",
-  //   element: (
-  //     <ProtectedRoute>
-  //       <Layout />
-  //     </ProtectedRoute>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Home />,
-  //     },
-  //     {
-  //       path: "/profile",
-  //       element: <Profile />,
-  //     },
-  //   ],
-  // },
-  // {
-  //   path:"/reset-password",
-  //   element: <ResetPassword />
-  // }
-  // {
-  //   path: "/result",
-  //   element: <Result />,
-  // },
-  // { path: "/confirmed", element: <Confirmed /> },
-  // { path: "/alarm-lists", element: <AlarmLists /> },
 ]);
 
 // 이 아래의 reset은 브라우저마다 기본적으로 설치되어 있는 스타일을 지워주는 Node.js 패키지이다.
@@ -119,7 +65,7 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    background-color: white;
+    background-color: #f7f8fa;
     color: black;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, Pretendard;
   }
@@ -129,8 +75,8 @@ const Wrapper = styled.div`
   min-height: 100vh;
   width: 100%;
   display: flex;
-  flex-direction: column; // 위에서 아래로 쌓이도록 변경
-  align-items: center; // 중앙 정렬이 필요하다면 유지
+  flex-direction: column;
+  // align-items: center; // Only keep this if your Layout has a fixed width
 `;
 
 export default function App() {

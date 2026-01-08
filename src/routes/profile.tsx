@@ -1,656 +1,711 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { InputGroup } from "../components/input-group";
+import editicon from "../assets/edit-icon.svg";
 
 export default function Profile() {
-  const [userData, setUserData] = useState({
-    username: "",
-    phoneNumber: "",
+  // 1. Refactor: Use a single object for all form data
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
     email: "",
     school: "",
     major: "",
-    interestField: "",
-    intervalDays: "",
+    interest: "",
+    alarmPeriod: "",
     alarmTime: "",
+    summary: "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.",
   });
-  const [resumeSummary] = useState(
-    "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다."
-  );
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          return;
-        }
+  const [isProfileEditable, setIsProfileEditable] = useState<boolean>(true);
+  const [isResumeEditable, setIsResumeEditable] = useState<boolean>(true);
 
-        const response = await fetch("https://api.etf.r-e.kr/auth/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserData({
-            username: data.username || "",
-            phoneNumber: data.phoneNumber || "",
-            email: data.email || "",
-            school: data.school || "",
-            major: data.major || "",
-            interestField: data.interestField || "",
-            intervalDays: data.intervalDays?.toString() || "",
-            alarmTime: data.alarmTime || "",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const formatPhoneNumber = (phone: string) => {
-    if (!phone) return { part1: "", part2: "", part3: "" };
-    const cleaned = phone.replace(/-/g, "");
-    if (cleaned.length === 11) {
-      return {
-        part1: cleaned.substring(0, 3),
-        part2: cleaned.substring(3, 7),
-        part3: cleaned.substring(7, 11),
-      };
-    }
-    return { part1: phone.substring(0, 3), part2: "", part3: "" };
+  // 2. Unified Change Handler
+  const onChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const formatAlarmTime = (time: string) => {
-    if (!time) return "";
-    // Convert "HH:MM:SS" to "HH:MM"
-    if (time.includes(":")) {
-      const parts = time.split(":");
-      return `${parts[0]}:${parts[1]}`;
-    }
-    return time;
+  const handleProfileEditBtnClick = () => {
+    setIsProfileEditable((prev) => !prev);
   };
 
-  const phoneParts = formatPhoneNumber(userData.phoneNumber);
+  const handleResumeEditBtnClick = () => {
+    setIsResumeEditable((prev) => !prev);
+  };
 
   return (
-    <Wrapper>
-      <ProfileLayout>
+    <PageWrapper>
+      <ProfileContainer>
         <h1>내 프로필</h1>
 
-        {/* <MainContent>
-          <Section>
-            <SectionHeader>
-              <SectionTitle>기본정보</SectionTitle>
-              <EditButton>
-                <EditButtonText>수정</EditButtonText>
-                <PencilIcon>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
-                      stroke="#5a5c63"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </PencilIcon>
-              </EditButton>
-            </SectionHeader> */}
-        {/* <InfoFields>
-            <InfoField>
-              <FieldLabel>이름</FieldLabel>
-              <FieldValue>
-                <FieldText>{userData.username || "길민경"}</FieldText>
-              </FieldValue>
-            </InfoField>
-            <InfoField gap="43px">
-              <FieldLabel>전화번호</FieldLabel>
-              <PhoneNumberContainer>
-                <PhonePart>
-                  <FieldText>{phoneParts.part1 || "010"}</FieldText>
-                </PhonePart>
-                <PhoneSeparator>
-                  
-                  <svg
-                    width="11"
-                    height="1"
-                    viewBox="0 0 11 1"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <line
-                      x1="0.5"
-                      y1="0.5"
-                      x2="10.5"
-                      y2="0.5"
-                      stroke="#AEB0B6"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  
-                </PhoneSeparator>
-                <PhonePart>
-                  <FieldText>{phoneParts.part2 || "1234"}</FieldText>
-                </PhonePart>
-                <PhoneSeparator>
-                  
-                  <svg
-                    width="11"
-                    height="1"
-                    viewBox="0 0 11 1"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <line
-                      x1="0.5"
-                      y1="0.5"
-                      x2="10.5"
-                      y2="0.5"
-                      stroke="#AEB0B6"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </PhoneSeparator>
-                <PhonePart>
-                  <FieldText>{phoneParts.part3 || "5678"}</FieldText>
-                </PhonePart>
-              </PhoneNumberContainer>
-            </InfoField>
-            <InfoField gap="57px">
-              <FieldLabel>이메일</FieldLabel>
-              <FieldValue>
-                <FieldText>
-                  {userData.email || "dkffuwnwkq@job.ac.kr"}
-                </FieldText>
-              </FieldValue>
-            </InfoField>
-            <InfoField>
-              <FieldLabel>학교</FieldLabel>
-              <FieldValue>
-                <FieldText>{userData.school || "한국대학교"}</FieldText>
-              </FieldValue>
-            </InfoField>
-            <InfoField>
-              <FieldLabel>학과</FieldLabel>
-              <FieldValue>
-                <FieldText>{userData.major || "경영학과"}</FieldText>
-              </FieldValue>
-            </InfoField>
-            <InfoField gap="43px">
-              <FieldLabel>관심직무</FieldLabel>
-              <FieldValue>
-                <FieldText>
-                  {userData.interestField || "UIUX디자인, UX디자인"}
-                </FieldText>
-              </FieldValue>
-            </InfoField>
-            <InfoField gap="53px">
-              <FieldLabel>알림주기</FieldLabel>
-              <NotificationContainer>
-                <NotificationValue>
-                  <NotificationText>
-                    {userData.intervalDays || "1"}
-                  </NotificationText>
-                </NotificationValue>
-                <NotificationText>일 마다 한 번씩</NotificationText>
-              </NotificationContainer>
-            </InfoField>
-            <InfoField gap="53px">
-              <FieldLabel>알림시간</FieldLabel>
-              <NotificationContainer>
-                <NotificationValue>
-                  <NotificationText>
-                    {formatAlarmTime(userData.alarmTime) || "18:00"}
-                  </NotificationText>
-                </NotificationValue>
-                <NotificationText>시에 알람을 받아요</NotificationText>
-              </NotificationContainer>
-            </InfoField>
-          </InfoFields> */}
-        {/* </Section>
-          <Section>
-            <SectionHeader alignEnd>
-              <SectionTitle>이력서 요약 정보</SectionTitle>
-              <EditButton>
-                <EditButtonText>수정</EditButtonText>
-                <PencilIcon>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
-                      stroke="#5a5c63"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </PencilIcon>
-              </EditButton>
-            </SectionHeader>
-            <ResumeSummaryBox>
-              <ResumeSummaryText>{resumeSummary}</ResumeSummaryText>
-            </ResumeSummaryBox>
-          </Section> */}
-        {/* </MainContent> */}
-        <div className="basic-info-area">
-          <div className="basic-info-header">
-            <span>기본 정보</span>
-            <button>
-              수정
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M10.6593 2.54817C11.4305 1.77691 12.681 1.77691 13.4522 2.54817C14.2235 3.31943 14.2235 4.56989 13.4522 5.34114L5.03559 13.7578C4.92307 13.8703 4.77046 13.9335 4.61133 13.9335H2.66689C2.33552 13.9335 2.06689 13.6649 2.06689 13.3335V11.3891C2.06689 11.23 2.13011 11.0774 2.24263 10.9648L10.6593 2.54817ZM12.6037 3.3967C12.3011 3.09407 11.8104 3.09407 11.5078 3.3967L3.26689 11.6376V12.7335H4.3628L12.6037 4.49261C12.9063 4.18999 12.9063 3.69933 12.6037 3.3967Z"
-                  fill="#5A5C63"
-                />
-              </svg>
+        {/* --- Section 1: Basic Info & Settings --- */}
+        <Section>
+          <div className="section-header">
+            <h2>기본 정보</h2>
+            <button type="button" onClick={handleProfileEditBtnClick}>
+              {isProfileEditable ? "수정" : "수정 완료"}
+              <img src={editicon} alt="edit" />
             </button>
           </div>
-          <div className="basic-info-content"></div>
-        </div>
-      </ProfileLayout>
-    </Wrapper>
+
+          <div className="input-list">
+            <InputGroup
+              label="이름"
+              id="user-name"
+              name="name"
+              placeholder="성함을 입력하세요"
+              value={formData.name}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+            <InputGroup
+              label="전화번호"
+              id="user-phone"
+              type="tel"
+              name="phone"
+              placeholder="전화번호를 입력하세요"
+              value={formData.phone}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+            <InputGroup
+              label="이메일"
+              id="user-email"
+              type="email"
+              name="email"
+              placeholder="이메일을 입력하세요"
+              value={formData.email}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+            <InputGroup
+              label="학교"
+              id="user-school"
+              name="school"
+              placeholder="예) 한국대학교"
+              value={formData.school}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+            <InputGroup
+              label="학과"
+              id="user-department"
+              name="major"
+              placeholder="예) 경영학과"
+              value={formData.major}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+            <InputGroup
+              label="관심 직무"
+              id="user-interest"
+              name="interest"
+              placeholder="예) UI/UX 디자인"
+              value={formData.interest}
+              onChange={onChange}
+              disabled={isProfileEditable}
+            />
+
+            {/* --- New Custom Selects --- */}
+
+            {/* Alarm Period */}
+            <SelectRow>
+              <label htmlFor="alarm-period">알림 주기</label>
+              <div className="select-wrapper">
+                <select
+                  id="alarm-period"
+                  name="alarmPeriod"
+                  value={formData.alarmPeriod}
+                  onChange={onChange}
+                  disabled={isProfileEditable}
+                >
+                  <option value="">선택</option>
+                  {[1, 2, 3, 4, 5, 6, 7].map((v) => (
+                    <option key={v} value={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+                <span>일마다 한 번씩</span>
+              </div>
+            </SelectRow>
+
+            {/* Alarm Time */}
+            <SelectRow>
+              <label htmlFor="alarm-time">알림 시간</label>
+              <div className="select-wrapper">
+                <select
+                  id="alarm-time"
+                  name="alarmTime"
+                  value={formData.alarmTime}
+                  onChange={onChange}
+                  disabled={isProfileEditable}
+                >
+                  <option value="">선택</option>
+                  {Array.from({ length: 24 }).map((_, i) => (
+                    <option key={i} value={i}>
+                      {i.toString().padStart(2, "0")}:00
+                    </option>
+                  ))}
+                </select>
+                <span>시에 알람을 받아요</span>
+              </div>
+            </SelectRow>
+          </div>
+        </Section>
+
+        {/* --- Section 2: Resume Summary --- */}
+        <Section>
+          <div className="section-header">
+            <h2>이력서 요약 정보</h2>
+            <button type="button" onClick={handleResumeEditBtnClick}>
+              {isResumeEditable ? "수정" : "수정 완료"}
+              <img src={editicon} alt="edit" />
+            </button>
+          </div>
+
+          <StyledTextArea
+            name="summary"
+            value={formData.summary}
+            onChange={onChange}
+            disabled={isResumeEditable}
+            placeholder="이력서 요약을 입력해주세요."
+            spellCheck={false}
+          />
+        </Section>
+      </ProfileContainer>
+    </PageWrapper>
   );
 }
 
-const Wrapper = styled.div`
+// --- Styled Components ---
+
+const PageWrapper = styled.div`
   width: 100%;
-  // height: 100vh;
-  background: #f7f8fa;
-  display: flex;
-  flex-direction: column;
-  // padding: 3rem;
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
-  // background: #f7f8fa;
   min-height: calc(100vh - 4rem);
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 4rem;
 `;
 
-const ProfileLayout = styled.main`
-  flex: 1;
+const ProfileContainer = styled.main`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  min-height: 0;
+  max-width: 500px;
+  padding: 0 1.5rem;
 
   h1 {
     color: #141618;
     text-align: center;
     font-size: 2.375rem;
-    font-style: normal;
     font-weight: 600;
-    line-height: 150%;
-    margin-top: 3.4375rem;
+    margin-top: 3.5rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 480px) {
+      font-size: 1.75rem;
+      margin-top: 2rem;
+    }
   }
-  .basic-info-area {
+`;
+
+const Section = styled.section`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+
+  .section-header {
     display: flex;
-    width: 27.8125rem;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    h2 {
+      color: #141618;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    button {
+      display: flex;
+      padding: 0.25rem 0.5rem;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid #eaebec;
+      background: #fff;
+      color: #5a5c63;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #f7f8fa;
+      }
+
+      img {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+
+  .input-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+`;
+
+// Integrated your custom CSS here
+const SelectRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  label {
+    /* Assuming standard label styles usually match InputGroup label */
+    font-size: 1rem;
+    font-weight: 500;
+    min-width: 5rem;
+    white-space: nowrap;
+    color: #141618; /* Added for consistency */
+  }
+
+  .select-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    select {
+      padding: 0.8rem 1rem;
+      border-radius: 1.25rem;
+      border: 1px solid #c2c4c8;
+      background-color: white;
+      cursor: pointer;
+      min-width: 8rem;
+      font-size: 1rem;
+
+      /* Visual feedback for disabled state */
+      &:disabled {
+        background-color: #f7f8fa;
+        cursor: not-allowed;
+        color: #9da0a8;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #2e3847;
+      }
+    }
+
+    span {
+      color: #5a5c63;
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  }
+
+  /* Mobile handling */
+  @media (max-width: 480px) {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.875rem;
-    margin-top: 2.0625rem;
+    gap: 0.5rem;
 
-    .basic-info-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      align-self: stretch;
+    .select-wrapper {
+      width: 100%;
+      justify-content: space-between; /* Spreads select and text on mobile */
 
-      span {
-        color: #141618;
-        font-size: 1.25rem;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 130%;
+      select {
+        flex: 1; /* Makes select take available space */
       }
-
-      button {
-        display: flex;
-        padding: 0.25rem 0.5rem;
-        align-items: center;
-        gap: 0.25rem;
-        border-radius: 0.5rem;
-        border: 1px solid #eaebec;
-        background: #fff;
-        color: #5a5c63;
-        font-size: 1rem;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 130%; /* 1.3rem */
-        cursor: pointer;
-        transition: all 0.2s;
-        &:hover {
-          background: #f7f8fa;
-        }
-      }
-    }
-
-    .basic-info-content {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.5rem;
-      align-self: stretch;
     }
   }
 `;
 
-const Header = styled.header`
+const StyledTextArea = styled.textarea`
   width: 100%;
-  height: 64px;
-  background: #fff;
-  border-bottom: 1px solid #e1e2e4;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 48px;
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
-
-const BasicInfoContainer = styled.div`
-  display: flex;
-  width: 27.8125rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.875rem;
-  margin-bottom: 4.25rem;
-`;
-
-const LeftHeaderWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 64px;
-`;
-
-const LogoContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const LogoIcon = styled.div`
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const LogoText = styled.p`
-  font-family: "BareunDotumOTFPro", sans-serif;
-  color: #2e3847;
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.8px;
-  margin: 0;
-`;
-
-const Nav = styled.nav`
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #141618;
-`;
-
-const NavItem = styled.button`
-  background: none;
-  border: none;
-  color: #141618;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  font-family: inherit;
-  &:hover {
-    color: #1d9bf0;
-  }
-`;
-
-const ProfileTitle = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #141618;
-  line-height: 1.2;
-  margin: 0;
-`;
-
-const MainContent = styled.main`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 209px;
-  width: 445px;
-  display: flex;
-  flex-direction: column;
-  gap: 86px;
-  align-items: flex-start;
-`;
-
-const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: flex-start;
-  width: 100%;
-`;
-
-const SectionHeader = styled.div<{ alignEnd?: boolean }>`
-  display: flex;
-  align-items: ${({ alignEnd }) => (alignEnd ? "flex-end" : "center")};
-  justify-content: space-between;
-  width: 100%;
-`;
-
-const SectionTitle = styled.h2`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 600;
-  font-size: 20px;
-  color: #141618;
-  line-height: 1.3;
-  margin: 0;
-`;
-
-const EditButton = styled.button`
-  background: #fff;
+  min-height: 200px;
+  padding: 1rem;
+  border-radius: 0.5rem;
   border: 1px solid #eaebec;
-  border-radius: 8px;
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  font-family: "Pretendard", sans-serif;
+  background: ${(props) => (props.disabled ? "#f7f8fa" : "#fff")};
+  color: #000;
+  font-size: 1rem;
   font-weight: 500;
-  font-size: 16px;
-  color: #5a5c63;
-  transition: all 0.2s;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
 
-  &:hover {
-    background: #f7f8fa;
+  &:focus {
+    outline: none;
+    border-color: #2e3847;
   }
 `;
+// 이전 버전 코드
+// import React, { useState, useEffect } from "react";
+// import styled from "styled-components";
+// import { InputGroup } from "../components/input-group";
+// import editicon from "../assets/edit-icon.svg";
 
-const EditButtonText = styled.span`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #5a5c63;
-`;
+// export default function Profile() {
+//   const [email, setEmail] = useState("");
+//   const [name, setName] = useState("");
+//   const [phone, setPhone] = useState("");
+//   const [school, setSchool] = useState("");
+//   const [major, setMajor] = useState("");
+//   const [interest, setInterest] = useState("");
+//   const [isProfileEditable, setisProfileEditable] = useState<boolean>(true);
+//   // const [alarmPeriod, setAlarmPeriod] = useState("");
+//   // const [alarmTime, setAlarmTime] = useState("");
 
-const PencilIcon = styled.div`
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-`;
+//   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const {
+//       target: { name, value },
+//     } = e;
+//     // 아래 코드에서 모든 input에 name을 넣음으로써 input이 변경되었을 때 어떤 input이 변경되었는지 찾을 수 있다.
+//     if (name === "email") {
+//       setEmail(value);
+//     } else if (name === "name") {
+//       setName(value);
+//     } else if (name === "phone") {
+//       setPhone(value);
+//     } else if (name === "school") {
+//       setSchool(value);
+//     } else if (name === "major") {
+//       setMajor(value);
+//     } else if (name === "interest") {
+//       setInterest(value);
+//     }
+//     // Clear error when user starts typing
+//     // if (error) {
+//     //   setError("");
+//     // }
+//   };
 
-const InfoFields = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-  height: 440px;
-`;
+//   const handleEditBtnClick = () => {
+//     setisProfileEditable((prev) => !prev);
+//   };
+//   // const [userData, setUserData] = useState({
+//   //   username: "",
+//   //   phoneNumber: "",
+//   //   email: "",
+//   //   school: "",
+//   //   major: "",
+//   //   interestField: "",
+//   //   intervalDays: "",
+//   //   alarmTime: "",
+//   // });
+//   // const [resumeSummary, setResumeSummary] = useState(
+//   //   "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다."
+//   // );
 
-const InfoField = styled.div<{ gap?: string }>`
-  display: flex;
-  align-items: center;
-  gap: ${({ gap }) => gap || "71px"};
-  width: 100%;
-`;
+//   // useEffect(() => {
+//   //   const fetchUserData = async () => {
+//   //     try {
+//   //       const token = localStorage.getItem("token");
+//   //       if (!token) {
+//   //         return;
+//   //       }
 
-const FieldLabel = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #141618;
-  line-height: 1.3;
-  margin: 0;
-  flex-shrink: 0;
-`;
+//   //       const response = await fetch("https://api.etf.r-e.kr/auth/me", {
+//   //         method: "GET",
+//   //         headers: {
+//   //           "Content-Type": "application/json",
+//   //           Authorization: `Bearer ${token}`,
+//   //         },
+//   //       });
 
-const FieldValue = styled.div`
-  border-radius: 20px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  // justify-content: center;
-  gap: 10px;
-  width: 346px;
-  box-sizing: border-box;
-`;
+//   //       if (response.ok) {
+//   //         const data = await response.json();
+//   //         setUserData({
+//   //           username: data.username || "",
+//   //           phoneNumber: data.phoneNumber || "",
+//   //           email: data.email || "",
+//   //           school: data.school || "",
+//   //           major: data.major || "",
+//   //           interestField: data.interestField || "",
+//   //           intervalDays: data.intervalDays?.toString() || "",
+//   //           alarmTime: data.alarmTime || "",
+//   //         });
+//   //       }
+//   //     } catch (error) {
+//   //       console.error("Error fetching user data:", error);
+//   //     }
+//   //   };
 
-const FieldText = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  align-items: center;
-  color: #5a5c63;
-  margin: 0;
-  width: 100%;
-`;
+//   //   fetchUserData();
+//   // }, []);
 
-const PhoneNumberContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 34px;
-  width: 346px;
-`;
+//   // const formatPhoneNumber = (phone: string) => {
+//   //   if (!phone) return { part1: "", part2: "", part3: "" };
+//   //   const cleaned = phone.replace(/-/g, "");
+//   //   if (cleaned.length === 11) {
+//   //     return {
+//   //       part1: cleaned.substring(0, 3),
+//   //       part2: cleaned.substring(3, 7),
+//   //       part3: cleaned.substring(7, 11),
+//   //     };
+//   //   }
+//   //   return { part1: phone.substring(0, 3), part2: "", part3: "" };
+//   // };
 
-const PhonePart = styled.div`
-  border-radius: 20px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 84px;
-  box-sizing: border-box;
-`;
+//   // const formatAlarmTime = (time: string) => {
+//   //   if (!time) return "";
+//   //   // Convert "HH:MM:SS" to "HH:MM"
+//   //   if (time.includes(":")) {
+//   //     const parts = time.split(":");
+//   //     return `${parts[0]}:${parts[1]}`;
+//   //   }
+//   //   return time;
+//   // };
 
-const PhoneSeparator = styled.div`
-  width: 10.5px;
-  // height: 0;
-  position: relative;
-  flex-shrink: 0;
-  display: flex; /* Add Flexbox */
-  align-items: center; /* Vertically center the content (SeparatorLine) */
-  justify-content: center;
-`;
+//   // const phoneParts = formatPhoneNumber(userData.phoneNumber);
 
-// const SeparatorLine = styled.div`
-//   position: relative;
-//   /* Remove top: -0.5px; and bottom: -0.5px; */
-//   left: 0;
-//   right: 0;
-//   align-items: center;
+//   return (
+//     <Wrapper>
+//       <ProfileLayout>
+//         <h1>내 프로필</h1>
+//         <div className="basic-info-area">
+//           <div className="basic-info-header">
+//             <span>기본 정보</span>
+//             <button onClick={handleEditBtnClick}>
+//               {isProfileEditable ? "수정" : "수정 완료"}
+//               <img src={editicon} />
+//             </button>
+//           </div>
+//           <div className="basic-info-content">
+//             <InputGroup
+//               label="이름"
+//               id="user-name"
+//               type="text"
+//               name="name"
+//               placeholder="성함을 입력하세요"
+//               value={name}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//             <InputGroup
+//               label="전화번호"
+//               id="user-phone"
+//               type="tel"
+//               name="phone"
+//               placeholder="전화번호를 입력하세요"
+//               value={phone}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//             <InputGroup
+//               label="이메일"
+//               id="user-email"
+//               type="email"
+//               name="email"
+//               placeholder="이메일을 입력하세요"
+//               value={email}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//             <InputGroup
+//               label="학교"
+//               id="user-school"
+//               type="text"
+//               name="school"
+//               placeholder="예) 한국대학교"
+//               value={school}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//             <InputGroup
+//               label="학과"
+//               id="user-department"
+//               type="text"
+//               name="major"
+//               placeholder="예) 경영학과, 컴퓨터공학과"
+//               value={major}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//             <InputGroup
+//               label="관심 직무"
+//               id="user-interest"
+//               type="text"
+//               name="interest"
+//               placeholder="예) UI/UX 디자인, AI..."
+//               value={interest}
+//               onChange={onChange}
+//               required
+//               disabled={isProfileEditable}
+//             />
+//           </div>
+//         </div>
+//         <div className="resume-summary-area">
+//           <div className="basic-info-header">
+//             <span>이력서 요약 정보</span>
+//             <button onClick={handleEditBtnClick}>
+//               {isProfileEditable ? "수정" : "수정 완료"}
+//               <img src={editicon} />
+//             </button>
+//           </div>
+//           <p>
+//             요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다. 요약문을
+//             넣습니다.요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.
+//             요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할 수 있는
+//             내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할 수
+//             있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할
+//             수 있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가
+//             수정할 수 있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다.
+//             유저가 수정할 수 있는 내용입니다. 요약문을 넣습니다.요약문을
+//             넣습니다. 유저가 수정할 수 있는 내용입니다. 요약문을
+//             넣습니다.요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.
+//             요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할 수 있는
+//             내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할 수
+//             있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가 수정할
+//             수 있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다. 유저가
+//             수정할 수 있는 내용입니다. 요약문을 넣습니다.요약문을 넣습니다.
+//             유저가 수정할 수 있는 내용입니다. 요약문을 넣습니다.요약문을
+//             넣습니다. 유저가 수정할 수 있는 내용입니다. 요약문을
+//             넣습니다.요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.
+//             요약문을 넣습니다.
+//           </p>
+//         </div>
+//       </ProfileLayout>
+//     </Wrapper>
+//   );
+// }
 
+// const Wrapper = styled.div`
+//   width: 100%;
+//   // height: 100vh;
+//   background: #fff;
+//   display: flex;
+//   flex-direction: column;
+//   // padding: 3rem;
+//   // display: flex;
+//   // flex-direction: column;
+//   // align-items: center;
+//   // background: #f7f8fa;
+//   min-height: calc(100vh - 4rem);
 // `;
 
-const NotificationContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`;
+// const ProfileLayout = styled.main`
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-start;
+//   align-items: center;
+//   width: 100%;
+//   min-height: 0;
 
-const NotificationValue = styled.div`
-  border-radius: 20px;
-  padding: 8px 6px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
+//   h1 {
+//     color: #141618;
+//     text-align: center;
+//     font-size: 2.375rem;
+//     font-style: normal;
+//     font-weight: 600;
+//     line-height: 150%;
+//     margin-top: 3.4375rem;
+//   }
 
-const NotificationText = styled.p`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: #5a5c63;
-  text-align: center;
-  margin: 0;
-`;
+//   .basic-info-area {
+//     display: flex;
+//     width: 27.8125rem;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 1.875rem;
+//     margin-top: 2.0625rem;
 
-const ResumeSummaryBox = styled.div`
-  background: #f7fbff;
-  border: 1px solid #eaf2fe;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 2.81rem;
-`;
+//     .basic-info-content {
+//       display: flex;
+//       flex-direction: column;
+//       align-items: flex-start;
+//       gap: 1.5rem;
+//       align-self: stretch;
+//     }
+//   }
 
-const ResumeSummaryText = styled.div`
-  font-family: "Pretendard", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #000;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  flex: 1;
-  min-height: 0;
-`;
+//   .resume-summary-area {
+//     display: flex;
+//     width: 27.8125rem;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     gap: 1.875rem;
+//     margin-top: 5.375rem;
 
+//     p {
+//       display: flex;
+//       padding: 1rem;
+//       align-items: flex-start;
+//       gap: 0.625rem;
+//       align-self: stretch;
+//       flex: 1 0 0;
+//       color: #000;
+//       font-size: 1rem;
+//       font-style: normal;
+//       font-weight: 500;
+//       line-height: 180%; /* 1.8rem */
+//     }
+//   }
+
+//   .basic-info-header {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     align-self: stretch;
+
+//     span {
+//       color: #141618;
+//       font-size: 1.25rem;
+//       font-style: normal;
+//       font-weight: 600;
+//       line-height: 130%;
+//     }
+
+//     button {
+//       display: flex;
+//       padding: 0.25rem 0.5rem;
+//       align-items: center;
+//       gap: 0.25rem;
+//       border-radius: 0.5rem;
+//       border: 1px solid #eaebec;
+//       background: #fff;
+//       color: #5a5c63;
+//       font-size: 1rem;
+//       font-style: normal;
+//       font-weight: 500;
+//       line-height: 130%; /* 1.3rem */
+//       cursor: pointer;
+//       transition: all 0.2s;
+//       &:hover {
+//         background: #f7f8fa;
+//       }
+//     }
+//   }
+// `;
+
+// 두 버전 이전의 코드
 // export default function Profile() {
 //   const [userData, setUserData] = useState({
 //     username: "",
@@ -730,49 +785,6 @@ const ResumeSummaryText = styled.div`
 
 //   return (
 //     <Wrapper>
-//       <Header>
-//         <LeftHeaderWrapper>
-//           <LogoContainer>
-//             <LogoIcon>
-//               <svg
-//                 width="36"
-//                 height="36"
-//                 viewBox="0 0 78 78"
-//                 fill="none"
-//                 xmlns="http://www.w3.org/2000/svg"
-//               >
-//                 <rect width="77.76" height="77.76" fill="white" />
-//                 <path
-//                   d="M46.6025 29.3325C46.0465 25.8052 50.7705 24.1041 52.5908 27.1763L59.3271 38.5464L61.5459 34.3101C63.7057 30.1878 69.9363 31.6392 70.0518 36.2915C70.2693 45.0592 66.8813 53.5322 60.6797 59.7339L59.7598 60.6548C53.5423 66.8722 45.0469 70.2685 36.2568 70.0503C31.598 69.9346 30.1385 63.6998 34.2617 61.5278L38.6641 59.2095L27.2314 52.5181C24.1494 50.7138 25.8267 45.9805 29.3574 46.519L38.6641 47.938L31.5967 37.2104C29.149 33.4947 33.5367 29.085 37.2646 31.5142L48.0557 38.5464L46.6025 29.3325ZM17.8164 9.52393C18.0338 8.34517 19.724 8.34516 19.9414 9.52393L21.4326 17.6187C21.5138 18.0592 21.8583 18.4047 22.2988 18.4858L30.3936 19.9771C31.5724 20.1944 31.5725 21.8838 30.3936 22.1011L22.2988 23.5923C21.8583 23.6734 21.5138 24.018 21.4326 24.4585L19.9414 32.5532C19.7242 33.7323 18.0336 33.7323 17.8164 32.5532L16.3252 24.4585C16.244 24.018 15.8995 23.6734 15.459 23.5923L7.36426 22.1011C6.18527 21.8838 6.18534 20.1944 7.36426 19.9771L15.459 18.4858C15.8996 18.4047 16.244 18.0592 16.3252 17.6187L17.8164 9.52393Z"
-//                   fill="url(#paint0_radial_profile)"
-//                 />
-//                 <defs>
-//                   <radialGradient
-//                     id="paint0_radial_profile"
-//                     cx="0"
-//                     cy="0"
-//                     r="1"
-//                     gradientTransform="matrix(29.4277 29.4291 -29.4277 29.4277 35.3823 37.5416)"
-//                     gradientUnits="userSpaceOnUse"
-//                   >
-//                     <stop stopColor="#4F95FF" />
-//                     <stop offset="0.27707" stopColor="#5698F8" />
-//                     <stop offset="0.518714" stopColor="#75A7D9" />
-//                     <stop offset="1" stopColor="#FFEA4F" />
-//                   </radialGradient>
-//                 </defs>
-//               </svg>
-//             </LogoIcon>
-//             <LogoText>알려주잡</LogoText>
-//           </LogoContainer>
-//           <Nav>
-//             <NavItem>정보설정</NavItem>
-//             <NavItem>수집함</NavItem>
-//           </Nav>
-//         </LeftHeaderWrapper>
-//         <ProfileTitle>내프로필</ProfileTitle>
-//       </Header>
-//       <PageTitle>내 프로필</PageTitle>
 //       <MainContent>
 //         <Section>
 //           <SectionHeader>
@@ -799,116 +811,7 @@ const ResumeSummaryText = styled.div`
 //             </EditButton>
 //           </SectionHeader>
 //           <InfoFields>
-//             <InfoField>
-//               <FieldLabel>이름</FieldLabel>
-//               <FieldValue>
-//                 <FieldText>{userData.username || "김수겸"}</FieldText>
-//               </FieldValue>
-//             </InfoField>
-//             <InfoField gap="43px">
-//               <FieldLabel>전화번호</FieldLabel>
-//               <PhoneNumberContainer>
-//                 <PhonePart>
-//                   <FieldText>{phoneParts.part1 || "010"}</FieldText>
-//                 </PhonePart>
-//                 <PhoneSeparator>
-//                   {/* <SeparatorLine> */}
-//                   <svg
-//                     width="11"
-//                     height="1"
-//                     viewBox="0 0 11 1"
-//                     fill="none"
-//                     xmlns="http://www.w3.org/2000/svg"
-//                   >
-//                     <line
-//                       x1="0.5"
-//                       y1="0.5"
-//                       x2="10.5"
-//                       y2="0.5"
-//                       stroke="#AEB0B6"
-//                       strokeLinecap="round"
-//                     />
-//                   </svg>
-//                   {/* </SeparatorLine> */}
-//                 </PhoneSeparator>
-//                 <PhonePart>
-//                   <FieldText>{phoneParts.part2 || "6858"}</FieldText>
-//                 </PhonePart>
-//                 <PhoneSeparator>
-//                   {/* <SeparatorLine> */}
-//                   <svg
-//                     width="11"
-//                     height="1"
-//                     viewBox="0 0 11 1"
-//                     fill="none"
-//                     xmlns="http://www.w3.org/2000/svg"
-//                   >
-//                     <line
-//                       x1="0.5"
-//                       y1="0.5"
-//                       x2="10.5"
-//                       y2="0.5"
-//                       stroke="#AEB0B6"
-//                       strokeLinecap="round"
-//                     />
-//                   </svg>
-//                   {/* </SeparatorLine> */}
-//                 </PhoneSeparator>
-//                 <PhonePart>
-//                   <FieldText>{phoneParts.part3 || "4123"}</FieldText>
-//                 </PhonePart>
-//               </PhoneNumberContainer>
-//             </InfoField>
-//             <InfoField gap="57px">
-//               <FieldLabel>이메일</FieldLabel>
-//               <FieldValue>
-//                 <FieldText>
-//                   {userData.email || "kyle.kim@nativept.kr"}
-//                 </FieldText>
-//               </FieldValue>
-//             </InfoField>
-//             <InfoField>
-//               <FieldLabel>학교</FieldLabel>
-//               <FieldValue>
-//                 <FieldText>{userData.school || "고려대학교"}</FieldText>
-//               </FieldValue>
-//             </InfoField>
-//             <InfoField>
-//               <FieldLabel>학과</FieldLabel>
-//               <FieldValue>
-//                 <FieldText>{userData.major || "컴퓨터과학과"}</FieldText>
-//               </FieldValue>
-//             </InfoField>
-//             <InfoField gap="43px">
-//               <FieldLabel>관심직무</FieldLabel>
-//               <FieldValue>
-//                 <FieldText>
-//                   {userData.interestField || "ML, AI, Cloud"}
-//                 </FieldText>
-//               </FieldValue>
-//             </InfoField>
-//             <InfoField gap="53px">
-//               <FieldLabel>알림주기</FieldLabel>
-//               <NotificationContainer>
-//                 <NotificationValue>
-//                   <NotificationText>
-//                     {userData.intervalDays || "1"}
-//                   </NotificationText>
-//                 </NotificationValue>
-//                 <NotificationText>일 마다 한 번씩</NotificationText>
-//               </NotificationContainer>
-//             </InfoField>
-//             <InfoField gap="53px">
-//               <FieldLabel>알림시간</FieldLabel>
-//               <NotificationContainer>
-//                 <NotificationValue>
-//                   <NotificationText>
-//                     {formatAlarmTime(userData.alarmTime) || "08:00"}
-//                   </NotificationText>
-//                 </NotificationValue>
-//                 <NotificationText>시에 알람을 받아요</NotificationText>
-//               </NotificationContainer>
-//             </InfoField>
+//
 //           </InfoFields>
 //         </Section>
 //         <Section>
