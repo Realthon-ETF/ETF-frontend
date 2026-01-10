@@ -413,12 +413,12 @@
 //   }
 // `;
 
-// after refactoring
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../components/Button";
 import StyledCheckButton from "../components/check-button";
+import deleteIcon from "../assets/delete-icon.svg";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -433,6 +433,13 @@ export default function Home() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     validateAndSetFile(file);
+  };
+
+  const handleFileDelete = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const validateAndSetFile = (file: File | undefined) => {
@@ -521,13 +528,17 @@ export default function Home() {
           ) : (
             <div className="file-info-card">
               <div className="card-header">
+                <span></span>
                 <span className="label">파일명</span>
                 <span className="label">용량</span>
                 <span className="label status">상태</span>
               </div>
               <div className="card-body">
+                <DeleteButton onClick={handleFileDelete}>
+                  <img src={deleteIcon} />
+                </DeleteButton>
                 <span className="value filename" title={selectedFile.name}>
-                  {selectedFile.name}
+                  {selectedFile.name}{" "}
                 </span>
                 <span className="value size">
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
@@ -670,7 +681,7 @@ const UploadSection = styled.section<{ $isUploaded: boolean }>`
   .card-header,
   .card-body {
     display: grid;
-    grid-template-columns: 4fr 1fr 1fr; /* Name takes more space */
+    grid-template-columns: 24px 4fr 1fr 1fr; /* Name takes more space */
     padding: 0.75rem 1rem;
     align-items: center;
     gap: 1rem;
@@ -707,6 +718,22 @@ const UploadSection = styled.section<{ $isUploaded: boolean }>`
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0; /* Light grey hover effect */
   }
 `;
 

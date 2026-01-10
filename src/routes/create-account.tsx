@@ -619,6 +619,38 @@ export default function CreateAccount() {
     setIsAgreed((prev) => !prev);
   };
 
+  const checkIdDuplicate = async (id: string) => {
+    try {
+      const response = await fetch(
+        `https://api.etf.r-e.kr/auth/check-id?loginId=${id}`
+      );
+      const data = await response.json();
+      if (data.isDuplicate) {
+        alert("이미 사용 중인 아이디입니다.");
+      } else {
+        alert("사용 가능한 아이디입니다.");
+      }
+    } catch (err) {
+      alert("연결 오류가 발생했습니다.");
+    }
+  };
+
+  const checkPhoneDuplicate = async (phone: string) => {
+    try {
+      const response = await fetch(
+        `https://api.etf.r-e.kr/auth/check-id?loginId=${phone}`
+      );
+      const data = await response.json();
+      if (data.isDuplicate) {
+        alert("이미 사용 중인 전화번호입니다.");
+      } else {
+        alert("사용 가능한 전화번호입니다.");
+      }
+    } catch (err) {
+      alert("연결 오류가 발생했습니다.");
+    }
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -692,6 +724,9 @@ export default function CreateAccount() {
                 value={formData.id}
                 onChange={onChange}
                 disabled={isLoading}
+                duplicateCheck={true}
+                onCheckDuplicate={checkIdDuplicate}
+                required
               />
               <InputGroup
                 label="비밀번호"
@@ -702,6 +737,7 @@ export default function CreateAccount() {
                 value={formData.password}
                 onChange={onChange}
                 disabled={isLoading}
+                required
               />
             </div>
           </FormSection>
@@ -718,6 +754,7 @@ export default function CreateAccount() {
                 value={formData.name}
                 onChange={onChange}
                 disabled={isLoading}
+                required
               />
               <InputGroup
                 label="전화번호"
@@ -728,6 +765,9 @@ export default function CreateAccount() {
                 value={formData.phone}
                 onChange={onChange}
                 disabled={isLoading}
+                onCheckDuplicate={checkPhoneDuplicate}
+                required
+                duplicateCheck={true}
               />
               <InputGroup
                 label="이메일"
@@ -738,6 +778,7 @@ export default function CreateAccount() {
                 value={formData.email}
                 onChange={onChange}
                 disabled={isLoading}
+                required
               />
               <InputGroup
                 label="학교"
@@ -765,6 +806,7 @@ export default function CreateAccount() {
                 value={formData.interest}
                 onChange={onChange}
                 disabled={isLoading}
+                required
               />
 
               {/* Custom Select Inputs */}
@@ -831,7 +873,15 @@ export default function CreateAccount() {
           <SubmitButton
             type="submit"
             disabled={isLoading || !isAgreed}
-            $active={isAgreed && !isLoading}
+            $active={
+              isAgreed &&
+              !isLoading &&
+              formData.id !== "" &&
+              formData.password !== "" &&
+              formData.name !== "" &&
+              formData.phone !== "" &&
+              formData.email !== ""
+            }
           >
             {isLoading ? "처리 중..." : "회원가입"}
           </SubmitButton>
