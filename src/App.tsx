@@ -1,10 +1,8 @@
 // import { useState } from "react";
+import { AuthProvider } from "./AuthContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { auth } from "./firebase";
-
 import Layout from "./components/layout";
 // import LoadingScreen from "./components/loading-screen";
-// import ProtectedRoute from "./components/protected-route";
 // import AlarmLists from "./routes/alarm-lists";
 import Home from "./routes/home";
 import Profile from "./routes/profile";
@@ -72,11 +70,14 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Wrapper = styled.div`
-  min-height: 100vh;
+  min-height: 100vh; // Ensures the app covers the full screen
+  // This is the modern, "safe" way to ensure your background covers the whole screen even if you have almost no content on the page.
+  // for mobile support, use 100dvh instead of 100vh
   width: 100%;
   display: flex;
   flex-direction: column;
   // align-items: center; // Only keep this if your Layout has a fixed width
+  // If your Layout is meant to be full-width, this might shrink it to the center if it doesn't have width: 100%.
 `;
 
 export default function App() {
@@ -95,7 +96,11 @@ export default function App() {
       {/* <> */}
       <GlobalStyles />
       {/* {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
-      {<RouterProvider router={router} />}
+      <AuthProvider>{<RouterProvider router={router} />}</AuthProvider>
+      {/* 1. RouterProvider와 Wrapper의 관계
+RouterProvider 자체는 화면에 아무런 HTML 태그를 남기지 않습니다. 그 안에 들어가는 Layout이나 Home 같은 컴포넌트들이 실제로 렌더링되죠.
+
+주의점: 만약 App.tsx의 Wrapper에도 가로 너비 제한이 있고, 그 안의 Layout 컴포넌트에도 또 너비 제한이 있다면 스타일이 충돌하거나 불필요하게 중복될 수 있습니다. */}
       {/* </> */}
     </Wrapper>
   );

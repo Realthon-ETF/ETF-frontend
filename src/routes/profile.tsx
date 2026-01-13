@@ -1,9 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { InputGroup } from "../components/input-group";
 import editicon from "../assets/edit-icon.svg";
+import api from "../api"; // Import your axios instance
+// import { useAuth } from "../AuthContext";
+
+interface ProfileResponse {
+  userId: number;
+  loginId: string;
+  username: string;
+  phoneNumber: string;
+  email: string;
+  school: string;
+  major: string;
+  interestFields: string[];
+  intervalDays: number;
+  alarmTime: string; // "09:30:00"
+}
 
 export default function Profile() {
+  // const { user } = useAuth();
+  // const [isLoading, setIsLoading] = useState(true);
   // 1. Refactor: Use a single object for all form data
   const [formData, setFormData] = useState({
     name: "",
@@ -20,6 +37,36 @@ export default function Profile() {
   const [isProfileEditable, setIsProfileEditable] = useState<boolean>(true);
   const [isResumeEditable, setIsResumeEditable] = useState<boolean>(true);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // setIsLoading(true);
+        // api.ts automatically attaches the Bearer token
+        const { data } = await api.get<ProfileResponse>("/auth/me");
+
+        // 3. Map API data to local state
+        setFormData((prev) => ({
+          ...prev,
+          name: data.username,
+          phone: data.phoneNumber,
+          email: data.email,
+          school: data.school,
+          major: data.major,
+          interest: data.interestFields.join(", "), // Array to String
+          alarmPeriod: data.intervalDays.toString(),
+          alarmTime: data.alarmTime.split(":")[0], // "09:30:00" -> "09"
+        }));
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        alert("프로필 정보를 불러오는데 실패했습니다.");
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   // 2. Unified Change Handler
   const onChange = (
     e: React.ChangeEvent<
@@ -33,11 +80,51 @@ export default function Profile() {
     }));
   };
 
-  const handleProfileEditBtnClick = () => {
+  // const handleProfileEditBtnClick = () => {
+  //   setIsProfileEditable((prev) => !prev);
+  // };
+  const handleProfileEditBtnClick = async () => {
+    if (!isProfileEditable) {
+      // If we are currently in "Edit Mode" and clicking "수정 완료"
+      try {
+        // update할 필요가 없다면 const {data}로 return을 받아올 필요가 없음
+        await api.patch("/auth/me", {
+          username: formData.name,
+          phoneNumber: formData.phone,
+          email: formData.email,
+          school: formData.school,
+          major: formData.major,
+          intervalDays: Number(formData.alarmPeriod),
+          alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
+        });
+        // todo: update username if modified
+        // updateUser(data.username);
+        // This requires adding a 'setUser' or 'updateUser' method to your AuthContext
+        alert("저장되었습니다.");
+      } catch (err) {
+        alert("저장에 실패했습니다.");
+        return; // Don't exit edit mode if save fails
+      }
+    }
     setIsProfileEditable((prev) => !prev);
   };
 
-  const handleResumeEditBtnClick = () => {
+  // const handleResumeEditBtnClick = () => {
+  //   setIsResumeEditable((prev) => !prev);
+  // };
+  const handleResumeEditBtnClick = async () => {
+    if (!isResumeEditable) {
+      // If we are currently in "Edit Mode" and clicking "수정 완료"
+      try {
+        await api.patch("/auth/me", {
+          summary: formData.summary,
+        });
+        alert("저장되었습니다.");
+      } catch (err) {
+        alert("저장에 실패했습니다.");
+        return; // Don't exit edit mode if save fails
+      }
+    }
     setIsResumeEditable((prev) => !prev);
   };
 
@@ -51,7 +138,7 @@ export default function Profile() {
           <div className="section-header">
             <h2>기본 정보</h2>
             <button type="button" onClick={handleProfileEditBtnClick}>
-              {isProfileEditable ? "수정" : "수정 완료"}
+              {isProfileEditable ? "수정" : "완료"}
               <img src={editicon} alt="edit" />
             </button>
           </div>

@@ -674,6 +674,9 @@ const UploadSection = styled.section<{ $isUploaded: boolean }>`
     width: 100%;
     height: 100%;
     display: flex;
+    // When the parent (.file-info-card) is a flexbox, giving the children flex: 1 tells them to grow and share the available vertical space equally (50/50).
+    // display: grid remains: flex: 1 and display: grid can exist on the same element. The "flex" property determines how the element fits into its parent, while "grid" determines how its own children are laid out.
+    // 혹은 display: grid; grid-template-rows: 1fr 1fr;로 하면 역시 child의 높이를 동등하게 맞출 수 있음
     flex-direction: column;
   }
 
@@ -688,6 +691,7 @@ const UploadSection = styled.section<{ $isUploaded: boolean }>`
     flex: 1;
 
     @media (max-width: 425px) {
+      // 600px을 기준으로 수정해볼까
       grid-template-columns: 1fr; /* Stack on mobile */
       gap: 0.5rem;
       text-align: center;
