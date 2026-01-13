@@ -131,17 +131,19 @@ export default function CreateAccount() {
 
     try {
       setIsLoading(true);
-
       const requestBody = {
         loginId: formData.id,
         password: formData.password,
         username: formData.name,
+        // 전화번호에 - 넣는 것은 VARCHAR라 영항 없음
         phoneNumber: formData.phone,
         email: formData.email,
         school: formData.school,
         major: formData.major,
-        //todo: 관심 직무를 카테고리화 할지? 유저 입력으로 받은 후 parsing할지?
-        interestField: [formData.interest],
+        // todo: 관심 직무를 카테고리화 할지? 유저 입력으로 받은 후 parsing할지?
+        // interestFields: [formData.interest],
+        // 혅재 자료형이 ENUM이라 고정해두기
+        interestFields: ["BACKEND", "AI"],
         intervalDays: parseInt(formData.alarmPeriod, 10),
         alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
       };
