@@ -131,6 +131,7 @@
 
 // export default api;
 
+// 기본 API 호출용 Axios instance
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
@@ -139,19 +140,30 @@ import axios, {
 
 let accessToken: string | null = null;
 
-export const setClientToken = (token: string | null): void => {
-  accessToken = token;
+// export const setClientToken = (token: string | null): void => {
+//   accessToken = token;
+// };
+export const setClientToken = (
+  access: string | null,
+  refresh?: string | null
+): void => {
+  accessToken = access;
+  if (refresh) {
+    localStorage.setItem("refreshToken", refresh); // Or a non-HttpOnly cookie
+  } else if (refresh === null) {
+    localStorage.removeItem("refreshToken");
+  }
 };
 
 const api: AxiosInstance = axios.create({
-  baseURL:
-    "https://etf-766469416566.asia-northeast3.run.app](https://etf-766469416566.asia-northeast3.run.app",
-  withCredentials: true,
+  baseURL: "https://etf-766469416566.asia-northeast3.run.app",
+  withCredentials: true, // Refresh Token(Cookie)를 주고받기 위한 옵션
 });
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (accessToken) {
+      // accessToken이 memory에 있는 동안에는 모든 request header에 해당 token을 포함시켜 전달함
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
@@ -159,6 +171,8 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Response Interceptor
+// 401 Error(Token Expired) 발생 시 Token 갱신 시도
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
@@ -172,7 +186,7 @@ api.interceptors.response.use(
         // IMPORTANT: Use the correct base URL for your refresh endpoint
         // The Refresh Token is sent automatically via Cookies because of withCredentials
         const { data } = await axios.post<{ accessToken: string }>(
-          "https://api.etf.r-e.kr/auth/refresh",
+          "https://etf-766469416566.asia-northeast3.run.app/auth/refresh",
           {},
           { withCredentials: true }
         );
@@ -189,7 +203,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // If refresh fails, the Refresh Token is likely expired/invalid
         setClientToken(null);
-        // Optional: window.location.href = "/login";
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

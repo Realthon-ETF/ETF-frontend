@@ -430,5 +430,3 @@ const LoginButton = styled.button`
     background-color: #c2c4c8;
   }
 `;
-
-// ... PageWrapper and LoginLayout (keep your existing styles)
