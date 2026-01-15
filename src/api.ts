@@ -131,7 +131,168 @@
 
 // export default api;
 
+// Should't set refreshToken on localStorage
 // 기본 API 호출용 Axios instance
+// import axios, {
+//   type AxiosInstance,
+//   type AxiosResponse,
+//   type InternalAxiosRequestConfig,
+// } from "axios";
+
+// let accessToken: string | null = null;
+
+// // export const setClientToken = (token: string | null): void => {
+// //   accessToken = token;
+// // };
+// export const setClientToken = (
+//   access: string | null,
+//   refresh?: string | null
+// ): void => {
+//   accessToken = access;
+//   if (refresh) {
+//     localStorage.setItem("refreshToken", refresh); // Or a non-HttpOnly cookie
+//   } else if (refresh === null) {
+//     localStorage.removeItem("refreshToken");
+//   }
+// };
+
+// const api: AxiosInstance = axios.create({
+//   baseURL: "https://etf-766469416566.asia-northeast3.run.app",
+//   withCredentials: true, // Refresh Token(Cookie)를 주고받기 위한 옵션
+// });
+
+// api.interceptors.request.use(
+//   (config: InternalAxiosRequestConfig) => {
+//     if (accessToken) {
+//       // accessToken이 memory에 있는 동안에는 모든 request header에 해당 token을 포함시켜 전달함
+//       config.headers.Authorization = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+// // Response Interceptor
+// // 401 Error(Token Expired) 발생 시 Token 갱신 시도
+// api.interceptors.response.use(
+//   (response: AxiosResponse) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+
+//     if (originalRequest.url?.includes("/auth/refresh")) {
+//       return Promise.reject(error);
+//     }
+
+//     // Check for 401 and ensure we haven't retried this specific request yet
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+
+//       try {
+//         // IMPORTANT: Use the correct base URL for your refresh endpoint
+//         // The Refresh Token is sent automatically via Cookies because of withCredentials
+//         const { data } = await axios.post<{ accessToken: string }>(
+//           "https://etf-766469416566.asia-northeast3.run.app/auth/refresh",
+//           {},
+//           { withCredentials: true }
+//         );
+
+//         const newAccessToken = data.accessToken;
+//         setClientToken(newAccessToken);
+
+//         if (originalRequest.headers) {
+//           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//         }
+
+//         // Retry the original request with the new token
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         // If refresh fails, the Refresh Token is likely expired/invalid
+//         setClientToken(null);
+//         window.location.href = "/login";
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default api;
+
+// thrid version
+// import axios, {
+//   type AxiosInstance,
+//   type AxiosResponse,
+//   type InternalAxiosRequestConfig,
+// } from "axios";
+
+// // 1. Keep the Access Token ONLY in memory (variables disappear on refresh)
+// let accessToken: string | null = null;
+
+// // 2. Simplify this function: No more localStorage!
+// export const setClientToken = (access: string | null): void => {
+//   accessToken = access;
+// };
+
+// const api: AxiosInstance = axios.create({
+//   baseURL: "https://etf-766469416566.asia-northeast3.run.app",
+//   withCredentials: true, // Crucial: This allows the browser to send/receive cookies
+// });
+
+// api.interceptors.request.use(
+//   (config: InternalAxiosRequestConfig) => {
+//     if (accessToken) {
+//       config.headers.Authorization = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+// api.interceptors.response.use(
+//   (response: AxiosResponse) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+
+//     // Stop if the error happened during a refresh attempt itself
+//     if (originalRequest.url?.includes("/auth/refresh")) {
+//       return Promise.reject(error);
+//     }
+
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+
+//       try {
+//         // The browser AUTOMATICALLY sends the HttpOnly refresh cookie here
+//         // because withCredentials is true.
+//         const { data } = await axios.post<{ accessToken: string }>(
+//           "https://etf-766469416566.asia-northeast3.run.app/auth/refresh",
+//           {},
+//           { withCredentials: true }
+//         );
+
+//         const newAccessToken = data.accessToken;
+//         setClientToken(newAccessToken);
+
+//         if (originalRequest.headers) {
+//           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//         }
+
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         setClientToken(null);
+//         // If refresh fails, redirect to login
+//         if (window.location.pathname !== "/login") {
+//           window.location.href = "/login";
+//         }
+//         return Promise.reject(refreshError);
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+// export default api;
+
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
@@ -140,30 +301,21 @@ import axios, {
 
 let accessToken: string | null = null;
 
-// export const setClientToken = (token: string | null): void => {
-//   accessToken = token;
-// };
-export const setClientToken = (
-  access: string | null,
-  refresh?: string | null
-): void => {
+export const setClientToken = (access: string | null): void => {
   accessToken = access;
-  if (refresh) {
-    localStorage.setItem("refreshToken", refresh); // Or a non-HttpOnly cookie
-  } else if (refresh === null) {
-    localStorage.removeItem("refreshToken");
-  }
 };
 
+// Define URL once to avoid typos
+const baseURL = "https://etf-766469416566.asia-northeast3.run.app";
+
 const api: AxiosInstance = axios.create({
-  baseURL: "https://etf-766469416566.asia-northeast3.run.app",
-  withCredentials: true, // Refresh Token(Cookie)를 주고받기 위한 옵션
+  baseURL,
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (accessToken) {
-      // accessToken이 memory에 있는 동안에는 모든 request header에 해당 token을 포함시켜 전달함
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
@@ -171,39 +323,58 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor
-// 401 Error(Token Expired) 발생 시 Token 갱신 시도
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Check for 401 and ensure we haven't retried this specific request yet
+    // Prevent infinite loops
+    if (originalRequest.url?.includes("/auth/refresh")) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // IMPORTANT: Use the correct base URL for your refresh endpoint
-        // The Refresh Token is sent automatically via Cookies because of withCredentials
-        const { data } = await axios.post<{ accessToken: string }>(
-          "https://etf-766469416566.asia-northeast3.run.app/auth/refresh",
-          {},
+        // 1. Get the token from LocalStorage
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
+
+        // 2. Send it in the body
+        const { data } = await axios.post<{
+          accessToken: string;
+          refreshToken?: string;
+        }>(
+          `${baseURL}/auth/refresh`,
+          { refreshToken }, // <--- Sending in BODY
           { withCredentials: true }
         );
 
         const newAccessToken = data.accessToken;
         setClientToken(newAccessToken);
 
+        // Optional: Update refresh token if the server returned a new one
+        if (data.refreshToken) {
+          localStorage.setItem("refreshToken", data.refreshToken);
+        }
+
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }
 
-        // Retry the original request with the new token
         return api(originalRequest);
       } catch (refreshError) {
-        // If refresh fails, the Refresh Token is likely expired/invalid
+        // Cleanup if refresh fails
+        localStorage.removeItem("refreshToken");
         setClientToken(null);
-        window.location.href = "/login";
+
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
         return Promise.reject(refreshError);
       }
     }
