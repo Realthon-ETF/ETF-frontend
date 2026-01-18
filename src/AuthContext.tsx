@@ -20,7 +20,7 @@ interface User {
 interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  user?: User; // Optional, depending on if your API returns user info immediately
+  // user?: User; // Optional, depending on if your API returns user info immediately
 }
 
 interface AuthContextType {
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // 5. Save Access Token to Memory
     setClientToken(data.accessToken);
-
+    // Since the login response only contains tokens, you need to call a /me (or /profile) endpoint immediately after receiving the token to get the user details.
     await fetchUserProfile();
   };
 
@@ -117,6 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
+      {/* 4. Don't show the app until auth check is done */}
       {!loading ? children : <div>Checking session...</div>}
     </AuthContext.Provider>
   );

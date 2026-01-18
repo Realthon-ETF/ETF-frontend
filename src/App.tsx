@@ -1,21 +1,19 @@
-// import { useState } from "react";
 import { AuthProvider } from "./AuthContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/layout";
+import reset from "styled-reset";
+import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import ProtectedRoute from "./components/protected-route";
 // import LoadingScreen from "./components/loading-screen";
-// import AlarmLists from "./routes/alarm-lists";
 import Home from "./routes/home";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
 import Result from "./routes/result";
-// import ResetPassword from "./routes/reset-password";
-
-import reset from "styled-reset";
-import styled from "styled-components";
-import { createGlobalStyle } from "styled-components";
 import Confirmed from "./routes/confirmed";
-import ProtectedRoute from "./components/protected-route";
+import Notifications from "./routes/notifications";
+// import ResetPassword from "./routes/reset-password";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/confirmed",
         element: <Confirmed />,
+      },
+      {
+        path: "/notifications",
+        element: <Notifications />,
       },
     ],
   },

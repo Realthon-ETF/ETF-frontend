@@ -65,6 +65,7 @@ export default function CreateAccount() {
 
   const checkIdDuplicate = async (id: string) => {
     try {
+      // 이 부분 logic update 필요, 실제 response body에 따라
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/auth/check-id?loginId=${id}`
       );
@@ -347,7 +348,9 @@ export default function CreateAccount() {
 
           <SubmitButton
             type="submit"
-            disabled={isLoading || !isAgreed}
+            disabled={
+              isLoading || !isAgreed || !formData.id || !formData.password
+            }
             $active={
               isAgreed &&
               !isLoading &&

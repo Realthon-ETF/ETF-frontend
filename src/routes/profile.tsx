@@ -5,6 +5,18 @@ import editicon from "../assets/edit-icon.svg";
 import api from "../api"; // Import your axios instance
 // import { useAuth } from "../AuthContext";
 
+interface ProfileFormData {
+  name: string;
+  phone: string;
+  email: string;
+  school: string;
+  major: string;
+  interest: string; // Managed as a string in the UI
+  alarmPeriod: string; // Managed as string to match <select> value
+  alarmTime: string; // Managed as "09" (string)
+  summary: string;
+}
+
 interface ProfileResponse {
   userId: number;
   loginId: string;
@@ -15,14 +27,20 @@ interface ProfileResponse {
   major: string;
   interestFields: string[];
   intervalDays: number;
-  alarmTime: string; // "09:30:00"
+  alarmTime: string; // response는 "09:30:00"와 같이 받지만,
+  // 실제 저장은 '시/분/초' 중 '시'만 저장함
+}
+
+interface ResumeResponse {
+  userId: number;
+  summary: string;
 }
 
 export default function Profile() {
   // const { user } = useAuth();
   // const [isLoading, setIsLoading] = useState(true);
   // 1. Refactor: Use a single object for all form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
     phone: "",
     email: "",
@@ -34,17 +52,46 @@ export default function Profile() {
     summary: "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.",
   });
 
-  const [isProfileEditable, setIsProfileEditable] = useState<boolean>(true);
-  const [isResumeEditable, setIsResumeEditable] = useState<boolean>(true);
+  const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
+  const [isResumeEditable, setIsResumeEditable] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
-        // setIsLoading(true);
-        // api.ts automatically attaches the Bearer token
-        const { data } = await api.get<ProfileResponse>("/auth/me");
+      // try {
+      //   // setIsLoading(true);
+      //   // api.ts automatically attaches the Bearer token
+      //   const { data } = await api.get<ProfileResponse>("/auth/me");
+      //   // const { data: resume } = await api.get<ResumeResponse>("/resumes/pdf");
 
-        // 3. Map API data to local state
+      //   // 3. Map API data to local state
+      //   setFormData((prev) => ({
+      //     ...prev,
+      //     name: data.username,
+      //     phone: data.phoneNumber,
+      //     email: data.email,
+      //     school: data.school, // not required
+      //     major: data.major, // not required
+      //     interest: data.interestFields.join(", "), // Array to String
+      //     alarmPeriod: data.intervalDays.toString(), // default value exists
+      //     // alarmPeriod: data.parseInt(formData.alarmPeriod, 10),
+      //     // alarmTime:
+      //     alarmTime: data.alarmTime.split(":")[0], // "09:30:00" -> "09"
+      //     // alarmTime: parseInt(data.alarmTime, 10);
+      //     // default value exists
+      //   }));
+
+      //   // setFormData((prev) => ({
+      //   //   ...prev,
+      //   //   summary: resume.summary,
+      //   // }));
+      // } catch (err) {
+      //   console.error("Failed to fetch profile:", err);
+      //   alert("프로필 정보를 불러오는데 실패했습니다.");
+      // } finally {
+      //   // setIsLoading(false);
+      // }
+      try {
+        const { data } = await api.get<ProfileResponse>("/auth/me");
         setFormData((prev) => ({
           ...prev,
           name: data.username,
@@ -52,15 +99,24 @@ export default function Profile() {
           email: data.email,
           school: data.school,
           major: data.major,
-          interest: data.interestFields.join(", "), // Array to String
+          interest: data.interestFields.join(", "),
           alarmPeriod: data.intervalDays.toString(),
-          alarmTime: data.alarmTime.split(":")[0], // "09:30:00" -> "09"
+          alarmTime: data.alarmTime.split(":")[0],
         }));
       } catch (err) {
-        console.error("Failed to fetch profile:", err);
-        alert("프로필 정보를 불러오는데 실패했습니다.");
-      } finally {
-        // setIsLoading(false);
+        console.error("Profile fetch failed:", err);
+        // Optional: alert("프로필 정보를 불러오는데 실패했습니다.");
+      }
+
+      // 2. Fetch Resume Data independently
+      try {
+        const { data } = await api.get<ResumeResponse>("/resumes/pdf");
+        setFormData((prev) => ({
+          ...prev,
+          summary: data.summary,
+        }));
+      } catch (err) {
+        console.error("Resume fetch failed:", err);
       }
     };
 
@@ -80,11 +136,8 @@ export default function Profile() {
     }));
   };
 
-  // const handleProfileEditBtnClick = () => {
-  //   setIsProfileEditable((prev) => !prev);
-  // };
   const handleProfileEditBtnClick = async () => {
-    if (!isProfileEditable) {
+    if (isProfileEditable) {
       // If we are currently in "Edit Mode" and clicking "수정 완료"
       try {
         // update할 필요가 없다면 const {data}로 return을 받아올 필요가 없음
@@ -94,8 +147,9 @@ export default function Profile() {
           email: formData.email,
           school: formData.school,
           major: formData.major,
-          intervalDays: Number(formData.alarmPeriod),
-          alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
+          intervalDays: parseInt(formData.alarmPeriod, 10),
+          // alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
+          alarmTime: `${formData.alarmTime || "3".padStart(2, "0")}:00:00`,
         });
         // todo: update username if modified
         // updateUser(data.username);
@@ -109,14 +163,11 @@ export default function Profile() {
     setIsProfileEditable((prev) => !prev);
   };
 
-  // const handleResumeEditBtnClick = () => {
-  //   setIsResumeEditable((prev) => !prev);
-  // };
   const handleResumeEditBtnClick = async () => {
-    if (!isResumeEditable) {
+    if (isResumeEditable) {
       // If we are currently in "Edit Mode" and clicking "수정 완료"
       try {
-        await api.patch("/auth/me", {
+        await api.patch("/auth/resume", {
           summary: formData.summary,
         });
         alert("저장되었습니다.");
@@ -138,7 +189,7 @@ export default function Profile() {
           <div className="section-header">
             <h2>기본 정보</h2>
             <button type="button" onClick={handleProfileEditBtnClick}>
-              {isProfileEditable ? "수정" : "완료"}
+              {isProfileEditable ? "완료" : "수정"}
               <img src={editicon} alt="edit" />
             </button>
           </div>
@@ -151,7 +202,7 @@ export default function Profile() {
               placeholder="성함을 입력하세요"
               value={formData.name}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
             <InputGroup
               label="전화번호"
@@ -161,7 +212,7 @@ export default function Profile() {
               placeholder="전화번호를 입력하세요"
               value={formData.phone}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
             <InputGroup
               label="이메일"
@@ -171,7 +222,7 @@ export default function Profile() {
               placeholder="이메일을 입력하세요"
               value={formData.email}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
             <InputGroup
               label="학교"
@@ -180,7 +231,7 @@ export default function Profile() {
               placeholder="예) 한국대학교"
               value={formData.school}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
             <InputGroup
               label="학과"
@@ -189,7 +240,7 @@ export default function Profile() {
               placeholder="예) 경영학과"
               value={formData.major}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
             <InputGroup
               label="관심 직무"
@@ -198,7 +249,7 @@ export default function Profile() {
               placeholder="예) UI/UX 디자인"
               value={formData.interest}
               onChange={onChange}
-              disabled={isProfileEditable}
+              disabled={!isProfileEditable}
             />
 
             {/* --- New Custom Selects --- */}
@@ -212,7 +263,7 @@ export default function Profile() {
                   name="alarmPeriod"
                   value={formData.alarmPeriod}
                   onChange={onChange}
-                  disabled={isProfileEditable}
+                  disabled={!isProfileEditable}
                 >
                   <option value="">선택</option>
                   {[1, 2, 3, 4, 5, 6, 7].map((v) => (
@@ -234,11 +285,11 @@ export default function Profile() {
                   name="alarmTime"
                   value={formData.alarmTime}
                   onChange={onChange}
-                  disabled={isProfileEditable}
+                  disabled={!isProfileEditable}
                 >
                   <option value="">선택</option>
                   {Array.from({ length: 24 }).map((_, i) => (
-                    <option key={i} value={i}>
+                    <option key={i} value={i.toString().padStart(2, "0")}>
                       {i.toString().padStart(2, "0")}:00
                     </option>
                   ))}
@@ -254,7 +305,7 @@ export default function Profile() {
           <div className="section-header">
             <h2>이력서 요약 정보</h2>
             <button type="button" onClick={handleResumeEditBtnClick}>
-              {isResumeEditable ? "수정" : "수정 완료"}
+              {isResumeEditable ? "완료" : "수정"}
               <img src={editicon} alt="edit" />
             </button>
           </div>
@@ -263,7 +314,7 @@ export default function Profile() {
             name="summary"
             value={formData.summary}
             onChange={onChange}
-            disabled={isResumeEditable}
+            disabled={!isResumeEditable}
             placeholder="이력서 요약을 입력해주세요."
             spellCheck={false}
           />
@@ -282,6 +333,8 @@ const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 4rem;
+  const PageWrapper = styled.div
+  padding: 0 1rem;
 `;
 
 const ProfileContainer = styled.main`
@@ -392,9 +445,9 @@ const SelectRow = styled.div`
 
       /* Visual feedback for disabled state */
       &:disabled {
-        background-color: #f7f8fa;
+        background-color: #f5f5f5;
         cursor: not-allowed;
-        color: #9da0a8;
+        color: #999;
       }
 
       &:focus {
@@ -791,145 +844,3 @@ const StyledTextArea = styled.textarea`
 //     }
 //   }
 // `;
-
-// 두 버전 이전의 코드
-// export default function Profile() {
-//   const [userData, setUserData] = useState({
-//     username: "",
-//     phoneNumber: "",
-//     email: "",
-//     school: "",
-//     major: "",
-//     interestField: "",
-//     intervalDays: "",
-//     alarmTime: "",
-//   });
-//   const [resumeSummary] = useState(
-//     " 고려대학교 컴퓨터학과 재학 중인 2027년 졸업 예정자로, 머신러닝·데이터사이언스·파이썬·클라우드 기반 개발에 강점을 가지고 있으며 AWS Solutions Architect Associate와 AI Practitioner 자격을 보유하고 있다. React, Next.js, Firebase, GCP, LLM 파인튜닝 등을 활용해 유료 사용자 기반 웹서비스인 '1 Cup English'를 처음부터 끝까지 직접 기획·개발·운영했고, Supabase와 PostgreSQL을 활용한 해커톤 우승 프로젝트 'K Saju'도 팀 기반 협업으로 완성했다. 또한 Sendbird, CJ Foods, 한미연합사에서 총 6년 이상 전문 통역 경험을 쌓았고, 경영진 미팅·고객 협상·엔지니어링 회의 등 고난도 환경에서 실시간 통역을 수행해왔다. 기술 역량과 실전 제품 개발 경험, 그리고 뛰어난 커뮤니케이션 능력이 결합된 드문 프로필이다."
-//   );
-
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         if (!token) {
-//           return;
-//         }
-
-//         const response = await fetch("https://api.etf.r-e.kr/auth/me", {
-//           method: "GET",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${token}`,
-//           },
-//         });
-
-//         if (response.ok) {
-//           const data = await response.json();
-//           setUserData({
-//             username: data.username || "",
-//             phoneNumber: data.phoneNumber || "",
-//             email: data.email || "",
-//             school: data.school || "",
-//             major: data.major || "",
-//             interestField: data.interestField || "",
-//             intervalDays: data.intervalDays?.toString() || "",
-//             alarmTime: data.alarmTime || "",
-//           });
-//         }
-//       } catch (error) {
-//         console.error("Error fetching user data:", error);
-//       }
-//     };
-
-//     fetchUserData();
-//   }, []);
-
-//   const formatPhoneNumber = (phone: string) => {
-//     if (!phone) return { part1: "", part2: "", part3: "" };
-//     const cleaned = phone.replace(/-/g, "");
-//     if (cleaned.length === 11) {
-//       return {
-//         part1: cleaned.substring(0, 3),
-//         part2: cleaned.substring(3, 7),
-//         part3: cleaned.substring(7, 11),
-//       };
-//     }
-//     return { part1: phone.substring(0, 3), part2: "", part3: "" };
-//   };
-
-//   const formatAlarmTime = (time: string) => {
-//     if (!time) return "";
-//     // Convert "HH:MM:SS" to "HH:MM"
-//     if (time.includes(":")) {
-//       const parts = time.split(":");
-//       return `${parts[0]}:${parts[1]}`;
-//     }
-//     return time;
-//   };
-
-//   const phoneParts = formatPhoneNumber(userData.phoneNumber);
-
-//   return (
-//     <Wrapper>
-//       <MainContent>
-//         <Section>
-//           <SectionHeader>
-//             <SectionTitle>기본정보</SectionTitle>
-//             <EditButton>
-//               <EditButtonText>수정</EditButtonText>
-//               <PencilIcon>
-//                 <svg
-//                   width="16"
-//                   height="16"
-//                   viewBox="0 0 16 16"
-//                   fill="none"
-//                   xmlns="http://www.w3.org/2000/svg"
-//                 >
-//                   <path
-//                     d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
-//                     stroke="#5a5c63"
-//                     strokeWidth="1.5"
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                   />
-//                 </svg>
-//               </PencilIcon>
-//             </EditButton>
-//           </SectionHeader>
-//           <InfoFields>
-//
-//           </InfoFields>
-//         </Section>
-//         <Section>
-//           <SectionHeader alignEnd>
-//             <SectionTitle>이력서 요약 정보</SectionTitle>
-//             <EditButton>
-//               <EditButtonText>수정</EditButtonText>
-//               <PencilIcon>
-//                 <svg
-//                   width="16"
-//                   height="16"
-//                   viewBox="0 0 16 16"
-//                   fill="none"
-//                   xmlns="http://www.w3.org/2000/svg"
-//                 >
-//                   <path
-//                     d="M11.3333 2.00004C11.5084 1.82493 11.7163 1.68605 11.9444 1.59129C12.1726 1.49654 12.4163 1.44775 12.6625 1.44775C12.9087 1.44775 13.1524 1.49654 13.3806 1.59129C13.6087 1.68605 13.8166 1.82493 13.9917 2.00004C14.1668 2.17515 14.3057 2.38306 14.4004 2.61119C14.4952 2.83932 14.544 3.08301 14.544 3.32921C14.544 3.57541 14.4952 3.8191 14.4004 4.04723C14.3057 4.27536 14.1668 4.48327 13.9917 4.65838L5.32498 13.325L1.33331 14.6667L2.67498 10.675L11.3333 2.00004Z"
-//                     stroke="#5a5c63"
-//                     strokeWidth="1.5"
-//                     strokeLinecap="round"
-//                     strokeLinejoin="round"
-//                   />
-//                 </svg>
-//               </PencilIcon>
-//             </EditButton>
-//           </SectionHeader>
-//           <ResumeSummaryBox>
-//             <ResumeSummaryText>{resumeSummary}</ResumeSummaryText>
-//           </ResumeSummaryBox>
-//         </Section>
-//       </MainContent>
-//     </Wrapper>
-//   );
-// }
