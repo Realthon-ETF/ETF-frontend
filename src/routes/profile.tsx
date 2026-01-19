@@ -110,7 +110,7 @@ export default function Profile() {
 
       // 2. Fetch Resume Data independently
       try {
-        const { data } = await api.get<ResumeResponse>("/resumes/pdf");
+        const { data } = await api.get<ResumeResponse>("/auth/resume");
         setFormData((prev) => ({
           ...prev,
           summary: data.summary,
@@ -127,7 +127,7 @@ export default function Profile() {
   const onChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
