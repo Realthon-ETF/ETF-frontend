@@ -294,6 +294,7 @@
 import styled from "styled-components";
 import { Link, Outlet } from "react-router-dom";
 import logo from "../assets/logo.svg";
+import Footer from "./footer";
 
 export default function Layout() {
   return (
@@ -305,7 +306,6 @@ export default function Layout() {
               <img src={logo} alt="알려주잡 로고" />
               <span>알려주잡</span>
             </LogoLink>
-
             <NavList>
               <li>
                 <NavLink to="/settings">정보설정</NavLink>
@@ -322,6 +322,7 @@ export default function Layout() {
       <Main>
         <Outlet />
       </Main>
+      <Footer />
     </>
   );
 }
