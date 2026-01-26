@@ -14,6 +14,7 @@ export default function NotificationCard({ item }: NotificationCardProps) {
   const handleLikeClick = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevents navigation if the card is inside a link
     e.stopPropagation(); // Prevents the card's click event from firing
+    // This is crucial if your NotificationCard eventually becomes a link to the article; it prevents clicking the heart from also opening the URL.
     setIsLiked(!isLiked);
 
     // const response = await fetch(
@@ -32,6 +33,7 @@ export default function NotificationCard({ item }: NotificationCardProps) {
       {/* Semantic: Article represents a self-contained composition */}
       <article>
         <div className="badge-row">
+          {/* {item.isNew && <NewBadge>new</NewBadge>} */}
           <Badge $bgColor={getNotificationBadgeColor(item.category)}>
             {item.category}
           </Badge>

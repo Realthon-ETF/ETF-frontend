@@ -1,163 +1,173 @@
-import { useState } from "react";
+// componented version
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import api from "../api"; // Adjust path as needed
 
-// Color tokens
-const COLORS = {
-  primary: "#141618",
-  textSecondary: "#5A5C63",
-  white: "#FFFFFF",
-  borderLight: "#EAEBEC",
-  badgeRed: "#FF4242",
-  badgeBlue: "#EAF2FE",
-  badgeOrange: "#FEF4E6",
-  badgeLime: "#E6FFD4",
-};
+// Imports from split files
+import {
+  COLORS,
+  type CategoryType,
+} from "../components/notifications/constants";
+import type {
+  NotificationItem,
+  NotificationsResponse,
+} from "../components/notifications/types";
+import NotificationCard from "../components/notifications/notification-card";
 
-// Types
-interface NotificationItem {
-  id: string;
-  title: string;
-  category: "new" | "학과 공지" | "회사 공고" | "취업 포털";
-  source: string;
-  sourceIcon?: string;
-  isNew: boolean;
-}
-
-// Mock data
-const NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "1",
-    title:
-      "2025 하반기 고려대학교X삼성SDS 현직자 멘토링(SW 직무) 안내 / Notice on 2025 Second Half Korea University X Samsung SDS In-service Professional Mentoring (SW Job)",
-    category: "학과 공지",
-    source: "고려대학교 기술대학",
-    isNew: true,
-  },
-  {
-    id: "2",
-    title:
-      "[산업혁신인재성장지원(해외연계) 사업] 독일, 덴마크 지능형 로봇 분야 '파견연구자 모집'",
-    category: "학과 공지",
-    source: "고려대학교 기술대학",
-    isNew: true,
-  },
-  {
-    id: "3",
-    title: "Frontend Platform Assistant 모집",
-    category: "회사 공고",
-    source: "토스 채용",
-    isNew: true,
-  },
-  {
-    id: "4",
-    title: "AI와 함께 디자이너 커리어 확장하는 방법",
-    category: "취업 포털",
-    source: "잡코리아",
-    isNew: true,
-  },
-  {
-    id: "5",
-    title: "대구경북과학기술원 2025년도 제4차 일반직원(일반정규직) 공개채용",
-    category: "취업 포털",
-    source: "잡코리아",
-    isNew: false,
-  },
-  {
-    id: "6",
-    title: "게시글 제목입니다",
-    category: "취업 포털",
-    source: "웹사이트 이름",
-    isNew: false,
-  },
-];
-
-type CategoryType = "학과 공지" | "회사 공고" | "취업 포털";
-
-function getNotificationBadgeColor(category: CategoryType) {
-  switch (category) {
-    case "학과 공지":
-      return COLORS.badgeBlue;
-    case "회사 공고":
-      return COLORS.badgeOrange;
-    case "취업 포털":
-      return COLORS.badgeLime;
-    default:
-      return COLORS.badgeBlue;
-  }
-}
-
-interface NotificationCardProps {
-  item: NotificationItem;
-}
-
-function NotificationCard({ item }: NotificationCardProps) {
-  return (
-    <NotificationCardWrapper>
-      <BadgeContainer>
-        {item.isNew && <NewBadge>new</NewBadge>}
-        <CategoryBadge
-          bgColor={getNotificationBadgeColor(item.category as CategoryType)}
-        >
-          {item.category}
-        </CategoryBadge>
-      </BadgeContainer>
-      <ContentWrapper>
-        <NotificationTitle>{item.title}</NotificationTitle>
-        <SourceInfo>
-          <SourceIcon />
-          <SourceName>{item.source}</SourceName>
-        </SourceInfo>
-      </ContentWrapper>
-    </NotificationCardWrapper>
-  );
-}
+const ITEMS_PER_PAGE = 20;
 
 export default function Notifications() {
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filterType] = useState<string>("전체");
-  const newNotificationsCount = NOTIFICATIONS.filter((n) => n.isNew).length;
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setIsLoading(true);
+        const { data } = await api.get<NotificationsResponse>("/notifications");
+
+        const transformedNotifications: NotificationItem[] =
+          data.notifications.map((notif) => ({
+            id: notif.notificationId.toString(),
+            category: (notif.category as CategoryType) || "취업 포털",
+            title: notif.title,
+            source: notif.sourceName,
+            url: notif.originalUrl,
+            isLiked: notif.liked,
+            // createdAt: "2025-12-30T09:30:00Z",
+            // isLiked: true,
+            // 위 2개가 없고,
+            // isNew 판단이 API에 없음
+            // isNew: false, // API doesn't have isNew, you can set based on createdAt if needed
+          }));
+
+        setNotifications(transformedNotifications);
+        setTotalCount(data.totalCount);
+        setCurrentPage(1);
+      } catch (err) {
+        console.error("Failed to fetch notifications:", err);
+        // Fallback to mock data
+        // setNotifications(NOTIFICATIONS_MOCK);
+        // setTotalCount(NOTIFICATIONS_MOCK.length);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedNotifications = notifications.slice(startIndex, endIndex);
+
+  // const newNotificationsCount = notifications.filter((n) => n.isNew).length;
+
+  // const handlePreviousPage = () => {
+  //   setCurrentPage((prev) => Math.max(prev - 1, 1));
+  // };
+
+  // const handleNextPage = () => {
+  //   setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  // };
+
+  const handlePageClick = (page: number) => setCurrentPage(page);
+
+  if (totalCount === 0 && !isLoading) {
+    return (
+      <Layout>
+        <div className="empty-state">알림이 없습니다.</div>
+      </Layout>
+    );
+  }
 
   return (
-    <PageWrapper>
-      <NotificationsContainer>
-        {/* Header with notification count and filter */}
-        <HeaderSection>
-          <NotificationCountInfo>
-            <CountText>
-              <strong>{newNotificationsCount}</strong>개의 새로운 히스토리가
-              있습니다
-            </CountText>
-          </NotificationCountInfo>
-          <FilterDropdown>
-            <FilterButton>
-              {filterType}
-              <DropdownIcon>▼</DropdownIcon>
-            </FilterButton>
-          </FilterDropdown>
-        </HeaderSection>
+    <Layout>
+      <ContentContainer>
+        {/* Semantic: Header for the section */}
+        <SectionHeader>
+          <div className="count-info">
+            <p>
+              <strong>{totalCount}</strong>개의 히스토리
+            </p>
+          </div>
+          <div className="filter-wrapper">
+            <button type="button" className="filter-btn">
+              {filterType} <span>▼</span>
+            </button>
+          </div>
+        </SectionHeader>
 
-        {/* Notifications List */}
-        <NotificationsListWrapper>
-          {NOTIFICATIONS.map((notification) => (
+        <NotificationList>
+          {paginatedNotifications.map((notification) => (
             <NotificationCard key={notification.id} item={notification} />
           ))}
-        </NotificationsListWrapper>
-      </NotificationsContainer>
-    </PageWrapper>
+        </NotificationList>
+
+        {/* Semantic: Navigation for pagination */}
+        {totalPages > 1 && (
+          <PaginationNav aria-label="Pagination">
+            <button
+              className="nav-btn"
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              ← 이전
+            </button>
+
+            <div className="page-numbers">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    className={`num-btn ${currentPage === page ? "active" : ""}`}
+                    onClick={() => handlePageClick(page)}
+                    // aria-current={currentPage === page ? "page" : undefined}
+                    // isActive={currentPage === page}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
+            </div>
+
+            <button
+              className="nav-btn"
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              다음 →
+            </button>
+          </PaginationNav>
+        )}
+      </ContentContainer>
+    </Layout>
   );
 }
 
-// Styled Components
-const PageWrapper = styled.div`
+const Layout = styled.main`
   width: 100%;
   min-height: calc(100vh - 4rem);
   background: ${COLORS.white};
   display: flex;
   justify-content: center;
   padding-bottom: 4rem;
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: ${COLORS.textSecondary};
+    font-size: 1rem;
+    font-weight: 500;
+  }
 `;
 
-const NotificationsContainer = styled.div`
-  width: 100%;
+const ContentContainer = styled.div`
+  width: 80%; // 조절해서 알림의 width 수정
   max-width: 1200px;
   padding: 2rem 1rem;
   display: flex;
@@ -168,13 +178,9 @@ const NotificationsContainer = styled.div`
     padding: 1.5rem 1rem;
     gap: 1.5rem;
   }
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-  }
 `;
 
-const HeaderSection = styled.div`
+const SectionHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -186,220 +192,126 @@ const HeaderSection = styled.div`
     flex-direction: column;
     align-items: flex-start;
   }
-`;
 
-const NotificationCountInfo = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1;
-`;
+  .count-info p {
+    font-family: "Pretendard", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: ${COLORS.primary};
+    margin: 0;
 
-const CountText = styled.p`
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${COLORS.primary};
-  line-height: 1.3;
-  margin: 0;
-
-  strong {
-    font-weight: 600;
-    margin-right: 0.25rem;
+    strong {
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
   }
 
-  @media (max-width: 640px) {
-    font-size: 0.8rem;
-  }
-`;
+  .filter-wrapper {
+    .filter-btn {
+      background: ${COLORS.white};
+      border: 1px solid ${COLORS.borderLight};
+      border-radius: 0.5rem;
+      padding: 0.375rem 0.5rem;
+      font-size: 0.875rem;
+      color: ${COLORS.primary};
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
 
-const FilterDropdown = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
+      &:hover {
+        border-color: ${COLORS.textSecondary};
+        background-color: ${COLORS.bgHover};
+      }
 
-const FilterButton = styled.button`
-  background: ${COLORS.white};
-  border: 1px solid ${COLORS.borderLight};
-  border-radius: 0.5rem;
-  padding: 0.375rem 0.5rem;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${COLORS.primary};
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: ${COLORS.textSecondary};
-    background-color: #f9f9f9;
-  }
-
-  @media (max-width: 640px) {
-    font-size: 0.8rem;
-    padding: 0.25rem 0.375rem;
+      span {
+        font-size: 0.75rem;
+      }
+    }
   }
 `;
 
-const DropdownIcon = styled.span`
-  font-size: 0.75rem;
-  display: inline-block;
-  transition: transform 0.2s ease;
-`;
-
-const NotificationsListWrapper = styled.div`
+const NotificationList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 
   @media (max-width: 768px) {
     gap: 1.5rem;
   }
-
-  @media (max-width: 480px) {
-    gap: 1rem;
-  }
 `;
 
-const NotificationCardWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #f9f9f9;
-    padding: 0.5rem;
-    padding-top: 0;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0;
-  }
-`;
-
-const BadgeContainer = styled.div`
+const PaginationNav = styled.nav`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-`;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid ${COLORS.borderLight};
 
-interface BadgeProps {
-  bgColor?: string;
-}
-
-const NewBadge = styled.div`
-  background: ${COLORS.white};
-  border: 1px solid ${COLORS.badgeRed};
-  border-radius: 0.25rem;
-  padding: 0.25rem;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: ${COLORS.badgeRed};
-  display: inline-block;
-  min-width: max-content;
-`;
-
-const CategoryBadge = styled.div<BadgeProps>`
-  background-color: ${(props) => props.bgColor || COLORS.badgeBlue};
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: ${COLORS.primary};
-  display: inline-block;
-  min-width: max-content;
-`;
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`;
-
-const NotificationTitle = styled.h3`
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: ${COLORS.primary};
-  line-height: 1.3;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  @media (max-width: 768px) {
-    font-size: 1.1rem;
+  @media (max-width: 640px) {
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
   }
 
-  @media (max-width: 480px) {
-    font-size: 1rem;
+  button {
+    font-family: "Pretendard", sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: ${COLORS.white};
+    border: 1px solid ${COLORS.borderLight};
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+      background-color: #f5f5f5;
+    }
   }
-`;
 
-const SourceInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.125rem;
-`;
+  .nav-btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: ${COLORS.primary};
 
-const SourceIcon = styled.div`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.125rem;
-  background-color: #d9d9d9;
-  flex-shrink: 0;
-`;
+    &:hover:not(:disabled) {
+      border-color: ${COLORS.primary};
+      background-color: ${COLORS.bgHover};
+    }
+  }
 
-const SourceName = styled.p`
-  font-family:
-    "Pretendard",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${COLORS.textSecondary};
-  line-height: 1.3;
-  margin: 0;
+  .page-numbers {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-  @media (max-width: 480px) {
-    font-size: 0.8rem;
+  .num-btn {
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-width: 2rem;
+    color: ${COLORS.primary};
+
+    &.active {
+      background: ${COLORS.primary};
+      color: ${COLORS.white};
+      border-color: ${COLORS.primary};
+      font-weight: 600;
+    }
+
+    &:hover:not(.active) {
+      border-color: ${COLORS.primary};
+      background-color: ${COLORS.bgHover};
+    }
   }
 `;
