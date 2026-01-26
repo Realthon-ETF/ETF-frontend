@@ -1,31 +1,5 @@
-// import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import logo from "../assets/logo.svg";
-// import styled from "styled-components";
-
-// export default function Login() {
-//   const navigate = useNavigate();
-//   const [id, setId] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState("");
-
-//   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const {
-//       target: { name, value },
-//     } = e;
-//     if (name === "id") {
-//       setId(value);
-//     } else if (name === "password") {
-//       setPassword(value);
-//     }
-//     // Clear error when user starts typing
-//     if (error) {
-//       setError("");
-//     }
-//   };
-
-//   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+// previous Login method
+// const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 //     e.preventDefault();
 //     setError("");
 
@@ -74,146 +48,6 @@
 //     }
 //   };
 
-//   return (
-//     <PageWrapper>
-//       <LoginLayout>
-//         <div className="intro-area">
-//           <img src={logo} alt="Logo" />
-//           <span>알려주잡</span>
-//           <p>나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스</p>
-//         </div>
-//         <form className="login-area" onSubmit={onSubmit}>
-//           <div>
-//             {/* htmlFor와 id를 연결하면 라벨 클릭 시 입력창에 포커스가 갑니다 */}
-//             <label htmlFor="user-id">아이디</label>
-//             <input
-//               id="user-id"
-//               type="text"
-//               placeholder="아이디를 입력하세요"
-//               name="id"
-//               value={id}
-//               onChange={onChange}
-//               required
-//               disabled={isLoading}
-//             />
-//           </div>
-//           <div>
-//             <label htmlFor="user-pw">비밀번호</label>
-//             <input
-//               id="user-pw"
-//               type="password"
-//               placeholder="비밀번호를 입력하세요"
-//               name="password"
-//               value={password}
-//               onChange={onChange}
-//               required
-//               disabled={isLoading}
-//             />
-//           </div>
-//         </form>
-//         <Link to="/create-account" style={{ color: "#70737C" }}>
-//           회원가입
-//         </Link>
-//       </LoginLayout>
-//     </PageWrapper>
-//   );
-// }
-
-// const PageWrapper = styled.div`
-//   width: 100%;
-//   min-height: calc(100vh - 4rem);
-//   background: #fff;
-//   display: flex;
-//   justify-content: center;
-
-//   /* Responsive: Add padding for mobile screens */
-//   padding: 0 1rem;
-// `;
-
-// const LoginLayout = styled.main`
-//   display: flex;
-//   width: 100%;
-//   padding: 8.6875rem 0 18.325rem 0;
-//   justify-content: center;
-//   align-items: center;
-//   flex-direction: column;
-
-//   .intro-area {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     align-self: stretch;
-//     margin-bottom: 6.25rem;
-
-//     img {
-//       height: 10.8rem;
-//       width: 10.8rem;
-//       margin-bottom: 1rem;
-//     }
-
-//     span {
-//       color: #2e3847;
-//       font-size: 3rem;
-//       font-style: normal;
-//       font-weight: 500;
-//       line-height: normal;
-//       letter-spacing: -0.12rem;
-//       margin-bottom: 1.5rem;
-//     }
-
-//     p {
-//       color: #5a5c63;
-//       text-align: center;
-//       font-size: 1.5rem;
-//       font-style: normal;
-//       font-weight: 600;
-//       line-height: 130%;
-//     }
-//   }
-
-//   .login-area {
-//     display: flex;
-//     width: 12.5rem;
-//     flex-direction: column;
-//     align-items: flex-start;
-//     gap: 1.875rem;
-//     margin-bottom: 3.25rem;
-//     align-items: center;
-
-//     div {
-//       display: flex;
-//       flex-direction: column;
-//       gap: 0.375rem;
-//       align-items: center;
-
-//       label {
-//         color: #141618;
-//         text-align: center;
-//         font-size: 1rem;
-//         font-style: normal;
-//         font-weight: 500;
-//         line-height: 130%;
-//       }
-
-//       input {
-//         display: flex;
-//         padding: 0.5rem 0.625rem;
-//         justify-content: center;
-//         align-items: center;
-//         text-align: center;
-//         gap: 0.625rem;
-//         align-self: stretch;
-//         border-radius: 1.25rem;
-//         border: 1px solid #c2c4c8;
-
-//         &:focus {
-//           border-color: #69a5ff;
-//         }
-//       }
-//     }
-//   }
-// `;
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
@@ -224,15 +58,16 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth(); // 2. Destructure login function
 
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [id, setId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "id") setId(value);
     else if (name === "password") setPassword(value);
+    // Clear error when user starts typing
     if (error) setError("");
   };
 
@@ -410,7 +245,6 @@ const LoginLayout = styled.main`
   }
 `;
 
-// Added small styled components for better UX
 const ErrorMessage = styled.p`
   color: #ff4d4f;
   margin-bottom: 1rem;

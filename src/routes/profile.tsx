@@ -38,7 +38,7 @@ interface ResumeResponse {
 
 export default function Profile() {
   // const { user } = useAuth();
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // 1. Refactor: Use a single object for all form data
   const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
@@ -140,6 +140,7 @@ export default function Profile() {
     if (isProfileEditable) {
       // If we are currently in "Edit Mode" and clicking "수정 완료"
       try {
+        setIsLoading(true);
         // update할 필요가 없다면 const {data}로 return을 받아올 필요가 없음
         await api.patch("/auth/me", {
           username: formData.name,
@@ -149,7 +150,7 @@ export default function Profile() {
           major: formData.major,
           intervalDays: parseInt(formData.alarmPeriod, 10),
           // alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
-          alarmTime: `${formData.alarmTime || "3".padStart(2, "0")}:00:00`,
+          alarmTime: `${(formData.alarmTime || "03").padStart(2, "0")}:00:00`,
         });
         // todo: update username if modified
         // updateUser(data.username);
@@ -158,6 +159,8 @@ export default function Profile() {
       } catch (err) {
         alert("저장에 실패했습니다.");
         return; // Don't exit edit mode if save fails
+      } finally {
+        setIsLoading(false);
       }
     }
     setIsProfileEditable((prev) => !prev);
@@ -167,6 +170,7 @@ export default function Profile() {
     if (isResumeEditable) {
       // If we are currently in "Edit Mode" and clicking "수정 완료"
       try {
+        setIsLoading(true);
         await api.patch("/auth/resume", {
           summary: formData.summary,
         });
@@ -174,6 +178,8 @@ export default function Profile() {
       } catch (err) {
         alert("저장에 실패했습니다.");
         return; // Don't exit edit mode if save fails
+      } finally {
+        setIsLoading(false);
       }
     }
     setIsResumeEditable((prev) => !prev);
@@ -188,7 +194,11 @@ export default function Profile() {
         <Section>
           <div className="section-header">
             <h2>기본 정보</h2>
-            <button type="button" onClick={handleProfileEditBtnClick}>
+            <button
+              type="button"
+              onClick={handleProfileEditBtnClick}
+              disabled={isLoading}
+            >
               {isProfileEditable ? "완료" : "수정"}
               <img src={editicon} alt="edit" />
             </button>
@@ -304,7 +314,11 @@ export default function Profile() {
         <Section>
           <div className="section-header">
             <h2>이력서 요약 정보</h2>
-            <button type="button" onClick={handleResumeEditBtnClick}>
+            <button
+              type="button"
+              onClick={handleResumeEditBtnClick}
+              disabled={isLoading}
+            >
               {isResumeEditable ? "완료" : "수정"}
               <img src={editicon} alt="edit" />
             </button>
@@ -396,6 +410,12 @@ const Section = styled.section`
 
       &:hover {
         background: #f7f8fa;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        background: #f0f0f0;
       }
 
       img {

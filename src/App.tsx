@@ -95,15 +95,13 @@ export default function App() {
 
   return (
     <Wrapper>
-      {/* <> */}
       <GlobalStyles />
       {/* {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
       <AuthProvider>{<RouterProvider router={router} />}</AuthProvider>
       {/* 1. RouterProvider와 Wrapper의 관계
 RouterProvider 자체는 화면에 아무런 HTML 태그를 남기지 않습니다. 그 안에 들어가는 Layout이나 Home 같은 컴포넌트들이 실제로 렌더링되죠.
-
 주의점: 만약 App.tsx의 Wrapper에도 가로 너비 제한이 있고, 그 안의 Layout 컴포넌트에도 또 너비 제한이 있다면 스타일이 충돌하거나 불필요하게 중복될 수 있습니다. */}
-      {/* </> */}
+      {/* 모든 페이지에서 Footer를 띄우고 싶으면 여기에 <Footer> 추가하기 */}
     </Wrapper>
   );
 }

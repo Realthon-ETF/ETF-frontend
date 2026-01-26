@@ -41,12 +41,12 @@ export default function CreateAccount() {
     {
       status: "default",
       message: "",
-    }
+    },
   );
 
   // Handlers
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -67,7 +67,7 @@ export default function CreateAccount() {
     try {
       // 이 부분 logic update 필요, 실제 response body에 따라
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/check-id?loginId=${id}`
+        `${import.meta.env.VITE_BASE_URL}/auth/check-login-id?loginId=${id}`,
       );
       const data = await response.json();
       if (data.isDuplicate) {
@@ -93,7 +93,7 @@ export default function CreateAccount() {
   const checkPhoneDuplicate = async (phone: string) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/check-phone?phone=${phone}`
+        `${import.meta.env.VITE_BASE_URL}/auth/check-phone?phoneNumber=${phone}`,
       );
       const data = await response.json();
       // todo: 중복 확인여부의 response JSON data 확인 후 update
@@ -155,7 +155,7 @@ export default function CreateAccount() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -166,7 +166,7 @@ export default function CreateAccount() {
       navigate("/login");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "회원가입 중 오류가 발생했습니다."
+        err instanceof Error ? err.message : "회원가입 중 오류가 발생했습니다.",
       );
     } finally {
       setIsLoading(false);
@@ -255,6 +255,7 @@ export default function CreateAccount() {
                 onChange={onChange}
                 disabled={isLoading}
                 required
+                duplicateCheck={true}
               />
               <InputGroup
                 label="학교"
