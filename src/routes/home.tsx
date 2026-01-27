@@ -419,12 +419,31 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
-
+  const [url, setUrl] = useState<string>("");
   // 1. Ref is used to trigger the hidden native input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
   const name = user?.username ?? "사용자";
+
+  const handleURLInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      await api.post("/ai/crawl/request", {
+        targetUrl: `${url}`,
+      });
+      alert("POST /ai/crawl/request API triggered");
+    } catch (err: any) {
+      // Axios errors usually hold message in response.data.message
+      // const message = err.response?.data?.message || "로그인에 실패했습니다.";
+      // setError(message);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -508,6 +527,10 @@ export default function Home() {
   return (
     <PageWrapper>
       <ContentContainer>
+        <form onSubmit={onSubmit}>
+          <input onChange={handleURLInput} value={url} />
+          <button>Triggers Crawler</button>
+        </form>
         <h1 className="intro-text">
           맞춤 정보를 드리기 위해서는
           <br />
