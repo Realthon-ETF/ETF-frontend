@@ -58,6 +58,7 @@ export default function NotificationCard({
 // ... Styles (CardItem, Badge, IconButton, HeartIcon) remain exactly the same as your code ...
 // Just ensure you keep the styled components definition below the component.
 const CardItem = styled.li`
+  list-style: none;
   article {
     display: flex;
     flex-direction: column;

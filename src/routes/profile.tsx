@@ -5,6 +5,7 @@ import api from "../api";
 import { Sidebar } from "../components/profile/Sidebar";
 import { BasicInfoSection } from "../components/profile/BasicInfoSection";
 import { ResumeSection } from "../components/profile/ResumeSection";
+import { LikedSection } from "../components/profile/LikedSection";
 import { Section } from "../components/profile/Profile.style";
 
 import type { ProfileFormData, ProfileResponse } from "../types/auth";
@@ -329,6 +330,25 @@ export default function Profile() {
     setIsResumeEditable((prev) => !prev);
   };
 
+  const handleToggleLike = async (id: string) => {
+    // Optimistic Update: Remove from list immediately if it's the "Likes" page
+    // because unliking something here means it should disappear.
+    const previousState = [...likedNotifications];
+
+    // Remove the item from view immediately
+    setLikedNotifications((prev) => prev.filter((item) => item.id !== id));
+
+    try {
+      // API Call (Assuming you have an endpoint for this)
+      await api.post(`/notifications/${id}/like`);
+    } catch (err) {
+      console.error("Like toggle failed", err);
+      // Revert if API fails
+      setLikedNotifications(previousState);
+      alert("요청을 처리하는 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <PageWrapper>
       <ProfileContainer>
@@ -415,9 +435,10 @@ export default function Profile() {
             </Section>
           )}
           {activeTab === "likes" && (
-            <Section>
-              <h2>준비 중입니다.</h2>
-            </Section>
+            <LikedSection
+              notifications={likedNotifications}
+              onToggleLike={handleToggleLike}
+            />
           )}
         </MainContent>
       </ProfileContainer>
