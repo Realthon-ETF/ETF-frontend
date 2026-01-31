@@ -261,8 +261,8 @@
 
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import logo from "../assets/logo.svg";
-import checked from "../assets/check-mark.svg";
+import logo from "../assets/images/logo.svg";
+import checked from "../assets/images/check-mark.svg";
 import { Button } from "../components/Button";
 
 export default function Confirmed() {

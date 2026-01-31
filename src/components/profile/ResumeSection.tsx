@@ -1,5 +1,5 @@
 import React from "react";
-import editicon from "../../assets/edit-icon.svg";
+import editicon from "../../assets/images/edit-icon.svg";
 import { Section, StyledTextArea } from "../profile/Profile.style";
 
 interface ResumeSectionProps {

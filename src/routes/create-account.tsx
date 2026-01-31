@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../components/Button";
 import styled from "styled-components";
-import logo from "../assets/logo.svg";
+import logo from "../assets/images/logo.svg";
 import StyledCheckButton from "../components/check-button";
 import { InputGroup, type ValidationStatus } from "../components/input-group";
 import { useNavigate } from "react-router-dom";

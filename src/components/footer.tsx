@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import dividerIcon from "../assets/divider.svg";
+import dividerIcon from "../assets/images/divider.svg";
 
 // Color tokens
 const COLORS = {

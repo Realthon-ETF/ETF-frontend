@@ -410,7 +410,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../components/Button";
 import StyledCheckButton from "../components/check-button";
-import deleteIcon from "../assets/delete-icon.svg";
+import deleteIcon from "../assets/images/delete-icon.svg";
 import { useAuth } from "../AuthContext";
 import api from "../api"; // Assuming this is your axios instance with interceptors
 
@@ -435,10 +435,14 @@ export default function Home() {
 
     try {
       await api.post("/ai/crawl/request", {
-        targetUrl: `${url}`,
+        targetUrl: url,
       });
       alert("POST /ai/crawl/request API triggered");
     } catch (err: any) {
+      console.error("Backend Error Details:", err.response?.data);
+      alert(
+        `Error: ${err.response?.status} - ${err.response?.data?.message || "Internal Server Error"}`,
+      );
       // Axios errors usually hold message in response.data.message
       // const message = err.response?.data?.message || "로그인에 실패했습니다.";
       // setError(message);
@@ -528,7 +532,7 @@ export default function Home() {
     <PageWrapper>
       <form onSubmit={onSubmit}>
         <input onChange={handleURLInput} value={url} />
-        <button>Triggers Crawler</button>
+        <button type="submit">Triggers Crawler</button>
       </form>
       <ContentContainer>
         <h1 className="intro-text">

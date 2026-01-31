@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import del from "../assets/delete-icon.svg";
+import del from "../assets/images/delete-icon.svg";
 import { Button } from "../components/Button";
 import { useAuth } from "../AuthContext";
 

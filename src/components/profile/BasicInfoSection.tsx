@@ -1,7 +1,7 @@
 import React from "react";
 import { Section, SelectRow } from "../profile/Profile.style";
 import { InputGroup } from "../input-group";
-import editicon from "../../assets/edit-icon.svg";
+import editicon from "../../assets/images/edit-icon.svg";
 import type { ProfileFormData } from "../../types/auth";
 
 interface Props {
