@@ -14,6 +14,7 @@ import Result from "./routes/result";
 import Confirmed from "./routes/confirmed";
 import Notifications from "./routes/notifications";
 // import ResetPassword from "./routes/reset-password";
+import BareunDotumFile from "./assets/fonts/BareunDotumOTFPro2.otf";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,13 @@ const router = createBrowserRouter([
 
 const GlobalStyles = createGlobalStyle`
   ${reset};
+  @font-face {
+    font-family: 'BareunDotumOTFPro2';
+    src: url(${BareunDotumFile}) format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
   * {
     box-sizing: border-box;
   }

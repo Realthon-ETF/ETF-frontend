@@ -50,9 +50,10 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.svg";
+import logo from "../assets/images/logo.svg";
 import styled from "styled-components";
 import { useAuth } from "../AuthContext";
+import { Mixpanel } from "../utils/mixpanel";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ export default function Login() {
       await login(id, password);
 
       // 4. Success! AuthContext now has the user and token.
+      Mixpanel.track("Signup Success", { Status: "Success" });
       navigate("/");
     } catch (err: any) {
       // Axios errors usually hold message in response.data.message
@@ -104,7 +106,11 @@ export default function Login() {
         <div className="intro-area">
           <img src={logo} alt="Logo" />
           <span>알려주잡</span>
-          <p>나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스</p>
+          <p>
+            나에게 필요한 정보를
+            <br />
+            먼저 알아서 찾아주는 AI 서비스
+          </p>
         </div>
 
         {/* Added error message display */}
@@ -183,6 +189,7 @@ const LoginLayout = styled.main`
     }
 
     span {
+      font-family: "BareunDotumOTFPro2";
       color: #2e3847;
       font-size: 3rem;
       font-style: normal;
