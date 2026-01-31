@@ -1,26 +1,25 @@
-// import React from "react";
 import styled from "styled-components";
-// Assuming you move your TabType to a shared types file
-// import { TabType } from "../../types";
+import { useAuth } from "../../AuthContext";
 
 type TabType = "basic" | "summary" | "website" | "likes";
 
 interface SidebarProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
-  userName: string;
 }
 
-export const Sidebar = ({
-  activeTab,
-  setActiveTab,
-  userName,
-}: SidebarProps) => {
+export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <SidebarWrapper>
       <div className="sidebar-header">
         <h1>
-          {userName}님의
+          {user?.username}님의
           <br />
           마이페이지
         </h1>
@@ -64,18 +63,12 @@ export const Sidebar = ({
         </ul>
       </nav>
 
-      <button className="logout-btn">로그아웃</button>
+      <button className="logout-btn" onClick={handleLogout}>
+        로그아웃
+      </button>
     </SidebarWrapper>
   );
 };
-
-// --- Styled Components (Moved from profile.tsx) ---
-// const SidebarWrapper = styled.aside`
-//   /* Paste your existing sidebar styles here */
-//   width: 250px;
-//   .divider { height: 1px; background: #eee; margin: 20px 0; }
-//   .logout-btn { margin-top: auto; color: #888; cursor: pointer; }
-// `;
 
 const SidebarWrapper = styled.aside`
   width: 30%;
