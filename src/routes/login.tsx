@@ -53,6 +53,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import styled from "styled-components";
 import { useAuth } from "../AuthContext";
+import { Helmet } from "react-helmet-async";
 import { Mixpanel } from "../utils/mixpanel";
 
 export default function Login() {
@@ -101,58 +102,70 @@ export default function Login() {
   };
 
   return (
-    <PageWrapper>
-      <LoginLayout>
-        <div className="intro-area">
-          <img src={logo} alt="Logo" />
-          <span>알려주잡</span>
-          <p>
-            나에게 필요한 정보를
-            <br />
-            먼저 알아서 찾아주는 AI 서비스
-          </p>
-        </div>
-
-        {/* Added error message display */}
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
-        <form className="login-area" onSubmit={onSubmit}>
-          <div>
-            <label htmlFor="user-id">아이디</label>
-            <input
-              id="user-id"
-              type="text"
-              name="id"
-              placeholder="아이디를 입력하세요"
-              value={id}
-              onChange={onChange}
-              required
-              disabled={isLoading}
-            />
+    <>
+      <Helmet>
+        <title>
+          알려주잡 | 나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스
+        </title>
+        <meta
+          name="description"
+          content="나에게 필요한 정보를 먼저 찾아주는 AI 서비스 알려주잡에 로그인하세요."
+        />
+        {/* <meta name="description">NoInfluences Search Engine ranking and click-through rates.<meta property="og:..." />NoControls how the link looks when shared on KakaoTalk/Slack. */}
+      </Helmet>
+      <PageWrapper>
+        <LoginLayout>
+          <div className="intro-area">
+            <img src={logo} alt="Logo" />
+            <span>알려주잡</span>
+            <p>
+              나에게 필요한 정보를
+              <br />
+              먼저 알아서 찾아주는 AI 서비스
+            </p>
           </div>
-          <div>
-            <label htmlFor="user-pw">비밀번호</label>
-            <input
-              id="user-pw"
-              type="password"
-              name="password"
-              placeholder="비밀번호를 입력하세요"
-              value={password}
-              onChange={onChange}
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <LoginButton type="submit" disabled={isLoading}>
-            {isLoading ? "로그인 중..." : "로그인"}
-          </LoginButton>
-        </form>
 
-        <Link to="/create-account" style={{ color: "#70737C" }}>
-          회원가입
-        </Link>
-      </LoginLayout>
-    </PageWrapper>
+          {/* Added error message display */}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
+          <form className="login-area" onSubmit={onSubmit}>
+            <div>
+              <label htmlFor="user-id">아이디</label>
+              <input
+                id="user-id"
+                type="text"
+                name="id"
+                placeholder="아이디를 입력하세요"
+                value={id}
+                onChange={onChange}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <div>
+              <label htmlFor="user-pw">비밀번호</label>
+              <input
+                id="user-pw"
+                type="password"
+                name="password"
+                placeholder="비밀번호를 입력하세요"
+                value={password}
+                onChange={onChange}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <LoginButton type="submit" disabled={isLoading}>
+              {isLoading ? "로그인 중..." : "로그인"}
+            </LoginButton>
+          </form>
+
+          <Link to="/create-account" style={{ color: "#70737C" }}>
+            회원가입
+          </Link>
+        </LoginLayout>
+      </PageWrapper>
+    </>
   );
 }
 

@@ -264,6 +264,7 @@ import styled from "styled-components";
 import logo from "../assets/images/logo.svg";
 import checked from "../assets/images/check-mark.svg";
 import { Button } from "../components/Button";
+import { Helmet } from "react-helmet-async";
 
 export default function Confirmed() {
   const navigate = useNavigate();
@@ -273,48 +274,59 @@ export default function Confirmed() {
   };
 
   return (
-    <PageWrapper>
-      <ContentContainer>
-        {/* Semantic: This is a visual figure representing the notification */}
-        <AlarmSection aria-label="Example Notification Preview">
-          <img src={logo} alt="Service Logo" className="logo" />
+    <>
+      <Helmet>
+        <title>서비스 신청 완료 | 알려주잡</title>
+        <meta
+          name="description"
+          content="이력서 분석 및 서비스 신청이 완료되었습니다."
+        />
+      </Helmet>
+      <PageWrapper>
+        <ContentContainer>
+          {/* Semantic: This is a visual figure representing the notification */}
+          <AlarmSection aria-label="Example Notification Preview">
+            <img src={logo} alt="Service Logo" className="logo" />
 
-          <div className="message-box">
-            <span className="sender-name">알려주잡</span>
+            <div className="message-box">
+              <span className="sender-name">알려주잡</span>
 
-            <div className="message-bubble">
-              <header className="bubble-header">알림톡 도착</header>
-              <div className="bubble-body">
-                <p>
-                  이디안님 안녕하세요!
-                  <br />
-                  오늘 AI가 선별한 새로운 게시글 3건이 도착했습니다.
-                </p>
-                <ul>
-                  <li>1. 학과: 한국대학 교내 기업 인재 특강 일정</li>
-                  <li>2. 관심 회사: 데이터 분석 인턴 모집</li>
-                  <li>3. 취업 포털: 실무 SQL 집중 1일 워크숍</li>
-                </ul>
-                <p>지금 바로 확인하고 지원/신청하세요!</p>
+              <div className="message-bubble">
+                <header className="bubble-header">알림톡 도착</header>
+                <div className="bubble-body">
+                  <p>
+                    이디안님 안녕하세요!
+                    <br />
+                    오늘 AI가 선별한 새로운 게시글 3건이 도착했습니다.
+                  </p>
+                  <ul>
+                    <li>1. 학과: 한국대학 교내 기업 인재 특강 일정</li>
+                    <li>2. 관심 회사: 데이터 분석 인턴 모집</li>
+                    <li>3. 취업 포털: 실무 SQL 집중 1일 워크숍</li>
+                  </ul>
+                  <p>지금 바로 확인하고 지원/신청하세요!</p>
+                </div>
               </div>
             </div>
-          </div>
-        </AlarmSection>
+          </AlarmSection>
 
-        {/* Semantic: The main textual content of the page */}
-        <StatusSection>
-          <div className="status-header">
-            <h1>서비스 신청 완료</h1>
-            <img src={checked} alt="Success Checkmark" />
-          </div>
-          <p className="status-description">
-            18시에 알림톡을 통해 필요 정보를 확인할 수 있어요
-          </p>
-        </StatusSection>
+          {/* Semantic: The main textual content of the page */}
+          <StatusSection>
+            <div className="status-header">
+              <h1>서비스 신청 완료</h1>
+              <img src={checked} alt="Success Checkmark" />
+            </div>
+            <p className="status-description">
+              18시에 알림톡을 통해 필요 정보를 확인할 수 있어요
+            </p>
+          </StatusSection>
 
-        <ActionButton onClick={handleSettingsClick}>설정 확인하기</ActionButton>
-      </ContentContainer>
-    </PageWrapper>
+          <ActionButton onClick={handleSettingsClick}>
+            설정 확인하기
+          </ActionButton>
+        </ContentContainer>
+      </PageWrapper>
+    </>
   );
 }
 

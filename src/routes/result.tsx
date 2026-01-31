@@ -3,6 +3,7 @@ import styled from "styled-components";
 import del from "../assets/images/delete-icon.svg";
 import { Button } from "../components/Button";
 import { useAuth } from "../AuthContext";
+import { Helmet } from "react-helmet-async";
 
 interface ResumeData {
   userId: number;
@@ -27,43 +28,49 @@ export default function Result() {
   // todo: 내용 수정 기능 추가하기
   // X 버튼 누르면 뒤로 돌아가는 기능 추가하기
   return (
-    <Wrapper>
-      <ResultContent>
-        {/* Top Resume Indicator */}
-        <ResumeBadge>
-          <div className="text-group">
-            <span className="label">등록된 이력서</span>
-            <span className="file-name">{fileName}</span>
-          </div>
-          <button
-            type="button"
-            aria-label="Delete resume"
-            className="delete-btn"
-          >
-            <img src={del} alt="" />
-          </button>
-        </ResumeBadge>
+    <>
+      <Helmet>
+        <title>분석 결과 | 알려주잡</title>
+        <meta name="description" content="이력서 분석 결과" />
+      </Helmet>
+      <Wrapper>
+        <ResultContent>
+          {/* Top Resume Indicator */}
+          <ResumeBadge>
+            <div className="text-group">
+              <span className="label">등록된 이력서</span>
+              <span className="file-name">{fileName}</span>
+            </div>
+            <button
+              type="button"
+              aria-label="Delete resume"
+              className="delete-btn"
+            >
+              <img src={del} alt="" />
+            </button>
+          </ResumeBadge>
 
-        <Article>
-          <SectionHeader>
-            {/* div에서 <header>로 바뀜 */}
-            <h1>이력서 분석 결과</h1>
-            <p>
-              AI가 이력서 분석을 완료하고 <strong>{name}</strong>님만을 위한
-              맞춤 정보를 자동 완성했습니다.
-              <br className="desktop-only" />
-              실제 커리어 목표와 다르거나 추가하고 싶은 내용이 있다면 수정하신
-              후 서비스 시작 버튼을 눌러주세요.
-            </p>
-          </SectionHeader>
+          <Article>
+            <SectionHeader>
+              {/* div에서 <header>로 바뀜 */}
+              <h1>이력서 분석 결과</h1>
+              <p>
+                AI가 이력서 분석을 완료하고 <strong>{name}</strong>님만을 위한
+                맞춤 정보를 자동 완성했습니다.
+                <br className="desktop-only" />
+                실제 커리어 목표와 다르거나 추가하고 싶은 내용이 있다면 수정하신
+                후 서비스 시작 버튼을 눌러주세요.
+              </p>
+            </SectionHeader>
 
-          <SummaryBox>
-            <p>{resumeData.summary || "AI 분석 내용을 로드 중입니다..."}</p>
-          </SummaryBox>
-        </Article>
-        <ServiceStartBtn>서비스 시작하기</ServiceStartBtn>
-      </ResultContent>
-    </Wrapper>
+            <SummaryBox>
+              <p>{resumeData.summary || "AI 분석 내용을 로드 중입니다..."}</p>
+            </SummaryBox>
+          </Article>
+          <ServiceStartBtn>서비스 시작하기</ServiceStartBtn>
+        </ResultContent>
+      </Wrapper>
+    </>
   );
 }
 

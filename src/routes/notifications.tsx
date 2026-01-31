@@ -10,6 +10,7 @@ import type {
   NotificationsResponse,
 } from "../components/notifications/types";
 import NotificationCard from "../components/notifications/notification-card";
+import { Helmet } from "react-helmet-async";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -114,94 +115,105 @@ export default function Notifications() {
   }
 
   return (
-    <Layout>
-      <ContentContainer>
-        <SectionHeader>
-          <div className="count-info">
-            <p>
-              <strong>{currentTotalCount}</strong>개의 히스토리
-            </p>
-          </div>
-
-          {/* Dropdown Area */}
-          <div className="filter-wrapper">
-            <FilterContainer>
-              <button
-                type="button"
-                className="filter-btn"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                {filterType} <span>{isDropdownOpen ? "▲" : "▼"}</span>
-              </button>
-
-              {isDropdownOpen && (
-                <DropdownMenu>
-                  {FILTER_OPTIONS.map((option) => (
-                    <li key={option}>
-                      <button
-                        type="button"
-                        onClick={() => handleFilterSelect(option)}
-                        className={filterType === option ? "selected" : ""}
-                      >
-                        {option}
-                      </button>
-                    </li>
-                  ))}
-                </DropdownMenu>
-              )}
-            </FilterContainer>
-          </div>
-        </SectionHeader>
-
-        <NotificationList>
-          {paginatedNotifications.length > 0 ? (
-            paginatedNotifications.map((notification) => (
-              <NotificationCard
-                key={notification.id}
-                item={notification}
-                onToggleLike={handleToggleLike} // Pass handler down
-              />
-            ))
-          ) : (
-            <div className="no-result">해당하는 알림이 없습니다.</div>
-          )}
-        </NotificationList>
-
-        {totalPages > 1 && (
-          <PaginationNav aria-label="Pagination">
-            <button
-              className="nav-btn"
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              ← 이전
-            </button>
-
-            <div className="page-numbers">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    className={`num-btn ${currentPage === page ? "active" : ""}`}
-                    onClick={() => handlePageClick(page)}
-                  >
-                    {page}
-                  </button>
-                ),
-              )}
+    <>
+      <Helmet>
+        <title>알림 목록 | 알려주잡</title>
+        <meta
+          name="description"
+          content="이력서 분석 결과에 기반한 맞춤 취업 정보 알림 목록입니다."
+        />
+      </Helmet>
+      <Layout>
+        <ContentContainer>
+          <SectionHeader>
+            <div className="count-info">
+              <p>
+                <strong>{currentTotalCount}</strong>개의 히스토리
+              </p>
             </div>
 
-            <button
-              className="nav-btn"
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-            >
-              다음 →
-            </button>
-          </PaginationNav>
-        )}
-      </ContentContainer>
-    </Layout>
+            {/* Dropdown Area */}
+            <div className="filter-wrapper">
+              <FilterContainer>
+                <button
+                  type="button"
+                  className="filter-btn"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  {filterType} <span>{isDropdownOpen ? "▲" : "▼"}</span>
+                </button>
+
+                {isDropdownOpen && (
+                  <DropdownMenu>
+                    {FILTER_OPTIONS.map((option) => (
+                      <li key={option}>
+                        <button
+                          type="button"
+                          onClick={() => handleFilterSelect(option)}
+                          className={filterType === option ? "selected" : ""}
+                        >
+                          {option}
+                        </button>
+                      </li>
+                    ))}
+                  </DropdownMenu>
+                )}
+              </FilterContainer>
+            </div>
+          </SectionHeader>
+
+          <NotificationList>
+            {paginatedNotifications.length > 0 ? (
+              paginatedNotifications.map((notification) => (
+                <NotificationCard
+                  key={notification.id}
+                  item={notification}
+                  onToggleLike={handleToggleLike} // Pass handler down
+                />
+              ))
+            ) : (
+              <div className="no-result">해당하는 알림이 없습니다.</div>
+            )}
+          </NotificationList>
+
+          {totalPages > 1 && (
+            <PaginationNav aria-label="Pagination">
+              <button
+                className="nav-btn"
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                ← 이전
+              </button>
+
+              <div className="page-numbers">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      className={`num-btn ${currentPage === page ? "active" : ""}`}
+                      onClick={() => handlePageClick(page)}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
+              </div>
+
+              <button
+                className="nav-btn"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                다음 →
+              </button>
+            </PaginationNav>
+          )}
+        </ContentContainer>
+      </Layout>
+    </>
   );
 }
 

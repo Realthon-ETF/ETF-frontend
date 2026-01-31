@@ -412,7 +412,8 @@ import { Button } from "../components/Button";
 import StyledCheckButton from "../components/check-button";
 import deleteIcon from "../assets/images/delete-icon.svg";
 import { useAuth } from "../AuthContext";
-import api from "../api"; // Assuming this is your axios instance with interceptors
+import api from "../api";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -529,88 +530,96 @@ export default function Home() {
   };
 
   return (
-    <PageWrapper>
-      <form onSubmit={onSubmit}>
-        <input onChange={handleURLInput} value={url} />
-        <button type="submit">Triggers Crawler</button>
-      </form>
-      <ContentContainer>
-        <h1 className="intro-text">
-          맞춤 정보를 드리기 위해서는
-          <br />
-          {name}님의 정보가 담긴 이력서가 필요해요
-        </h1>
+    <>
+      <Helmet>
+        <title>홈 | 알려주잡</title>
+        <meta name="description" content="분석할 이력서를 업로드하세요." />
+      </Helmet>
+      <PageWrapper>
+        <form onSubmit={onSubmit}>
+          <input onChange={handleURLInput} value={url} />
+          <button type="submit">Triggers Crawler</button>
+        </form>
+        <ContentContainer>
+          <h1 className="intro-text">
+            맞춤 정보를 드리기 위해서는
+            <br />
+            {name}님의 정보가 담긴 이력서가 필요해요
+          </h1>
 
-        <p className="limit-text">10MB 이내의 PDF 파일만 업로드할 수 있어요</p>
+          <p className="limit-text">
+            10MB 이내의 PDF 파일만 업로드할 수 있어요
+          </p>
 
-        <UploadSection
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          $isUploaded={!!selectedFile}
-        >
-          {!selectedFile ? (
-            <div className="upload-placeholder">
-              <ResumeUploadButton onClick={handleButtonClick}>
-                파일 추가 +
-              </ResumeUploadButton>
-              <span className="drag-guide">드래그로 가져올 수 있어요</span>
-            </div>
-          ) : (
-            <div className="file-info-card">
-              <div className="card-header">
-                <span></span>
-                <span className="label">파일명</span>
-                <span className="label">용량</span>
-                <span className="label status">상태</span>
+          <UploadSection
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            $isUploaded={!!selectedFile}
+          >
+            {!selectedFile ? (
+              <div className="upload-placeholder">
+                <ResumeUploadButton onClick={handleButtonClick}>
+                  파일 추가 +
+                </ResumeUploadButton>
+                <span className="drag-guide">드래그로 가져올 수 있어요</span>
               </div>
-              <div className="card-body">
-                <DeleteButton onClick={handleFileDelete}>
-                  <img src={deleteIcon} alt="delete" />
-                </DeleteButton>
-                <span className="value filename" title={selectedFile.name}>
-                  {selectedFile.name}{" "}
-                </span>
-                <span className="value size">
-                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                </span>
-                <span className="value status-text">완료</span>
+            ) : (
+              <div className="file-info-card">
+                <div className="card-header">
+                  <span></span>
+                  <span className="label">파일명</span>
+                  <span className="label">용량</span>
+                  <span className="label status">상태</span>
+                </div>
+                <div className="card-body">
+                  <DeleteButton onClick={handleFileDelete}>
+                    <img src={deleteIcon} alt="delete" />
+                  </DeleteButton>
+                  <span className="value filename" title={selectedFile.name}>
+                    {selectedFile.name}{" "}
+                  </span>
+                  <span className="value size">
+                    {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                  </span>
+                  <span className="value status-text">완료</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Hidden Native Input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/pdf"
-            style={{ display: "none" }}
-            onChange={handleFileChange}
-          />
-        </UploadSection>
+            {/* Hidden Native Input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </UploadSection>
 
-        <AgreementContainer>
-          <StyledCheckButton
-            onClick={() => setIsAgreed(!isAgreed)}
-            disabled={isUploading}
-            $isAgreed={isAgreed}
-            aria-label="개인정보 수집 동의"
-          />
-          <label onClick={() => setIsAgreed(!isAgreed)}>
-            본 서비스 제공(회원 관리, 알림톡 발송 등)을 위해 이름, 학교, 연락처
-            등의 기본 정보 수집 및 이용에 동의합니다.
-          </label>
-        </AgreementContainer>
+          <AgreementContainer>
+            <StyledCheckButton
+              onClick={() => setIsAgreed(!isAgreed)}
+              disabled={isUploading}
+              $isAgreed={isAgreed}
+              aria-label="개인정보 수집 동의"
+            />
+            <label onClick={() => setIsAgreed(!isAgreed)}>
+              본 서비스 제공(회원 관리, 알림톡 발송 등)을 위해 이름, 학교,
+              연락처 등의 기본 정보 수집 및 이용에 동의합니다.
+            </label>
+          </AgreementContainer>
 
-        <ResumeSubmitButton
-          onClick={handleAnalyzeClick}
-          disabled={!isAgreed || !selectedFile || isUploading}
-          $active={isAgreed && !!selectedFile && !isUploading}
-        >
-          {isUploading ? "업로드 중..." : "AI 분석 받기"}
-          <ArrowIcon />
-        </ResumeSubmitButton>
-      </ContentContainer>
-    </PageWrapper>
+          <ResumeSubmitButton
+            onClick={handleAnalyzeClick}
+            disabled={!isAgreed || !selectedFile || isUploading}
+            $active={isAgreed && !!selectedFile && !isUploading}
+          >
+            {isUploading ? "업로드 중..." : "AI 분석 받기"}
+            <ArrowIcon />
+          </ResumeSubmitButton>
+        </ContentContainer>
+      </PageWrapper>
+    </>
   );
 }
 

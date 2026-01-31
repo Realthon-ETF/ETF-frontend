@@ -5,6 +5,7 @@ import logo from "../assets/images/logo.svg";
 import StyledCheckButton from "../components/check-button";
 import { InputGroup, type ValidationStatus } from "../components/input-group";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 type VerificationState = {
   status: ValidationStatus;
@@ -174,199 +175,210 @@ export default function CreateAccount() {
   };
 
   return (
-    <PageWrapper>
-      <ContentContainer>
-        {/* Header Section */}
-        <header className="intro-area">
-          <img src={logo} alt="Logo" />
-          <span className="service-name">알려주잡</span>
-          <h1 className="title">회원가입</h1>
-        </header>
+    <>
+      <Helmet>
+        <title>
+          알려주잡 | 나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스
+        </title>
+        <meta
+          name="description"
+          content="나에게 필요한 정보를 먼저 찾아주는 AI 서비스 알려주잡에 회원가입하세요."
+        />
+      </Helmet>
+      <PageWrapper>
+        <ContentContainer>
+          {/* Header Section */}
+          <header className="intro-area">
+            <img src={logo} alt="Logo" />
+            <span className="service-name">알려주잡</span>
+            <h1 className="title">회원가입</h1>
+          </header>
 
-        <StyledForm onSubmit={onSubmit}>
-          {/* Section 1: Login Info */}
-          <FormSection>
-            <h2>로그인 정보</h2>
-            <div className="fields-group">
-              <InputGroup
-                label="아이디"
-                id="user-id"
-                name="id"
-                placeholder="아이디를 입력하세요"
-                value={formData.id}
-                onChange={onChange}
-                disabled={isLoading}
-                duplicateCheck={true}
-                onCheckDuplicate={checkIdDuplicate}
-                validationStatus={idVerification.status}
-                validationMessage={idVerification.message}
-                required
-              />
-              <InputGroup
-                label="비밀번호"
-                id="user-pw"
-                type="password"
-                name="password"
-                placeholder="비밀번호를 입력하세요"
-                value={formData.password}
-                onChange={onChange}
-                disabled={isLoading}
-                required
-              />
-            </div>
-          </FormSection>
+          <StyledForm onSubmit={onSubmit}>
+            {/* Section 1: Login Info */}
+            <FormSection>
+              <h2>로그인 정보</h2>
+              <div className="fields-group">
+                <InputGroup
+                  label="아이디"
+                  id="user-id"
+                  name="id"
+                  placeholder="아이디를 입력하세요"
+                  value={formData.id}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  duplicateCheck={true}
+                  onCheckDuplicate={checkIdDuplicate}
+                  validationStatus={idVerification.status}
+                  validationMessage={idVerification.message}
+                  required
+                />
+                <InputGroup
+                  label="비밀번호"
+                  id="user-pw"
+                  type="password"
+                  name="password"
+                  placeholder="비밀번호를 입력하세요"
+                  value={formData.password}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+            </FormSection>
 
-          {/* Section 2: Basic Info */}
-          <FormSection>
-            <h2>기본 정보</h2>
-            <div className="fields-group">
-              <InputGroup
-                label="이름"
-                id="user-name"
-                name="name"
-                placeholder="성함을 입력하세요"
-                value={formData.name}
-                onChange={onChange}
-                disabled={isLoading}
-                required
-              />
-              <InputGroup
-                label="전화번호"
-                id="user-phone"
-                type="tel"
-                name="phone"
-                placeholder="전화번호를 입력하세요"
-                value={formData.phone}
-                onChange={onChange}
-                disabled={isLoading}
-                onCheckDuplicate={checkPhoneDuplicate}
-                validationStatus={phoneVerification.status}
-                validationMessage={phoneVerification.message}
-                required
-                duplicateCheck={true}
-              />
-              <InputGroup
-                label="이메일"
-                id="user-email"
-                type="email"
-                name="email"
-                placeholder="이메일을 입력하세요"
-                value={formData.email}
-                onChange={onChange}
-                disabled={isLoading}
-                required
-                duplicateCheck={true}
-              />
-              <InputGroup
-                label="학교"
-                id="user-school"
-                name="school"
-                placeholder="예) 한국대학교"
-                value={formData.school}
-                onChange={onChange}
-                disabled={isLoading}
-              />
-              <InputGroup
-                label="학과"
-                id="user-department"
-                name="major"
-                placeholder="예) 경영학과"
-                value={formData.major}
-                onChange={onChange}
-                disabled={isLoading}
-              />
-              <InputGroup
-                label="관심 직무"
-                id="user-interest"
-                name="interest"
-                placeholder="예) UI/UX 디자인"
-                value={formData.interest}
-                onChange={onChange}
-                disabled={isLoading}
-                required
-              />
+            {/* Section 2: Basic Info */}
+            <FormSection>
+              <h2>기본 정보</h2>
+              <div className="fields-group">
+                <InputGroup
+                  label="이름"
+                  id="user-name"
+                  name="name"
+                  placeholder="성함을 입력하세요"
+                  value={formData.name}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  required
+                />
+                <InputGroup
+                  label="전화번호"
+                  id="user-phone"
+                  type="tel"
+                  name="phone"
+                  placeholder="전화번호를 입력하세요"
+                  value={formData.phone}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  onCheckDuplicate={checkPhoneDuplicate}
+                  validationStatus={phoneVerification.status}
+                  validationMessage={phoneVerification.message}
+                  required
+                  duplicateCheck={true}
+                />
+                <InputGroup
+                  label="이메일"
+                  id="user-email"
+                  type="email"
+                  name="email"
+                  placeholder="이메일을 입력하세요"
+                  value={formData.email}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  required
+                  duplicateCheck={true}
+                />
+                <InputGroup
+                  label="학교"
+                  id="user-school"
+                  name="school"
+                  placeholder="예) 한국대학교"
+                  value={formData.school}
+                  onChange={onChange}
+                  disabled={isLoading}
+                />
+                <InputGroup
+                  label="학과"
+                  id="user-department"
+                  name="major"
+                  placeholder="예) 경영학과"
+                  value={formData.major}
+                  onChange={onChange}
+                  disabled={isLoading}
+                />
+                <InputGroup
+                  label="관심 직무"
+                  id="user-interest"
+                  name="interest"
+                  placeholder="예) UI/UX 디자인"
+                  value={formData.interest}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  required
+                />
 
-              {/* Custom Select Inputs */}
-              <div className="custom-select-row">
-                <label htmlFor="alarm-period">알림 주기</label>
-                <div className="select-wrapper">
-                  <select
-                    id="alarm-period"
-                    name="alarmPeriod"
-                    value={formData.alarmPeriod}
-                    onChange={onChange}
-                    disabled={isLoading}
-                  >
-                    <option value="">선택</option>
-                    {[1, 2, 3, 4, 5, 6, 7].map((v) => (
-                      <option key={v} value={v}>
-                        {v}
-                      </option>
-                    ))}
-                  </select>
-                  <span>일마다 한 번씩</span>
+                {/* Custom Select Inputs */}
+                <div className="custom-select-row">
+                  <label htmlFor="alarm-period">알림 주기</label>
+                  <div className="select-wrapper">
+                    <select
+                      id="alarm-period"
+                      name="alarmPeriod"
+                      value={formData.alarmPeriod}
+                      onChange={onChange}
+                      disabled={isLoading}
+                    >
+                      <option value="">선택</option>
+                      {[1, 2, 3, 4, 5, 6, 7].map((v) => (
+                        <option key={v} value={v}>
+                          {v}
+                        </option>
+                      ))}
+                    </select>
+                    <span>일마다 한 번씩</span>
+                  </div>
+                </div>
+
+                <div className="custom-select-row">
+                  <label htmlFor="alarm-time">알림 시간</label>
+                  <div className="select-wrapper">
+                    <select
+                      id="alarm-time"
+                      name="alarmTime"
+                      value={formData.alarmTime}
+                      onChange={onChange}
+                      disabled={isLoading}
+                    >
+                      <option value="">선택</option>
+                      {Array.from({ length: 24 }).map((_, i) => (
+                        <option key={i} value={i}>
+                          {i.toString().padStart(2, "0")}:00
+                        </option>
+                      ))}
+                    </select>
+                    <span>시에 알람을 받아요</span>
+                  </div>
                 </div>
               </div>
+            </FormSection>
 
-              <div className="custom-select-row">
-                <label htmlFor="alarm-time">알림 시간</label>
-                <div className="select-wrapper">
-                  <select
-                    id="alarm-time"
-                    name="alarmTime"
-                    value={formData.alarmTime}
-                    onChange={onChange}
-                    disabled={isLoading}
-                  >
-                    <option value="">선택</option>
-                    {Array.from({ length: 24 }).map((_, i) => (
-                      <option key={i} value={i}>
-                        {i.toString().padStart(2, "0")}:00
-                      </option>
-                    ))}
-                  </select>
-                  <span>시에 알람을 받아요</span>
-                </div>
-              </div>
-            </div>
-          </FormSection>
+            {/* Agreement Section */}
+            <AgreementSection>
+              <StyledCheckButton
+                onClick={handleAgreementClick}
+                disabled={isLoading}
+                $isAgreed={isAgreed}
+                // type="button"
+              />
+              <label onClick={!isLoading ? handleAgreementClick : undefined}>
+                본 서비스 제공(회원 관리, 알림톡 발송 등)을 위해 이름, 학교,
+                연락처 등의 기본 정보 수집 및 이용에 동의합니다.
+              </label>
+            </AgreementSection>
 
-          {/* Agreement Section */}
-          <AgreementSection>
-            <StyledCheckButton
-              onClick={handleAgreementClick}
-              disabled={isLoading}
-              $isAgreed={isAgreed}
-              // type="button"
-            />
-            <label onClick={!isLoading ? handleAgreementClick : undefined}>
-              본 서비스 제공(회원 관리, 알림톡 발송 등)을 위해 이름, 학교,
-              연락처 등의 기본 정보 수집 및 이용에 동의합니다.
-            </label>
-          </AgreementSection>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-
-          <SubmitButton
-            type="submit"
-            disabled={
-              isLoading || !isAgreed || !formData.id || !formData.password
-            }
-            $active={
-              isAgreed &&
-              !isLoading &&
-              formData.id !== "" &&
-              formData.password !== "" &&
-              formData.name !== "" &&
-              formData.phone !== "" &&
-              formData.email !== ""
-            }
-          >
-            {isLoading ? "처리 중..." : "회원가입"}
-          </SubmitButton>
-        </StyledForm>
-      </ContentContainer>
-    </PageWrapper>
+            <SubmitButton
+              type="submit"
+              disabled={
+                isLoading || !isAgreed || !formData.id || !formData.password
+              }
+              $active={
+                isAgreed &&
+                !isLoading &&
+                formData.id !== "" &&
+                formData.password !== "" &&
+                formData.name !== "" &&
+                formData.phone !== "" &&
+                formData.email !== ""
+              }
+            >
+              {isLoading ? "처리 중..." : "회원가입"}
+            </SubmitButton>
+          </StyledForm>
+        </ContentContainer>
+      </PageWrapper>
+    </>
   );
 }
 
