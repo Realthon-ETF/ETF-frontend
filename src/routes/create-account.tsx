@@ -533,24 +533,18 @@ const ErrorMessage = styled.p`
   margin-top: -2rem;
 `;
 
-const SubmitButton = styled(Button)<{ $active: boolean }>`
+const SubmitButton = styled(Button)<{ $active?: boolean }>`
   width: 100%;
   max-width: 9.3125rem;
-  justify-content: center;
-  align-self: center;
+  align-self: center; /* keep this if inside a flex column */
 
   padding: 1rem;
   border-radius: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
 
-  background: ${({ $active }) =>
-    $active ? "#06F" : "#c2c4c8"}; /* Darker color for active */
-  color: #eaebec;
-  cursor: ${({ $active }) => ($active ? "pointer" : "not-allowed")};
-  transition: background-color 0.3s;
-
-  // &:hover {
-  //   background: ${({ $active }) => ($active ? "#141618" : "#c2c4c8")};
-  // }
+  /* If $active is true, use Blue. 
+     If false, the base component's :disabled style will take over 
+     IF you pass the HTML 'disabled' attribute. 
+     Otherwise, we explicitly set the background here.
+  */
+  background: ${({ $active }) => ($active ? "#06F" : "#c2c4c8")};
 `;

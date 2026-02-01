@@ -1,64 +1,15 @@
-// previous Login method
-// const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     setError("");
-
-//     if (isLoading || id === "" || password === "") {
-//       setError("아이디와 비밀번호를 입력해주세요.");
-//       return;
-//     }
-
-//     try {
-//       setIsLoading(true);
-//       const response = await fetch("https://api.etf.r-e.kr/auth/login", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
-//           loginId: id,
-//           password: password,
-//         }),
-//       });
-
-//       if (!response.ok) {
-//         const errorData = await response.json().catch(() => ({
-//           message: "로그인에 실패했습니다.",
-//         }));
-//         throw new Error(errorData.message || "로그인에 실패했습니다.");
-//       }
-
-//       const data = await response.json();
-
-//       // Store token if provided
-//       if (data.accessToken) {
-//         localStorage.setItem("token", data.accessToken);
-//       }
-
-//       // Navigate to home page on success
-//       navigate("/");
-//     } catch (err) {
-//       if (err instanceof Error) {
-//         setError(err.message);
-//       } else {
-//         setError("로그인 중 오류가 발생했습니다.");
-//       }
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import styled from "styled-components";
 import { useAuth } from "../AuthContext";
+import { Button } from "../components/Button";
 import { Helmet } from "react-helmet-async";
 import { Mixpanel } from "../utils/mixpanel";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // 2. Destructure login function
+  const { login } = useAuth();
 
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -271,16 +222,9 @@ const ErrorMessage = styled.p`
   font-size: 0.9rem;
 `;
 
-const LoginButton = styled.button`
+const LoginButton = styled(Button)`
   width: 100%;
   padding: 0.8rem;
-  background-color: #69a5ff;
-  color: white;
-  border: none;
+  background-color: #69a5ff; /* Specific login blue */
   border-radius: 1.25rem;
-  cursor: pointer;
-  font-weight: 600;
-  &:disabled {
-    background-color: #c2c4c8;
-  }
 `;
