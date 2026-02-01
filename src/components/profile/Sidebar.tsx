@@ -71,22 +71,33 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
 };
 
 const SidebarWrapper = styled.aside`
-  width: 30%;
-  background: #f7fbff;
-  padding: 3.5rem 2rem;
-  min-height: calc(100vh - 4rem);
+  width: 100%;
+  background: transparent;
+  padding: 0.75rem 1.25rem;
+  min-height: auto;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  border-right: 1px solid #eaebec;
+  gap: 0;
+  border-right: none;
+  border-bottom: 1px solid #eaebec;
 
-  @media (max-width: 768px) {
-    width: 100%;
-    min-height: auto;
-    padding: 2rem;
+  @media (min-width: 769px) {
+    width: 30%;
+    background: #f7fbff;
+    padding: 3.5rem 2rem;
+    min-height: calc(100vh - 4rem);
+    gap: 2rem;
+    border-right: 1px solid #eaebec;
+    border-bottom: none;
   }
 
   .sidebar-header {
+    display: none;
+
+    @media (min-width: 769px) {
+      display: block;
+    }
+
     h1 {
       color: #141618;
       font-size: 2rem;
@@ -109,6 +120,11 @@ const SidebarWrapper = styled.aside`
     height: 1px;
     background: #eaebec;
     width: 100%;
+    display: none;
+
+    @media (min-width: 769px) {
+      display: block;
+    }
   }
 
   .nav-menu {
@@ -117,43 +133,70 @@ const SidebarWrapper = styled.aside`
       padding: 0;
       margin: 0;
       display: flex;
-      flex-direction: column;
-      gap: 2rem;
+      flex-direction: row;
+      gap: 0.5rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+
+      @media (min-width: 769px) {
+        flex-direction: column;
+        gap: 2rem;
+      }
     }
   }
 
   .logout-btn {
-    margin-top: auto;
-    text-decoration: underline;
-    color: #878a93;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    background: none;
-    padding: 0;
-    font-weight: 500;
-    text-align: left;
+    display: none;
+
+    @media (min-width: 769px) {
+      display: block;
+      margin-top: auto;
+      text-decoration: underline;
+      color: #878a93;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      font-weight: 500;
+      text-align: left;
+    }
   }
 `;
 
 const NavButton = styled.button<{ $isActive: boolean }>`
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #46474c;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.375rem 0.625rem;
+  border-radius: 1rem;
   cursor: pointer;
   transition: all 0.2s;
-
-  background: none;
+  background: ${(props) => (props.$isActive ? "#06f" : "#eaebec")};
+  color: ${(props) => (props.$isActive ? "#fff" : "#46474c")};
   border: none;
-  text-align: left;
-  padding: 0;
+  text-align: center;
+  white-space: nowrap;
   font-family: inherit;
-  width: 100%;
-
-  color: ${(props) => (props.$isActive ? "#06f" : "#46474c")};
-  font-weight: ${(props) => (props.$isActive ? 700 : "normal")};
+  flex-shrink: 0;
 
   &:hover {
-    color: #06f;
+    background: ${(props) => (props.$isActive ? "#0055dd" : "#d9d9d9")};
+  }
+
+  @media (min-width: 769px) {
+    font-size: 1.25rem;
+    font-weight: 500;
+    padding: 0;
+    background: none;
+    color: ${(props) => (props.$isActive ? "#06f" : "#46474c")};
+    border-radius: 0;
+    flex-shrink: initial;
+    width: 100%;
+    text-align: left;
+
+    &:hover {
+      color: #06f;
+      background: none;
+    }
   }
 `;

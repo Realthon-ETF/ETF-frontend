@@ -4,7 +4,7 @@ export const Section = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.875rem;
   margin-bottom: 3rem;
 
   /* Fade in animation for tab switching */
