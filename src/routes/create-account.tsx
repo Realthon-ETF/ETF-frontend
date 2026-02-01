@@ -6,6 +6,7 @@ import StyledCheckButton from "../components/check-button";
 import { InputGroup, type ValidationStatus } from "../components/input-group";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import api from "../api";
 
 type VerificationState = {
   status: ValidationStatus;
@@ -64,55 +65,123 @@ export default function CreateAccount() {
     setIsAgreed((prev) => !prev);
   };
 
+  // const checkIdDuplicate = async (id: string) => {
+  //   try {
+  //     // 이 부분 logic update 필요, 실제 response body에 따라
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_BASE_URL}/auth/check-login-id?loginId=${id}`,
+  //     );
+  //     const data = await response.json();
+  //     if (data.isDuplicate) {
+  //       setIdVerification({
+  //         status: "invalid",
+  //         message: "이미 사용 중인 아이디입니다.",
+  //       });
+  //     } else {
+  //       setIdVerification({
+  //         status: "valid",
+  //         message: "사용 가능한 아이디입니다.",
+  //       });
+  //     }
+  //   } catch (err) {
+  //     // alert("연결 오류가 발생했습니다.");
+  //     setIdVerification({
+  //       status: "default",
+  //       message: "확인 중 오류가 발생했습니다.",
+  //     });
+  //   }
+  // };
   const checkIdDuplicate = async (id: string) => {
+    if (!id) return;
+
     try {
-      // 이 부분 logic update 필요, 실제 response body에 따라
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/check-login-id?loginId=${id}`,
-      );
-      const data = await response.json();
-      if (data.isDuplicate) {
-        setIdVerification({
-          status: "invalid",
-          message: "이미 사용 중인 아이디입니다.",
-        });
-      } else {
+      // Axios syntax for GET with query parameters
+      const response = await api.get(`/auth/check-login-id`, {
+        params: { loginId: id },
+      });
+
+      // Axios stores the JSON body in 'data'
+      // Note: If your backend returns a boolean directly, check that logic
+      if (response.data.available) {
         setIdVerification({
           status: "valid",
           message: "사용 가능한 아이디입니다.",
         });
+      } else {
+        setIdVerification({
+          status: "invalid",
+          message: "이미 사용 중인 아이디입니다.",
+        });
       }
-    } catch (err) {
-      // alert("연결 오류가 발생했습니다.");
+    } catch (err: any) {
+      // Handle 404 or other errors
+      const message =
+        err.response?.status === 404
+          ? "엔드포인트를 찾을 수 없습니다 (404)."
+          : "중복 확인 중 오류가 발생했습니다.";
+
       setIdVerification({
         status: "default",
-        message: "확인 중 오류가 발생했습니다.",
+        message: message,
       });
     }
   };
 
+  // const checkPhoneDuplicate = async (phone: string) => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_BASE_URL}/auth/check-phone?phoneNumber=${phone}`,
+  //     );
+  //     const data = await response.json();
+  //     // todo: 중복 확인여부의 response JSON data 확인 후 update
+  //     if (data.isDuplicate) {
+  //       setPhoneVerification({
+  //         status: "invalid",
+  //         message: "이미 사용 중인 전화번호입니다.",
+  //       });
+  //     } else {
+  //       setPhoneVerification({
+  //         status: "valid",
+  //         message: "사용 가능한 전화번호입니다.",
+  //       });
+  //     }
+  //   } catch (err) {
+  //     setPhoneVerification({
+  //       status: "default",
+  //       message: "확인 중 오류가 발생했습니다.",
+  //     });
+  //   }
+  // };
   const checkPhoneDuplicate = async (phone: string) => {
+    if (!phone) return;
+
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/auth/check-phone?phoneNumber=${phone}`,
-      );
-      const data = await response.json();
-      // todo: 중복 확인여부의 response JSON data 확인 후 update
-      if (data.isDuplicate) {
-        setPhoneVerification({
-          status: "invalid",
-          message: "이미 사용 중인 전화번호입니다.",
-        });
-      } else {
+      // Axios syntax for GET with query parameters
+      const response = await api.get(`/auth/check-phone?phoneNumber=${phone}`);
+
+      // Axios stores the JSON body in 'data'
+      // Note: If your backend returns a boolean directly, check that logic
+      if (response.data.available === true) {
         setPhoneVerification({
           status: "valid",
           message: "사용 가능한 전화번호입니다.",
         });
+      } else {
+        setPhoneVerification({
+          status: "invalid",
+          message: "이미 사용 중인 전화번호입니다.",
+        });
       }
-    } catch (err) {
+    } catch (err: any) {
+      // Handle 404 or other errors
+      const message =
+        err.response?.status === 404
+          ? "엔드포인트를 찾을 수 없습니다 (404)."
+          : "중복 확인 중 오류가 발생했습니다.";
+
       setPhoneVerification({
         status: "default",
-        message: "확인 중 오류가 발생했습니다.",
+        message: message,
       });
     }
   };
