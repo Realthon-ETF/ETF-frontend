@@ -90,14 +90,25 @@ export const LikedSection = ({
   );
 };
 
-// --- Styled Components for this Section ---
-
 const SectionContainer = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   margin-bottom: 3rem;
+
+  animation: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   .section-header {
     h2 {
