@@ -122,79 +122,107 @@ export default function Login() {
 
 const PageWrapper = styled.div`
   width: 100%;
-  min-height: calc(100vh - 4rem);
+  flex: 1;
   background: #fff;
   display: flex;
   justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  overflow: auto;
 
-  /* Responsive: Add padding for mobile screens */
-  padding: 0 1rem;
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
 `;
 
 const LoginLayout = styled.main`
   display: flex;
   width: 100%;
-  padding: 8.6875rem 0 18.325rem 0;
+  max-width: 32rem;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+  }
 
   .intro-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-self: stretch;
-    margin-bottom: 6.25rem;
+    gap: 0.75rem;
 
     img {
-      height: 10.8rem;
-      width: 10.8rem;
-      margin-bottom: 1rem;
+      height: 6rem;
+      width: 6rem;
+
+      @media (max-width: 768px) {
+        height: 5rem;
+        width: 5rem;
+      }
     }
 
     span {
       font-family: "BareunDotumOTFPro2";
       color: #2e3847;
-      font-size: 3rem;
+      font-size: 2rem;
       font-style: normal;
       font-weight: 500;
       line-height: normal;
-      letter-spacing: -0.12rem;
-      margin-bottom: 1.5rem;
+      letter-spacing: -0.08rem;
+
+      @media (max-width: 768px) {
+        font-size: 1.75rem;
+      }
     }
 
     p {
       color: #5a5c63;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: 1.125rem;
       font-style: normal;
       font-weight: 600;
-      line-height: 130%;
+      line-height: 1.4;
+
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
     }
   }
 
   .login-area {
     display: flex;
-    width: 12.5rem;
+    width: 100%;
+    max-width: 14rem;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1.875rem;
-    margin-bottom: 3.25rem;
     align-items: center;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      max-width: 13rem;
+      gap: 1.25rem;
+    }
 
     div {
       display: flex;
       flex-direction: column;
       gap: 0.375rem;
+      width: 100%;
       align-items: center;
 
       label {
         color: #141618;
         text-align: center;
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-style: normal;
         font-weight: 500;
-        line-height: 130%;
+        line-height: 1.3;
+
+        @media (max-width: 768px) {
+          font-size: 0.8125rem;
+        }
       }
 
       input {
@@ -207,24 +235,66 @@ const LoginLayout = styled.main`
         align-self: stretch;
         border-radius: 1.25rem;
         border: 1px solid #c2c4c8;
+        font-size: 0.875rem;
+        font-family: inherit;
+
+        &::placeholder {
+          color: #aeb0b6;
+        }
 
         &:focus {
+          outline: none;
           border-color: #69a5ff;
         }
+
+        &:disabled {
+          background-color: #f5f5f5;
+          cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+          font-size: 0.8125rem;
+          padding: 0.45rem 0.5rem;
+        }
       }
+    }
+  }
+
+  > a {
+    font-size: 0.875rem;
+    text-decoration: none;
+    margin-top: 0.5rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.8125rem;
     }
   }
 `;
 
 const ErrorMessage = styled.p`
   color: #ff4d4f;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+  }
 `;
 
 const LoginButton = styled(Button)`
   width: 100%;
-  padding: 0.8rem;
-  background-color: #69a5ff; /* Specific login blue */
-  border-radius: 1.25rem;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
 `;

@@ -85,7 +85,6 @@ const SidebarWrapper = styled.aside`
     width: 30%;
     background: #f7fbff;
     padding: 3.5rem 2rem;
-    min-height: calc(100vh - 4rem);
     gap: 2rem;
     border-right: 1px solid #eaebec;
     border-bottom: none;

@@ -408,31 +408,40 @@ export default function Profile() {
 const PageWrapper = styled.div`
   width: 100%;
   min-height: calc(100vh - 4rem);
-  // padding-bottom: 4rem;
   background: #fff;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+
+  @media (min-width: 769px) {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
 `;
 
 const ProfileContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
   width: 100%;
   padding: 0;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
+  @media (min-width: 769px) {
+    flex-direction: row;
+    align-items: stretch;
+    min-height: calc(100vh - 4rem);
   }
 `;
 
 const MainContent = styled.main`
-  flex: 1;
-  padding: 5.5rem 3rem;
-  max-width: 700px;
   width: 100%;
+  padding: 1.5rem 1.25rem;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
+  @media (min-width: 769px) {
+    flex: 1;
+    padding: 5.5rem 3rem;
+    max-width: 700px;
   }
 `;

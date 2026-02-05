@@ -1,7 +1,7 @@
 import React from "react";
 import { Section, SelectRow } from "../profile/Profile.style";
 import { InputGroup } from "../input-group";
-import editicon from "../../assets/images/edit-icon.svg";
+import { EditButton } from "../EditButton";
 import type { ProfileFormData } from "../../types/auth";
 
 interface Props {
@@ -22,10 +22,11 @@ export const BasicInfoSection = ({
   <Section>
     <div className="section-header">
       <h2>기본 정보</h2>
-      <button type="button" onClick={onEditToggle} disabled={isLoading}>
-        {isEditable ? "완료" : "수정"}
-        <img src={editicon} alt="edit" />
-      </button>
+      <EditButton
+        isEditable={isEditable}
+        isLoading={isLoading}
+        onClick={onEditToggle}
+      />
     </div>
     <div className="input-list">
       <InputGroup

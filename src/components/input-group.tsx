@@ -68,28 +68,30 @@ const InputRow = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: stretch;
-  gap: 1rem;
+  align-items: center;
+  // gap: 1rem;
+  gap: 0.75rem; /* Reduced slightly for mobile spacing */
   min-height: 2.125rem;
 
   label {
     color: #141618;
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    min-width: 5rem; /* Ensure label alignment */
+    // min-width: fit-content;
+    /* FIX: Set a consistent width for mobile */
+    flex: 0 0 4.5rem; /* Grow: 0, Shrink: 0, Basis: 4.5rem */
     white-space: nowrap;
-    display: flex;
-    align-items: center;
+    // flex-shrink: 0;
   }
 
-  /* Mobile: Stack label on top of input */
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  @media (min-width: 769px) {
+    gap: 1rem;
 
     label {
-      font-size: 0.9rem;
+      font-size: 1rem;
+      // min-width: 5rem;
+      /* Adjust basis for larger screens if needed */
+      flex: 0 0 6rem;
     }
   }
 `;
@@ -97,19 +99,21 @@ const InputRow = styled.div`
 const StyledInput = styled.input<{ $status: ValidationStatus }>`
   flex: 1;
   width: 100%;
-  // padding: 0.8rem 1rem;
-  padding: 0rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 1.25rem;
-
-  /* Logic: Red border if invalid, otherwise default gray */
+  font-size: 0.875rem;
   border: 1px solid
     ${({ $status }) => ($status === "invalid" ? "#FF4242" : "#c2c4c8")};
-
   transition: border-color 0.2s;
+  color: #141618;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #5a5c63;
+  }
 
   &:focus {
     outline: none;
-    /* Maintain error color on focus if invalid, otherwise brand color */
     border-color: ${({ $status }) =>
       $status === "invalid" ? "#FF4242" : "#2e3847"};
   }
@@ -124,28 +128,38 @@ const DuplicateCheckBtn = styled.button<{ $isFilled: boolean }>`
   display: flex;
   padding: 0.5rem 0.875rem;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.125rem;
   border-radius: 1.25rem;
-  border: none;
+  border: ${(props) =>
+    props.$isFilled ? "1px solid #06F" : "1px solid transparent"};
   background: ${(props) => (props.$isFilled ? "#06F" : "#e1e2e4")};
   color: ${(props) => (props.$isFilled ? "#F7F7F8" : "#70737C")};
   text-align: center;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: ${(props) => (props.$isFilled ? "pointer" : "default")};
   white-space: nowrap;
+  flex-shrink: 0;
 `;
 
 const Message = styled.p<{ $status: ValidationStatus }>`
-  /* Align message with input: Label (5rem) + Gap (1rem) = 6rem */
-  padding-left: 6rem;
   margin: 0;
   font-size: 0.85rem;
-
-  /* Red for invalid, Blue for valid (success) */
   color: ${({ $status }) => ($status === "invalid" ? "#FF4242" : "#06F")};
+  /* Align with input on mobile: flex-start means label takes space */
+  // margin-left: auto;
+  // padding-right: 0.5rem;
 
-  @media (max-width: 480px) {
-    padding-left: 0;
+  /* FIX: Match the flex-basis of the label + the gap of InputRow */
+  /* Mobile: 4.5rem (label) + 0.75rem (gap) = 5.25rem */
+  padding-left: 5.25rem;
+
+  @media (min-width: 769px) {
+    /* Align message with input: Label (5rem) + Gap (1rem) = 6rem */
+    // padding-left: 6rem;
+    /* Desktop: 6rem (label) + 1rem (gap) = 7rem */
+    padding-left: 7rem;
+    // margin-left: 0;
+    padding-right: 0;
   }
 `;

@@ -76,14 +76,23 @@ export const SelectRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 
   label {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    min-width: 5rem;
+    flex: 0 0 4.5rem;
     white-space: nowrap;
     color: #141618;
+  }
+
+  @media (min-width: 769px) {
+    gap: 1rem;
+
+    label {
+      font-size: 1rem;
+      flex: 0 0 6rem;
+    }
   }
 
   .select-wrapper {
@@ -93,13 +102,15 @@ export const SelectRow = styled.div`
     gap: 0.5rem;
 
     select {
-      padding: 0.8rem 1rem;
+      padding: 0.5rem 1rem;
       border-radius: 1.25rem;
       border: 1px solid #c2c4c8;
       background-color: white;
       cursor: pointer;
       min-width: 8rem;
-      font-size: 1rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: #141618;
 
       &:disabled {
         background-color: #f5f5f5;
@@ -118,6 +129,13 @@ export const SelectRow = styled.div`
       font-size: 0.875rem;
       font-weight: 500;
       white-space: nowrap;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .select-wrapper select {
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
     }
   }
 
