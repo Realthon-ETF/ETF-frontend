@@ -129,10 +129,6 @@ export default function Home() {
         <meta name="description" content="분석할 이력서를 업로드하세요." />
       </Helmet>
       <PageWrapper>
-        <form onSubmit={onSubmit}>
-          <input onChange={handleURLInput} value={url} />
-          <button type="submit">Triggers Crawler</button>
-        </form>
         <ContentContainer>
           <h1 className="intro-text">
             맞춤 정보를 드리기 위해서는
