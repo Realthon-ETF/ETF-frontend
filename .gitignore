@@ -13,6 +13,8 @@ dist-ssr
 *.local
 .env
 .env.local
+.mcp.json
+settings.local.json
 .env.development.local
 .env.production.local
 
