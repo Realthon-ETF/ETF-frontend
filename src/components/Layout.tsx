@@ -295,10 +295,10 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Link, Outlet } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
-import Footer from "./footer";
+import { Footer } from "./Footer";
 import { useAuth } from "../AuthContext";
 
-export default function Layout() {
+export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
 

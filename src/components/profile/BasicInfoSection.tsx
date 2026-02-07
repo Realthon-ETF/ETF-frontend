@@ -1,6 +1,6 @@
 import React from "react";
 import { Section, SelectRow } from "../profile/Profile.style";
-import { InputGroup } from "../input-group";
+import { InputGroup } from "../InputGroup";
 import { EditButton } from "../EditButton";
 import type { ProfileFormData } from "../../types/auth";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import NotificationCard from "../notifications/notification-card";
+import { NotificationCard } from "../notifications/NotificationCard";
 import type { NotificationItem } from "../../types/notification";
 
 interface LikedSectionProps {

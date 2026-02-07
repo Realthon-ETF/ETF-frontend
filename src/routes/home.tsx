@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Button } from "../components/Button";
-import StyledCheckButton from "../components/check-button";
+import { StyledCheckButton } from "../components/CheckButton";
 import deleteIcon from "../assets/images/delete-icon.svg";
 import { useAuth } from "../AuthContext";
 import api from "../api";

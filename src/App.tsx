@@ -1,10 +1,10 @@
 import { AuthProvider } from "./AuthContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Layout from "./components/layout";
+import { Layout } from "./components/Layout";
 import reset from "styled-reset";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
-import ProtectedRoute from "./components/protected-route";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 // import LoadingScreen from "./components/loading-screen";
 import Home from "./routes/home";
 import Profile from "./routes/profile";

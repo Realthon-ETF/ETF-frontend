@@ -9,7 +9,7 @@ import type {
   NotificationItem,
   NotificationsResponse,
 } from "../components/notifications/types";
-import NotificationCard from "../components/notifications/notification-card";
+import { NotificationCard } from "../components/notifications/NotificationCard";
 import { Helmet } from "react-helmet-async";
 
 const ITEMS_PER_PAGE = 20;

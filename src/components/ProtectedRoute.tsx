@@ -1,11 +1,3 @@
-//   const user = "tmdwp";
-//   if (user === null) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   return children;
-// }
-
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { type ReactNode } from "react";
@@ -14,7 +6,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user } = useAuth();
 
   // 1. While the API is checking if the user has a valid session (refreshing token)
@@ -27,6 +19,5 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
-  // 3. If user exists, render the protected content (Layout, Home, etc.)
   return <>{children}</>;
 }

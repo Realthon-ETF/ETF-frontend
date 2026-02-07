@@ -22,6 +22,7 @@ export const Button = styled.button`
   font-weight: 600;
   font-size: 1.25rem;
   color: #eaebec;
+  background-color: #06f;
 
   cursor: pointer;
   transition: all 0.2s ease-in-out;

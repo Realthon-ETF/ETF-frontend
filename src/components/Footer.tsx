@@ -9,7 +9,7 @@ const COLORS = {
   bgPrimary: "#F2F2F7",
 };
 
-export default function Footer() {
+export function Footer() {
   return (
     <FooterWrapper>
       <FooterContainer>

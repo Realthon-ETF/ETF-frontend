@@ -9,7 +9,7 @@ export interface NotificationCardProps {
   onToggleLike: (id: string, newStatus: boolean) => void;
 }
 
-export default function NotificationCard({
+export function NotificationCard({
   item,
   onToggleLike,
 }: NotificationCardProps) {
