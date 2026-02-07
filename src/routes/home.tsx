@@ -13,35 +13,12 @@ export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
-  const [url, setUrl] = useState<string>("");
+
   // 1. Ref is used to trigger the hidden native input
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
   const name = user?.username ?? "사용자";
-
-  const handleURLInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  };
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      await api.post("/ai/crawl/request", {
-        targetUrl: url,
-      });
-      alert("POST /ai/crawl/request API triggered");
-    } catch (err: any) {
-      console.error("Backend Error Details:", err.response?.data);
-      alert(
-        `Error: ${err.response?.status} - ${err.response?.data?.message || "Internal Server Error"}`,
-      );
-      // Axios errors usually hold message in response.data.message
-      // const message = err.response?.data?.message || "로그인에 실패했습니다.";
-      // setError(message);
-    }
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
