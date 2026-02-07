@@ -615,15 +615,12 @@ const ErrorMessage = styled.p`
 const SubmitButton = styled(Button)<{ $active?: boolean }>`
   width: 100%;
   max-width: 9.3125rem;
-  align-self: center; /* keep this if inside a flex column */
-
+  align-self: center;
   padding: 1rem;
-  border-radius: 0.5rem;
 
-  /* If $active is true, use Blue. 
-     If false, the base component's :disabled style will take over 
-     IF you pass the HTML 'disabled' attribute. 
-     Otherwise, we explicitly set the background here.
-  */
   background: ${({ $active }) => ($active ? "#06F" : "#c2c4c8")};
+
+  &:hover {
+    background: ${({ $active }) => ($active ? "#0056d2" : "#c2c4c8")};
+  }
 `;

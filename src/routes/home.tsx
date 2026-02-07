@@ -364,31 +364,23 @@ const AgreementContainer = styled.div`
 `;
 
 const ResumeUploadButton = styled(Button)`
-  background: #06f;
-  color: #fff;
-  padding: 0.625rem 1rem;
   border-radius: 0.25rem;
-
-  &:hover {
-    background: #0056d6;
-  }
 `;
 
 const ResumeSubmitButton = styled(Button)<{ $active: boolean }>`
   gap: 0.625rem;
   padding: 0.8rem 2rem;
-  border-radius: 0.5rem;
 
   background-color: ${({ $active }) => ($active ? "#06F" : "#c2c5c8")};
-  // cursor: ${({ $active }) => ($active ? "pointer" : "not-allowed")};
 
   svg {
     transition: transform 0.2s;
   }
 
   &:hover {
-    /* Only lift if active */
+    background-color: ${({ $active }) => ($active ? "#0056d2" : "#c2c5c8")};
     transform: ${({ $active }) => ($active ? "translateY(-2px)" : "none")};
+
     svg {
       transform: ${({ $active }) => ($active ? "translateX(2px)" : "none")};
     }

@@ -288,13 +288,5 @@ const ErrorMessage = styled.p`
 
 const LoginButton = styled(Button)`
   width: 100%;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
   margin-top: 0.5rem;
-  font-size: 0.9375rem;
-
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-    font-size: 0.875rem;
-  }
 `;

@@ -328,18 +328,6 @@ const SummaryTextArea = styled.textarea`
 
 const ServiceStartBtn = styled(Button)`
   margin-top: 3rem;
-  padding: 0.625rem 1.25rem;
-  border-radius: 0.5rem;
-  background: #06f;
-
-  &:hover {
-    background-color: #0056d2;
-    cursor: pointer;
-  }
-
-  // &:active {
-  //   transform: scale(0.98);
-  // }
 
   @media (max-width: 480px) {
     width: 100%;

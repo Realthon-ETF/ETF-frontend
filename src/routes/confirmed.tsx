@@ -215,13 +215,6 @@ const StatusSection = styled.section`
 
 const ActionButton = styled(Button)`
   margin-top: 2rem;
-  padding: 0.625rem 1.25rem;
-  background: #06f;
-  border-radius: 0.5rem;
-
-  &:hover {
-    background: #0052cc;
-  }
 
   @media (max-width: 480px) {
     width: 100%;
