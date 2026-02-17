@@ -6,13 +6,12 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 // import LoadingScreen from "./components/loading-screen";
-import Home from "./routes/home";
+import UploadFlow from "./routes/UploadFlow";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
-import Result from "./routes/result";
-import Confirmed from "./routes/confirmed";
 import Notifications from "./routes/notifications";
+import Settings from "./routes/settings";
 // import ResetPassword from "./routes/reset-password";
 import BareunDotumFile from "./assets/fonts/BareunDotumOTFPro2.otf";
 
@@ -27,23 +26,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Home />,
+        element: <UploadFlow />,
       },
       {
         path: "/profile",
         element: <Profile />,
       },
       {
-        path: "/result",
-        element: <Result />,
-      },
-      {
-        path: "/confirmed",
-        element: <Confirmed />,
-      },
-      {
         path: "/notifications",
         element: <Notifications />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
       },
     ],
   },
