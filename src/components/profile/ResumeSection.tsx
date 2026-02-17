@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import editicon from "../../assets/images/edit-icon.svg";
 import { Section, StyledTextArea } from "../profile/Profile.style";
 
@@ -10,6 +10,12 @@ interface ResumeSectionProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
+const autoResize = (el: HTMLTextAreaElement | null) => {
+  if (!el) return;
+  el.style.height = "auto";
+  el.style.height = `${el.scrollHeight}px`;
+};
+
 export const ResumeSection = ({
   summary,
   isEditable,
@@ -17,6 +23,12 @@ export const ResumeSection = ({
   onEditToggle,
   onChange,
 }: ResumeSectionProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    autoResize(textareaRef.current);
+  }, [summary]);
+
   return (
     <Section>
       <div className="section-header">
@@ -28,6 +40,7 @@ export const ResumeSection = ({
       </div>
 
       <StyledTextArea
+        ref={textareaRef}
         name="summary"
         value={summary}
         onChange={onChange}
