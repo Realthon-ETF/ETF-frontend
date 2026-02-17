@@ -11,7 +11,7 @@ import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
 import Notifications from "./routes/notifications";
-import Settings from "./routes/settings";
+import Recommendations from "./routes/recommendations";
 // import ResetPassword from "./routes/reset-password";
 import BareunDotumFile from "./assets/fonts/BareunDotumOTFPro2.otf";
 
@@ -37,8 +37,8 @@ const router = createBrowserRouter([
         element: <Notifications />,
       },
       {
-        path: "/settings",
-        element: <Settings />,
+        path: "/recommendations",
+        element: <Recommendations />,
       },
     ],
   },
