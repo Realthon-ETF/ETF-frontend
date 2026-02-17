@@ -305,8 +305,7 @@ export const setClientToken = (access: string | null): void => {
   accessToken = access;
 };
 
-// Define URL once to avoid typos
-const baseURL = "https://etf-766469416566.asia-northeast3.run.app";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const api: AxiosInstance = axios.create({
   baseURL,
@@ -320,7 +319,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 api.interceptors.response.use(
@@ -351,7 +350,7 @@ api.interceptors.response.use(
         }>(
           `${baseURL}/auth/refresh`,
           { refreshToken }, // <--- Sending in BODY
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         const newAccessToken = data.accessToken;
@@ -379,7 +378,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
