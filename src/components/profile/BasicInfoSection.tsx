@@ -1,5 +1,5 @@
 import React from "react";
-import { Section, SelectRow } from "../profile/Profile.style";
+import { Section } from "../profile/Profile.style";
 import { InputGroup } from "../InputGroup";
 import { EditButton } from "../EditButton";
 import type { ProfileFormData } from "../../types/auth";
@@ -87,48 +87,39 @@ export const BasicInfoSection = ({
         disabled={!isEditable}
       />
 
-      {/* Custom Selects */}
-      <SelectRow>
-        <label htmlFor="alarm-period">알림 주기</label>
-        <div className="select-wrapper">
-          <select
-            id="alarm-period"
-            name="alarmPeriod"
-            value={data.alarmPeriod}
-            onChange={onChange}
-            disabled={!isEditable}
-          >
-            <option value="">선택</option>
-            {[1, 2, 3, 4, 5, 6, 7].map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
-            ))}
-          </select>
-          <span>일마다 한 번씩</span>
-        </div>
-      </SelectRow>
+      <InputGroup
+        label="알림 주기"
+        id="alarm-period"
+        name="alarmPeriod"
+        value={data.alarmPeriod}
+        onChange={onChange}
+        disabled={!isEditable}
+        options={[
+          { value: "", label: "선택" },
+          ...[1, 2, 3, 4, 5, 6, 7].map((v) => ({
+            value: v,
+            label: String(v),
+          })),
+        ]}
+        suffix="일마다 한 번씩"
+      />
 
-      <SelectRow>
-        <label htmlFor="alarm-time">알림 시간</label>
-        <div className="select-wrapper">
-          <select
-            id="alarm-time"
-            name="alarmTime"
-            value={data.alarmTime}
-            onChange={onChange}
-            disabled={!isEditable}
-          >
-            <option value="">선택</option>
-            {Array.from({ length: 24 }).map((_, i) => (
-              <option key={i} value={i.toString().padStart(2, "0")}>
-                {i.toString().padStart(2, "0")}:00
-              </option>
-            ))}
-          </select>
-          <span>시에 알람을 받아요</span>
-        </div>
-      </SelectRow>
+      <InputGroup
+        label="알림 시간"
+        id="alarm-time"
+        name="alarmTime"
+        value={data.alarmTime}
+        onChange={onChange}
+        disabled={!isEditable}
+        options={[
+          { value: "", label: "선택" },
+          ...Array.from({ length: 24 }, (_, i) => ({
+            value: i.toString().padStart(2, "0"),
+            label: `${i.toString().padStart(2, "0")}:00`,
+          })),
+        ]}
+        suffix="시에 알람을 받아요"
+      />
     </div>
   </Section>
 );

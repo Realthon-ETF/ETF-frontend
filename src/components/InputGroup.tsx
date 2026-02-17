@@ -1,15 +1,23 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 export type ValidationStatus = "default" | "valid" | "invalid";
 
-interface InputGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputGroupProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "onChange"
+  > {
   label: string;
   id: string;
   duplicateCheck?: boolean;
   onCheckDuplicate?: (value: string) => Promise<void>;
-  // New props for validation
   validationStatus?: ValidationStatus;
   validationMessage?: string;
+  // Select variant props
+  options?: { value: string | number; label: string }[];
+  suffix?: string;
+  onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
 }
 
 export const InputGroup = ({
@@ -19,12 +27,22 @@ export const InputGroup = ({
   onCheckDuplicate,
   validationStatus = "default",
   validationMessage,
+  options,
+  suffix,
+  onChange,
   ...props
 }: InputGroupProps) => {
-  const handleBtnClick = (e: React.MouseEvent) => {
+  const [isChecking, setIsChecking] = useState(false);
+
+  const handleBtnClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    if (onCheckDuplicate && props.value) {
-      onCheckDuplicate(props.value as string);
+    if (isChecking || !onCheckDuplicate || !props.value) return;
+
+    setIsChecking(true);
+    try {
+      await onCheckDuplicate(props.value as string);
+    } finally {
+      setIsChecking(false);
     }
   };
 
@@ -35,19 +53,45 @@ export const InputGroup = ({
           {label}
           {props.required ? <span style={{ color: "red" }}> *</span> : null}
         </label>
-        <StyledInput id={id} $status={validationStatus} {...props} />
-        {duplicateCheck ? (
-          <DuplicateCheckBtn
-            type="button"
-            $isFilled={props.value !== ""}
-            onClick={handleBtnClick}
-          >
-            중복 확인
-          </DuplicateCheckBtn>
-        ) : null}
+        {options ? (
+          <SelectWrapper>
+            <StyledSelect
+              id={id}
+              name={props.name}
+              value={props.value}
+              onChange={onChange}
+              disabled={props.disabled}
+            >
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </StyledSelect>
+            {suffix && <Suffix>{suffix}</Suffix>}
+          </SelectWrapper>
+        ) : (
+          <>
+            <StyledInput
+              id={id}
+              $status={validationStatus}
+              onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
+              {...props}
+            />
+            {duplicateCheck ? (
+              <DuplicateCheckBtn
+                type="button"
+                $isFilled={props.value !== ""}
+                onClick={handleBtnClick}
+                disabled={isChecking}
+              >
+                {isChecking ? "확인 중..." : "중복 확인"}
+              </DuplicateCheckBtn>
+            ) : null}
+          </>
+        )}
       </InputRow>
 
-      {/* Conditionally render the message underneath */}
       {validationMessage && (
         <Message $status={validationStatus}>{validationMessage}</Message>
       )}
@@ -124,6 +168,44 @@ const StyledInput = styled.input<{ $status: ValidationStatus }>`
   }
 `;
 
+const SelectWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const StyledSelect = styled.select`
+  padding: 0.5rem 1rem;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  border: 1px solid #c2c4c8;
+  transition: border-color 0.2s;
+  color: #141618;
+  font-family: inherit;
+  background-color: white;
+  cursor: pointer;
+  min-width: 8rem;
+
+  &:focus {
+    outline: none;
+    border-color: #2e3847;
+  }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #999;
+  }
+`;
+
+const Suffix = styled.span`
+  color: #5a5c63;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+`;
+
 const DuplicateCheckBtn = styled.button<{ $isFilled: boolean }>`
   display: flex;
   padding: 0.5rem 0.875rem;
@@ -140,6 +222,11 @@ const DuplicateCheckBtn = styled.button<{ $isFilled: boolean }>`
   cursor: ${(props) => (props.$isFilled ? "pointer" : "default")};
   white-space: nowrap;
   flex-shrink: 0;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
 const Message = styled.p<{ $status: ValidationStatus }>`
