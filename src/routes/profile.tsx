@@ -6,24 +6,30 @@ import { Sidebar } from "../components/profile/Sidebar";
 import { BasicInfoSection } from "../components/profile/BasicInfoSection";
 import { ResumeSection } from "../components/profile/ResumeSection";
 import { LikedSection } from "../components/profile/LikedSection";
-import { Section } from "../components/profile/Profile.style";
+import { WebsiteSection } from "../components/profile/WebsiteSection";
 
 import type { ProfileFormData, ProfileResponse } from "../types/auth";
 import type { ResumeFormData, ResumeResponse } from "../types/resume";
 import type { LikedResponse, NotificationItem } from "../types/notification";
+import type { TargetUrl, TargetUrlsResponse } from "../types/website";
 
 import type { CategoryType } from "../components/notifications/constants";
 
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 // Define Tab Types
 type TabType = "basic" | "summary" | "website" | "likes";
 
 export default function Profile() {
   // const {user} = useAuth();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // State for Navigation Logic
-  const [activeTab, setActiveTab] = useState<TabType>("basic");
+  // State for Navigation Logic — accept initial tab from navigation state
+  const [activeTab, setActiveTab] = useState<TabType>(
+    () =>
+      (location.state as { activeTab?: TabType } | null)?.activeTab || "basic",
+  );
 
   const [formData, setFormData] = useState<ProfileFormData>({
     name: "",
@@ -44,155 +50,18 @@ export default function Profile() {
     NotificationItem[]
   >([]);
 
+  const [websiteUrls, setWebsiteUrls] = useState<TargetUrl[]>([]);
+
   const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
   const [isResumeEditable, setIsResumeEditable] = useState<boolean>(false);
+  const [isWebsiteEditable, setIsWebsiteEditable] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const { data } = await api.get<ProfileResponse>("/auth/me");
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         name: data.username,
-  //         phone: data.phoneNumber,
-  //         email: data.email,
-  //         school: data.school,
-  //         major: data.major,
-  //         interest: data.interestFields.join(", "),
-  //         alarmPeriod: data.intervalDays.toString(),
-  //         alarmTime: data.alarmTime ? data.alarmTime.split(":")[0] : "09",
-  //       }));
-  //     } catch (err) {
-  //       console.error("Profile fetch failed:", err);
-  //     }
-
-  //     try {
-  //       const { data } = await api.get<ResumeResponse>("/auth/resume");
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         summary: data.summary,
-  //       }));
-  //     } catch (err) {
-  //       console.error("Resume fetch failed:", err);
-  //     } finally {
-  //       // Set loading to false after both requests attempt to finish
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, []);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // 1. Initiate both requests simultaneously (do not await yet)
-  //     // We attach a .catch() to each promise individually so one failure doesn't kill the other.
-  //     const profilePromise = api
-  //       .get<ProfileResponse>("/auth/me")
-  //       .catch((err) => {
-  //         console.error("Profile fetch failed:", err);
-  //         return null; // Return null to signal failure
-  //       });
-
-  //     const resumePromise = api
-  //       .get<ResumeResponse>("/auth/resume")
-  //       .catch((err) => {
-  //         console.error("Resume fetch failed:", err);
-  //         return null;
-  //       });
-
-  //     const likedPromise = api
-  //       .get<LikedResponse>("/notifications/likes")
-  //       .catch((err) => {
-  //         console.error("Profile fetch failed:", err);
-  //         return null;
-  //       });
-
-  //     try {
-  //       // 2. Wait for all of the APIs to finish
-  //       const [profileRes, resumeRes, likedRes] = await Promise.all([
-  //         profilePromise,
-  //         resumePromise,
-  //         likedPromise,
-  //       ]);
-
-  //       // 3. Process the results cleanly
-  //       setFormData((prev) => {
-  //         let newData = { ...prev };
-
-  //         // Update Profile Data if successful
-  //         if (profileRes?.data) {
-  //           const { data } = profileRes;
-  //           newData = {
-  //             ...newData,
-  //             name: data.username,
-  //             phone: data.phoneNumber,
-  //             email: data.email,
-  //             school: data.school,
-  //             major: data.major,
-  //             interest: data.interestFields.join(", "),
-  //             alarmPeriod: data.intervalDays.toString(),
-  //             alarmTime: data.alarmTime ? data.alarmTime.split(":")[0] : "09",
-  //           };
-  //         }
-
-  //         // if (resumeRes.status === "fulfilled" && resumeRes.value) {
-  //         //   newData.summary = resumeRes.value.data.summary;
-  //         // }
-  //         return newData;
-  //       });
-
-  //       setResumeData((prev) => {
-  //         let newData = { ...prev };
-  //         if (resumeRes?.data) {
-  //           const { data } = resumeRes;
-  //           newData = {
-  //             ...newData,
-  //             summary: data.summary,
-  //           };
-  //         }
-  //         return newData;
-  //       });
-
-  //       // setLikedNotifications((prev) => {
-  //       //   let newData = { ...prev };
-  //       //   if (resumeRes?.data) {
-  //       //     const { data } = likedRes;
-  //       //     newData = {
-  //       //       ...newData,
-  //       //     };
-  //       //   }
-  //       //   return newData;
-  //       // });
-  //       if (likedRes?.data) {
-  //       const transformed: NotificationItem[] = likedRes.data.notifications.map((notif) => ({
-  //         id: notif.notificationId.toString(),
-  //         category: (notif.category as CategoryType) || "취업 포털",
-  //         title: notif.title,
-  //         source: notif.sourceName,
-  //         url: notif.originalUrl,
-  //         isLiked: notif.liked,
-  //         // Add any defaults your UI expects
-  //         isNew: false,
-  //       }));
-
-  //       setLikedNotifications(transformed);
-  //     }
-
-  //     } catch (err) {
-  //       console.error("Unexpected error during parallel fetch:", err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
 
       // 1. Initiate all requests in parallel
-      // 원래는 각각의 API 호출을 별도의 try-catch문으로 모두 각각 호출해서 waterfall 문제가 생겼음
+      // 원래는 각각의 API 호출을 모두 개별 try-catch문으로 모두 각각 호출해서 waterfall 문제가 생겼음
       const profilePromise = api
         .get<ProfileResponse>("/auth/me")
         .catch((err) => {
@@ -211,14 +80,18 @@ export default function Profile() {
           console.error(err);
           return null;
         });
+      const websitePromise = api
+        .get<TargetUrlsResponse>("/users/me/target-urls")
+        .catch((err) => {
+          console.error(err);
+          return null;
+        });
 
       try {
         // 2. Wait for everything
-        const [profileRes, resumeRes, likedRes] = await Promise.all([
-          profilePromise,
-          resumePromise,
-          likedPromise,
-        ]);
+        const [profileRes, resumeRes, likedRes, websiteRes] = await Promise.all(
+          [profilePromise, resumePromise, likedPromise, websitePromise],
+        );
 
         // 3. Update Profile State
         if (profileRes?.data) {
@@ -257,6 +130,11 @@ export default function Profile() {
             }));
 
           setLikedNotifications(transformed);
+        }
+
+        // 6. Update Website URLs
+        if (websiteRes?.data) {
+          setWebsiteUrls(websiteRes.data.targetUrls);
         }
       } catch (err) {
         console.error("Parallel fetch failed:", err);
@@ -357,6 +235,31 @@ export default function Profile() {
     }
   };
 
+  const handleWebsiteEditToggle = () => {
+    setIsWebsiteEditable((prev) => !prev);
+  };
+
+  const handleAddWebsite = async (url: string) => {
+    const { data } = await api.post("/users/me/target-urls", {
+      targetUrl: url,
+    });
+    setWebsiteUrls((prev) => [...prev, data]);
+  };
+
+  const handleUpdateWebsite = async (id: number, url: string) => {
+    const { data } = await api.patch(`/users/me/target-urls/${id}`, {
+      targetUrl: url,
+    });
+    setWebsiteUrls((prev) =>
+      prev.map((item) => (item.targetUrlId === data.targetUrlId ? data : item)),
+    );
+  };
+
+  const handleDeleteWebsite = async (id: number) => {
+    await api.delete(`/users/me/target-urls/${id}`);
+    setWebsiteUrls((prev) => prev.filter((item) => item.targetUrlId !== id));
+  };
+
   return (
     <>
       <Helmet>
@@ -386,9 +289,15 @@ export default function Profile() {
               />
             )}
             {activeTab === "website" && (
-              <Section>
-                <h2>준비 중입니다.</h2>
-              </Section>
+              <WebsiteSection
+                websites={websiteUrls}
+                isEditable={isWebsiteEditable}
+                isLoading={isLoading}
+                onEditToggle={handleWebsiteEditToggle}
+                onAdd={handleAddWebsite}
+                onUpdate={handleUpdateWebsite}
+                onDelete={handleDeleteWebsite}
+              />
             )}
             {activeTab === "likes" && (
               <LikedSection
