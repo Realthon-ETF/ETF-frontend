@@ -33,13 +33,19 @@ export default function CreateAccount() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // --- New Verification State ---
   const [idVerification, setIdVerification] = useState<VerificationState>({
     status: "default",
     message: "",
   });
 
   const [phoneVerification, setPhoneVerification] = useState<VerificationState>(
+    {
+      status: "default",
+      message: "",
+    },
+  );
+
+  const [emailVerification, setEmailVerification] = useState<VerificationState>(
     {
       status: "default",
       message: "",
@@ -180,6 +186,40 @@ export default function CreateAccount() {
           : "중복 확인 중 오류가 발생했습니다.";
 
       setPhoneVerification({
+        status: "default",
+        message: message,
+      });
+    }
+  };
+
+  const checkEmailDuplicate = async (email: string) => {
+    if (!email) return;
+
+    try {
+      // Axios syntax for GET with query parameters
+      const response = await api.get(`/auth/check-email?email=${email}`);
+
+      // Axios stores the JSON body in 'data'
+      // Note: If your backend returns a boolean directly, check that logic
+      if (response.data.available === true) {
+        setEmailVerification({
+          status: "valid",
+          message: "사용 가능한 이메일입니다.",
+        });
+      } else {
+        setEmailVerification({
+          status: "invalid",
+          message: "이미 사용 중인 이메일입니다.",
+        });
+      }
+    } catch (err: any) {
+      // Handle 404 or other errors
+      const message =
+        err.response?.status === 404
+          ? "엔드포인트를 찾을 수 없습니다 (404)."
+          : "중복 확인 중 오류가 발생했습니다.";
+
+      setEmailVerification({
         status: "default",
         message: message,
       });
@@ -334,6 +374,9 @@ export default function CreateAccount() {
                   value={formData.email}
                   onChange={onChange}
                   disabled={isLoading}
+                  onCheckDuplicate={checkEmailDuplicate}
+                  validationStatus={emailVerification.status}
+                  validationMessage={emailVerification.message}
                   required
                   duplicateCheck={true}
                 />
@@ -366,48 +409,39 @@ export default function CreateAccount() {
                   required
                 />
 
-                {/* Custom Select Inputs */}
-                <div className="custom-select-row">
-                  <label htmlFor="alarm-period">알림 주기</label>
-                  <div className="select-wrapper">
-                    <select
-                      id="alarm-period"
-                      name="alarmPeriod"
-                      value={formData.alarmPeriod}
-                      onChange={onChange}
-                      disabled={isLoading}
-                    >
-                      <option value="">선택</option>
-                      {[1, 2, 3, 4, 5, 6, 7].map((v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                    <span>일마다 한 번씩</span>
-                  </div>
-                </div>
+                <InputGroup
+                  label="알림 주기"
+                  id="alarm-period"
+                  name="alarmPeriod"
+                  value={formData.alarmPeriod}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  options={[
+                    { value: "", label: "선택" },
+                    ...[1, 2, 3, 4, 5, 6, 7].map((v) => ({
+                      value: v,
+                      label: String(v),
+                    })),
+                  ]}
+                  suffix="일마다 한 번씩"
+                />
 
-                <div className="custom-select-row">
-                  <label htmlFor="alarm-time">알림 시간</label>
-                  <div className="select-wrapper">
-                    <select
-                      id="alarm-time"
-                      name="alarmTime"
-                      value={formData.alarmTime}
-                      onChange={onChange}
-                      disabled={isLoading}
-                    >
-                      <option value="">선택</option>
-                      {Array.from({ length: 24 }).map((_, i) => (
-                        <option key={i} value={i}>
-                          {i.toString().padStart(2, "0")}:00
-                        </option>
-                      ))}
-                    </select>
-                    <span>시에 알람을 받아요</span>
-                  </div>
-                </div>
+                <InputGroup
+                  label="알림 시간"
+                  id="alarm-time"
+                  name="alarmTime"
+                  value={formData.alarmTime}
+                  onChange={onChange}
+                  disabled={isLoading}
+                  options={[
+                    { value: "", label: "선택" },
+                    ...Array.from({ length: 24 }, (_, i) => ({
+                      value: i.toString().padStart(2, "0"),
+                      label: `${i.toString().padStart(2, "0")}:00`,
+                    })),
+                  ]}
+                  suffix="시에 알람을 받아요"
+                />
               </div>
             </FormSection>
 
@@ -524,70 +558,6 @@ const FormSection = styled.section`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-
-  /* Styling for the custom Select rows to match InputGroup */
-  .custom-select-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-
-    label {
-      font-size: 1rem;
-      font-weight: 500;
-      flex: 0 0 5rem;
-      white-space: nowrap;
-      color: #141618;
-    }
-
-    .select-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-
-      select {
-        padding: 0.5rem 1rem;
-        border-radius: 1.25rem;
-        border: 1px solid #c2c4c8;
-        background-color: white;
-        cursor: pointer;
-        min-width: 7.5rem;
-        font-size: 0.875rem;
-        font-family: inherit;
-        color: #141618;
-
-        &:focus {
-          outline: none;
-          border-color: #2e3847;
-        }
-
-        &:disabled {
-          background-color: #f5f5f5;
-          cursor: not-allowed;
-          color: #999;
-        }
-      }
-
-      span {
-        color: #5a5c63;
-        font-size: 0.875rem;
-        font-weight: 500;
-        white-space: nowrap;
-      }
-    }
-
-    /* Mobile handling for selects */
-    @media (max-width: 480px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-
-      .select-wrapper {
-        width: 100%;
-      }
-    }
   }
 `;
 
