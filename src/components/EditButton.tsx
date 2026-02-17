@@ -14,7 +14,7 @@ export const EditButton = ({
 }: EditButtonProps) => {
   return (
     <StyledButton type="button" onClick={onClick} disabled={isLoading}>
-      {isEditable ? "완료" : "수정"}
+      {isEditable ? "수정 완료" : "수정"}
       <img src={editicon} alt="edit" />
     </StyledButton>
   );
