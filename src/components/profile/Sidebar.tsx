@@ -88,6 +88,7 @@ const SidebarWrapper = styled.aside`
     gap: 2rem;
     border-right: 1px solid #eaebec;
     border-bottom: none;
+    min-height: calc(100vh - 4rem);
   }
 
   .sidebar-header {
