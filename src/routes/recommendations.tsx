@@ -317,15 +317,13 @@ export default function Settings() {
         {activeTab === "ai" && (
           <Content>
             <Banner>
-              <BannerTitle>
-                원하는 웹사이트를 직접 등록하고 싶다면?
-              </BannerTitle>
+              <BannerTitle>원하는 웹사이트를 직접 등록하고 싶다면?</BannerTitle>
               <BannerLink
                 onClick={() =>
                   navigate("/profile", { state: { activeTab: "website" } })
                 }
               >
-                등록 웹사이트 바로가기
+                웹사이트 등록 페이지 바로가기
                 <ArrowForward />
               </BannerLink>
             </Banner>
@@ -428,6 +426,7 @@ const TabBar = styled.div`
   display: flex;
   align-items: flex-start;
   border-bottom: none;
+  padding-top: 1rem;
 `;
 
 const Tab = styled.button<{ $active: boolean }>`
