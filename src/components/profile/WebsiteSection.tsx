@@ -46,10 +46,9 @@ async function fetchMetadata(url: string): Promise<SiteMeta> {
 
   try {
     const res = await fetch(
-      `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+      `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
     );
-    const json = await res.json();
-    const html = json.contents as string | undefined;
+    const html = await res.text();
     if (!html) return fallback;
 
     // Parse title
@@ -57,11 +56,13 @@ async function fetchMetadata(url: string): Promise<SiteMeta> {
     const title = titleMatch?.[1]?.trim() || fallback.title;
 
     // Parse favicon from <link rel="icon" ...> or <link rel="shortcut icon" ...>
-    const iconMatch = html.match(
-      /<link[^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*href=["']([^"']+)["'][^>]*>/i,
-    ) ?? html.match(
-      /<link[^>]*href=["']([^"']+)["'][^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*>/i,
-    );
+    const iconMatch =
+      html.match(
+        /<link[^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*href=["']([^"']+)["'][^>]*>/i,
+      ) ??
+      html.match(
+        /<link[^>]*href=["']([^"']+)["'][^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*>/i,
+      );
     const favicon = iconMatch?.[1]
       ? resolveFaviconHref(iconMatch[1], url)
       : fallback.favicon;
@@ -189,10 +190,20 @@ export const WebsiteSection = ({
 
       <WebsiteList>
         {websites.map((item) => (
-          <WebsiteItem key={item.targetUrlId}>
+          <WebsiteItem
+            key={item.targetUrlId}
+            $clickable={!isEditable}
+            onClick={() =>
+              !isEditable &&
+              window.open(item.targetUrl, "_blank", "noopener,noreferrer")
+            }
+          >
             <div className="title-row">
               <Favicon
-                src={meta[item.targetUrlId]?.favicon || googleFaviconUrl(item.targetUrl)}
+                src={
+                  meta[item.targetUrlId]?.favicon ||
+                  googleFaviconUrl(item.targetUrl)
+                }
                 alt=""
                 width={20}
                 height={20}
@@ -252,7 +263,7 @@ export const WebsiteSection = ({
 // --- Styled Components ---
 
 const CountText = styled.p`
-  margin: 0.25rem 0 0;
+  margin: 0.5rem 0 0;
   font-size: 1rem;
   font-weight: 500;
   color: #141618;
@@ -269,10 +280,19 @@ const WebsiteList = styled.div`
   gap: 1.5rem;
 `;
 
-const WebsiteItem = styled.div`
+const WebsiteItem = styled.div<{ $clickable?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: ${({ $clickable }) => ($clickable ? "#f7f8fa" : "transparent")};
+  }
 
   .title-row {
     display: flex;
