@@ -7,6 +7,7 @@ import { InputGroup, type ValidationStatus } from "../components/InputGroup";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import api from "../api";
+import { JobCategoryModal } from "../components/JobCategoryModal";
 
 type VerificationState = {
   status: ValidationStatus;
@@ -32,6 +33,8 @@ export default function CreateAccount() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
 
   const [idVerification, setIdVerification] = useState<VerificationState>({
     status: "default",
@@ -69,6 +72,12 @@ export default function CreateAccount() {
 
   const handleAgreementClick = () => {
     setIsAgreed((prev) => !prev);
+  };
+
+  const handleInterestConfirm = (items: string[]) => {
+    setSelectedInterests(items);
+    const display = items.map((key) => key.split("|").join(" - ")).join(", ");
+    setFormData((prev) => ({ ...prev, interest: display }));
   };
 
   // const checkIdDuplicate = async (id: string) => {
@@ -133,40 +142,16 @@ export default function CreateAccount() {
     }
   };
 
-  // const checkPhoneDuplicate = async (phone: string) => {
-  //   try {
   //     const response = await fetch(
   //       `${import.meta.env.VITE_BASE_URL}/auth/check-phone?phoneNumber=${phone}`,
   //     );
   //     const data = await response.json();
-  //     // todo: 중복 확인여부의 response JSON data 확인 후 update
-  //     if (data.isDuplicate) {
-  //       setPhoneVerification({
-  //         status: "invalid",
-  //         message: "이미 사용 중인 전화번호입니다.",
-  //       });
-  //     } else {
-  //       setPhoneVerification({
-  //         status: "valid",
-  //         message: "사용 가능한 전화번호입니다.",
-  //       });
-  //     }
-  //   } catch (err) {
-  //     setPhoneVerification({
-  //       status: "default",
-  //       message: "확인 중 오류가 발생했습니다.",
-  //     });
-  //   }
-  // };
   const checkPhoneDuplicate = async (phone: string) => {
     if (!phone) return;
 
     try {
-      // Axios syntax for GET with query parameters
       const response = await api.get(`/auth/check-phone?phoneNumber=${phone}`);
 
-      // Axios stores the JSON body in 'data'
-      // Note: If your backend returns a boolean directly, check that logic
       if (response.data.available === true) {
         setPhoneVerification({
           status: "valid",
@@ -196,11 +181,8 @@ export default function CreateAccount() {
     if (!email) return;
 
     try {
-      // Axios syntax for GET with query parameters
       const response = await api.get(`/auth/check-email?email=${email}`);
 
-      // Axios stores the JSON body in 'data'
-      // Note: If your backend returns a boolean directly, check that logic
       if (response.data.available === true) {
         setEmailVerification({
           status: "valid",
@@ -213,7 +195,6 @@ export default function CreateAccount() {
         });
       }
     } catch (err: any) {
-      // Handle 404 or other errors
       const message =
         err.response?.status === 404
           ? "엔드포인트를 찾을 수 없습니다 (404)."
@@ -251,10 +232,7 @@ export default function CreateAccount() {
         email: formData.email,
         school: formData.school,
         major: formData.major,
-        // todo: 관심 직무를 카테고리화 할지? 유저 입력으로 받은 후 parsing할지?
-        // interestFields: [formData.interest],
-        // 혅재 자료형이 ENUM이라 고정해두기
-        interestFields: ["BACKEND", "AI"],
+        interestFields: selectedInterests.map((key) => key.split("|")[2]),
         intervalDays: parseInt(formData.alarmPeriod, 10),
         alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
       };
@@ -398,16 +376,21 @@ export default function CreateAccount() {
                   onChange={onChange}
                   disabled={isLoading}
                 />
-                <InputGroup
-                  label="관심 직무"
-                  id="user-interest"
-                  name="interest"
-                  placeholder="예) UI/UX 디자인"
-                  value={formData.interest}
-                  onChange={onChange}
-                  disabled={isLoading}
-                  required
-                />
+                <InterestField>
+                  <label>
+                    관심 직무<span style={{ color: "red" }}> *</span>
+                  </label>
+                  <SelectorInput
+                    type="button"
+                    onClick={() => !isLoading && setIsInterestModalOpen(true)}
+                    $hasValue={selectedInterests.length > 0}
+                    disabled={isLoading}
+                  >
+                    {selectedInterests.length > 0
+                      ? selectedInterests.map((key) => key.split("|").join(" - ")).join(", ")
+                      : "관심 직무를 선택하세요"}
+                  </SelectorInput>
+                </InterestField>
 
                 <InputGroup
                   label="알림 주기"
@@ -481,6 +464,13 @@ export default function CreateAccount() {
           </StyledForm>
         </ContentContainer>
       </PageWrapper>
+
+      <JobCategoryModal
+        isOpen={isInterestModalOpen}
+        onClose={() => setIsInterestModalOpen(false)}
+        initialSelected={selectedInterests}
+        onConfirm={handleInterestConfirm}
+      />
     </>
   );
 }
@@ -592,5 +582,59 @@ const SubmitButton = styled(Button)<{ $active?: boolean }>`
 
   &:hover {
     background: ${({ $active }) => ($active ? "#0056d2" : "#c2c4c8")};
+  }
+`;
+
+const InterestField = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.125rem;
+
+  label {
+    color: #141618;
+    font-size: 0.875rem;
+    font-weight: 500;
+    flex: 0 0 4.5rem;
+    white-space: nowrap;
+  }
+
+  @media (min-width: 769px) {
+    gap: 1rem;
+
+    label {
+      font-size: 1rem;
+      flex: 0 0 6rem;
+    }
+  }
+`;
+
+const SelectorInput = styled.button<{ $hasValue: boolean }>`
+  flex: 1;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 1.25rem;
+  font-size: 0.875rem;
+  border: 1px solid #c2c4c8;
+  background: #fff;
+  color: ${({ $hasValue }) => ($hasValue ? "#141618" : "#5a5c63")};
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: #2e3847;
+  }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
   }
 `;
