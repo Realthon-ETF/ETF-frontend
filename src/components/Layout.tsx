@@ -293,7 +293,7 @@
 
 import { useState } from "react";
 import styled from "styled-components";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import { Footer } from "./Footer";
 import { useAuth } from "../AuthContext";
@@ -301,6 +301,7 @@ import { useAuth } from "../AuthContext";
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { pathname } = useLocation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -327,15 +328,15 @@ export function Layout() {
             </LogoLink>
             <DesktopNavList>
               <li>
-                <NavLink to="/settings">정보설정</NavLink>
+                <NavLink to="/upload" $active={pathname.startsWith("/upload")}>정보설정</NavLink>
               </li>
               <li>
-                <NavLink to="/collection">수집함</NavLink>
+                <NavLink to="/recommendations" $active={pathname.startsWith("/recommendations")}>수집함</NavLink>
               </li>
             </DesktopNavList>
           </FlexGroup>
 
-          <DesktopProfileLink to="/profile">마이페이지</DesktopProfileLink>
+          <DesktopProfileLink to="/profile" $active={pathname.startsWith("/profile")}>마이페이지</DesktopProfileLink>
 
           {/* Mobile Hamburger/Close Button */}
           <HamburgerButton
@@ -363,17 +364,17 @@ export function Layout() {
 
           <MobileNavList>
             <li>
-              <MobileNavLink to="/settings" onClick={closeMobileMenu}>
+              <MobileNavLink to="/upload" onClick={closeMobileMenu} $active={pathname.startsWith("/upload")}>
                 정보설정
               </MobileNavLink>
             </li>
             <li>
-              <MobileNavLink to="/collection" onClick={closeMobileMenu}>
+              <MobileNavLink to="/recommendations" onClick={closeMobileMenu} $active={pathname.startsWith("/recommendations")}>
                 수집함
               </MobileNavLink>
             </li>
             <li>
-              <MobileNavLink to="/profile" onClick={closeMobileMenu}>
+              <MobileNavLink to="/profile" onClick={closeMobileMenu} $active={pathname.startsWith("/profile")}>
                 마이페이지
               </MobileNavLink>
             </li>
@@ -470,11 +471,11 @@ const DesktopNavList = styled.ul`
   }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled(Link)<{ $active?: boolean }>`
   text-decoration: none;
-  color: #141618;
+  color: ${({ $active }) => ($active ? "#007bff" : "#141618")};
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: ${({ $active }) => ($active ? "600" : "500")};
   white-space: nowrap;
   transition: color 0.2s ease-in-out;
 
@@ -483,11 +484,11 @@ const NavLink = styled(Link)`
   }
 `;
 
-const DesktopProfileLink = styled(Link)`
+const DesktopProfileLink = styled(Link)<{ $active?: boolean }>`
   text-decoration: none;
-  color: #141618;
+  color: ${({ $active }) => ($active ? "#007bff" : "#141618")};
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: ${({ $active }) => ($active ? "600" : "500")};
   white-space: nowrap;
   transition: color 0.2s ease-in-out;
 
@@ -561,7 +562,8 @@ const MobileMenuOverlay = styled.div<{ $isOpen: boolean }>`
   height: calc(100vh - 4rem);
   background-color: white;
   z-index: 200;
-  transform: ${({ $isOpen }) => ($isOpen ? "translateY(0)" : "translateY(-100%)")};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? "translateY(0)" : "translateY(-100%)"};
   transition: transform 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -621,9 +623,9 @@ const MobileNavList = styled.ul`
   width: 100%;
 `;
 
-const MobileNavLink = styled(Link)`
+const MobileNavLink = styled(Link)<{ $active?: boolean }>`
   text-decoration: none;
-  color: #141618;
+  color: ${({ $active }) => ($active ? "#007bff" : "#141618")};
   font-size: 1.25rem;
   font-weight: 600;
   transition: color 0.2s ease;
