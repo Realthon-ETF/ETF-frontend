@@ -1,18 +1,15 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import api from "../api";
 import type { ProfileResponse } from "../types/auth";
+import { ArrowForward } from "../components/recommendations/icons";
+import { CardSection } from "../components/recommendations/CardSection";
+import { AddWebsiteModal } from "../components/recommendations/AddWebsiteModal";
+import type { WebsiteItem } from "../components/recommendations/WebsiteCard";
 
 // --- Types ---
-
-interface WebsiteItem {
-  id: number;
-  title: string;
-  description: string;
-  url: string;
-}
 
 type SettingsTab = "ai" | "category";
 
@@ -66,189 +63,6 @@ const MOCK_WEBSITES: WebsiteItem[] = [
     url: "https://www.sogang.ac.kr/ko/graduate",
   },
 ];
-
-// --- Helpers ---
-
-function getFaviconUrl(url: string): string {
-  try {
-    const hostname = new URL(url).hostname;
-    return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
-  } catch {
-    return "";
-  }
-}
-
-// --- Carousel scroll hook ---
-
-function useCarousel() {
-  const ref = useRef<HTMLDivElement>(null);
-  const scrollLeft = useCallback(() => {
-    ref.current?.scrollBy({ left: -332, behavior: "smooth" });
-  }, []);
-  const scrollRight = useCallback(() => {
-    ref.current?.scrollBy({ left: 332, behavior: "smooth" });
-  }, []);
-  return { ref, scrollLeft, scrollRight };
-}
-
-// --- SVG Icons ---
-
-const PlusIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path
-      d="M9 3.75V14.25M3.75 9H14.25"
-      stroke="white"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const ExternalLinkIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M12 8.667V12.667C12 13.403 11.403 14 10.667 14H3.333C2.597 14 2 13.403 2 12.667V5.333C2 4.597 2.597 4 3.333 4H7.333"
-      stroke="#9B9B9B"
-      strokeWidth="1.33"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10 2H14V6"
-      stroke="#9B9B9B"
-      strokeWidth="1.33"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M6.667 9.333L14 2"
-      stroke="#9B9B9B"
-      strokeWidth="1.33"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const ChevronLeft = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M10 12L6 8L10 4"
-      stroke="#141618"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const ChevronRight = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M6 12L10 8L6 4"
-      stroke="#141618"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const ArrowForward = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path
-      d="M3.333 8H12.667M8 3.333L12.667 8L8 12.667"
-      stroke="#141618"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// --- WebsiteCard ---
-
-function WebsiteCard({
-  item,
-  onAdd,
-}: {
-  item: WebsiteItem;
-  onAdd: (url: string, title: string) => void;
-}) {
-  return (
-    <Card>
-      <CardTop>
-        <CardHeaderRow>
-          <CardFavicon src={getFaviconUrl(item.url)} alt="" />
-          <ExternalLink
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ExternalLinkIcon />
-          </ExternalLink>
-        </CardHeaderRow>
-        <CardTitle>{item.title}</CardTitle>
-        <CardDesc>{item.description}</CardDesc>
-      </CardTop>
-      <AddButton
-        type="button"
-        onClick={() => onAdd(item.url, item.title)}
-        aria-label="웹사이트 등록"
-      >
-        <PlusIcon />
-      </AddButton>
-    </Card>
-  );
-}
-
-// --- CardCarousel section ---
-
-function CardSection({
-  highlightText,
-  titleLine1Suffix,
-  titleLine2,
-  websites,
-  onAdd,
-}: {
-  highlightText: string;
-  titleLine1Suffix: string;
-  titleLine2: string;
-  websites: WebsiteItem[];
-  onAdd: (url: string, title: string) => void;
-}) {
-  const { ref, scrollLeft, scrollRight } = useCarousel();
-
-  return (
-    <SectionBlock>
-      <SectionHeader>
-        <div>
-          <SectionTitleLine>
-            <Highlight>{highlightText}</Highlight> {titleLine1Suffix}
-          </SectionTitleLine>
-          <SectionTitleLine>{titleLine2}</SectionTitleLine>
-        </div>
-        <ArrowGroup>
-          <ArrowBtn type="button" onClick={scrollLeft} $position="left">
-            <ChevronLeft />
-          </ArrowBtn>
-          <ArrowBtn type="button" onClick={scrollRight} $position="right">
-            <ChevronRight />
-          </ArrowBtn>
-        </ArrowGroup>
-      </SectionHeader>
-      <CarouselWrapper>
-        <ScrollContainer ref={ref}>
-          {websites.map((w) => (
-            <WebsiteCard key={w.id} item={w} onAdd={onAdd} />
-          ))}
-        </ScrollContainer>
-        <FadeOverlay />
-      </CarouselWrapper>
-    </SectionBlock>
-  );
-}
 
 // --- Main Component ---
 
@@ -383,24 +197,11 @@ export default function Settings() {
         )}
       </PageWrapper>
 
-      {/* Modal */}
       {modalOpen && (
-        <ModalOverlay onClick={() => setModalOpen(false)}>
-          <ModalBox onClick={(e) => e.stopPropagation()}>
-            <ModalTitle>해당 사이트를 내 웹사이트에 등록했어요</ModalTitle>
-            <ModalButtons>
-              <ModalSecondaryBtn
-                type="button"
-                onClick={() => setModalOpen(false)}
-              >
-                계속 탐색하기
-              </ModalSecondaryBtn>
-              <ModalPrimaryBtn type="button" onClick={handleGoToProfile}>
-                내 웹사이트로 가기
-              </ModalPrimaryBtn>
-            </ModalButtons>
-          </ModalBox>
-        </ModalOverlay>
+        <AddWebsiteModal
+          onClose={() => setModalOpen(false)}
+          onGoToProfile={handleGoToProfile}
+        />
       )}
     </>
   );
@@ -466,8 +267,6 @@ const Content = styled.div`
   }
 `;
 
-// --- Banner ---
-
 const Banner = styled.div`
   margin: 0 3rem;
   background: #f7f7f7;
@@ -518,8 +317,6 @@ const BannerLink = styled.button`
   }
 `;
 
-// --- Category Chips ---
-
 const ChipsRow = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -550,275 +347,9 @@ const Chip = styled.button<{ $active: boolean }>`
   }
 `;
 
-// --- Card Sections ---
-
 const SectionsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4rem;
   padding-bottom: 4rem;
-`;
-
-const SectionBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0 3rem;
-
-  @media (max-width: 768px) {
-    padding: 0 1.5rem;
-  }
-`;
-
-const SectionTitleLine = styled.p`
-  font-size: 1.625rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: #141618;
-  margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
-  }
-`;
-
-const Highlight = styled.span`
-  font-weight: 700;
-  color: #06f;
-`;
-
-const ArrowGroup = styled.div`
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-`;
-
-const ArrowBtn = styled.button<{ $position: "left" | "right" }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  border: 1px solid #eaebec;
-  background: #fff;
-  cursor: pointer;
-  border-radius: ${({ $position }) =>
-    $position === "left" ? "0.25rem 0 0 0.25rem" : "0 0.25rem 0.25rem 0"};
-
-  &:hover {
-    background: #f7f8fa;
-  }
-`;
-
-// --- Carousel ---
-
-const CarouselWrapper = styled.div`
-  position: relative;
-`;
-
-const ScrollContainer = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 0 3rem;
-
-  /* Hide scrollbar */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0 1.5rem;
-  }
-`;
-
-const FadeOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 5.75rem;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff);
-  pointer-events: none;
-`;
-
-// --- Card ---
-
-const Card = styled.div`
-  flex-shrink: 0;
-  width: 20rem;
-  height: 14.375rem;
-  min-width: 17.5rem;
-  padding: 2rem;
-  border: 1px solid #eaebec;
-  border-radius: 1.5rem;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const CardTop = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-`;
-
-const CardHeaderRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-`;
-
-const CardFavicon = styled.img`
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 0.125rem;
-  object-fit: contain;
-`;
-
-const ExternalLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.375rem;
-  height: 1.375rem;
-`;
-
-const CardTitle = styled.p`
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #141618;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  word-break: break-word;
-`;
-
-const CardDesc = styled.p`
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.5;
-  color: #141618;
-  opacity: 0.6;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const AddButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.125rem;
-  height: 2.125rem;
-  border-radius: 50%;
-  background: #171719;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #333;
-  }
-`;
-
-// --- Modal ---
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 500;
-  animation: fadeIn 0.2s ease;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-`;
-
-const ModalBox = styled.div`
-  background: #fff;
-  border-radius: 1rem;
-  padding: 2.5rem 2rem 2rem;
-  width: 90%;
-  max-width: 24rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
-`;
-
-const ModalTitle = styled.h3`
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #141618;
-  text-align: center;
-  margin: 0;
-  line-height: 1.4;
-`;
-
-const ModalButtons = styled.div`
-  display: flex;
-  gap: 0.75rem;
-  width: 100%;
-`;
-
-const ModalSecondaryBtn = styled.button`
-  flex: 1;
-  padding: 0.875rem;
-  border-radius: 0.5rem;
-  border: 1px solid #e1e2e4;
-  background: #fff;
-  color: #141618;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #f7f8fa;
-  }
-`;
-
-const ModalPrimaryBtn = styled.button`
-  flex: 1;
-  padding: 0.875rem;
-  border-radius: 0.5rem;
-  border: none;
-  background: #06f;
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #0056d2;
-  }
 `;
