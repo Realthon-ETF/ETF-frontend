@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 // import LoadingScreen from "./components/loading-screen";
-import UploadFlow from "./routes/UploadFlow";
+import UploadFlow from "./routes/upload";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
