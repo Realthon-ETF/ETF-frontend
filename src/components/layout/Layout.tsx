@@ -294,9 +294,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import logo from "../assets/images/logo.svg";
-import { Footer } from "./Footer";
-import { useAuth } from "../AuthContext";
+import logo from "../../assets/images/logo.svg";
+import { Footer } from "../common/Footer";
+import { useAuth } from "../../AuthContext";
 
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

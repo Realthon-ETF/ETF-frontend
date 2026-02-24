@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Section } from "./Profile.style";
-import { EditButton } from "../EditButton";
+import { EditButton } from "../common/EditButton";
 import type { TargetUrl } from "../../types/website";
 
 // --- Utility helpers ---

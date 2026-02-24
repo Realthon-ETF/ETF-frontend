@@ -1,10 +1,10 @@
 import { AuthProvider } from "./AuthContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Layout } from "./components/Layout";
+import { Layout } from "./components/layout/Layout";
 import reset from "styled-reset";
 import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ProtectedRoute } from "./components/layout/ProtectedRoute";
 // import LoadingScreen from "./components/loading-screen";
 import UploadFlow from "./routes/upload";
 import Profile from "./routes/profile";
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "",
+        path: "/upload",
         element: <UploadFlow />,
       },
       {

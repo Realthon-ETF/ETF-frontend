@@ -1,7 +1,7 @@
 import React from "react";
 import { Section } from "../profile/Profile.style";
-import { InputGroup } from "../InputGroup";
-import { EditButton } from "../EditButton";
+import { InputGroup } from "../common/InputGroup";
+import { EditButton } from "../common/EditButton";
 import type { ProfileFormData } from "../../types/auth";
 
 interface Props {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Button } from "../components/Button";
+import { Button } from "../components/common/Button";
 import styled from "styled-components";
 import logo from "../assets/images/logo.svg";
-import { StyledCheckButton } from "../components/CheckButton";
-import { InputGroup, type ValidationStatus } from "../components/InputGroup";
+import { StyledCheckButton } from "../components/common/CheckButton";
+import { InputGroup, type ValidationStatus } from "../components/common/InputGroup";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import api from "../api";
-import { JobCategoryModal } from "../components/JobCategoryModal";
+import { JobCategoryModal } from "../components/common/JobCategoryModal";
 
 type VerificationState = {
   status: ValidationStatus;
@@ -264,12 +264,10 @@ export default function CreateAccount() {
   return (
     <>
       <Helmet>
-        <title>
-          알려주잡 | 나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스
-        </title>
+        <title>회원가입 | 알려주잡</title>
         <meta
           name="description"
-          content="나에게 필요한 정보를 먼저 찾아주는 AI 서비스 알려주잡에 회원가입하세요."
+          content="나에게 필요한 취업 정보를 먼저 찾아주는 AI 서비스 알려주잡에 회원가입하세요."
         />
       </Helmet>
       <PageWrapper>
@@ -387,7 +385,9 @@ export default function CreateAccount() {
                     disabled={isLoading}
                   >
                     {selectedInterests.length > 0
-                      ? selectedInterests.map((key) => key.split("|").join(" - ")).join(", ")
+                      ? selectedInterests
+                          .map((key) => key.split("|").join(" - "))
+                          .join(", ")
                       : "관심 직무를 선택하세요"}
                   </SelectorInput>
                 </InterestField>

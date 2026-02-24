@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import editicon from "../assets/images/edit-icon.svg";
+import editicon from "../../assets/images/edit-icon.svg";
 
 interface EditButtonProps {
   isEditable: boolean;

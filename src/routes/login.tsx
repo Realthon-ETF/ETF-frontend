@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/logo.svg";
 import styled from "styled-components";
 import { useAuth } from "../AuthContext";
-import { Button } from "../components/Button";
+import { Button } from "../components/common/Button";
 import { Helmet } from "react-helmet-async";
 import { Mixpanel } from "../utils/mixpanel";
 
@@ -42,7 +42,7 @@ export default function Login() {
 
       // 4. Success! AuthContext now has the user and token.
       Mixpanel.track("Signup Success", { Status: "Success" });
-      navigate("/");
+      navigate("/profile");
     } catch (err: any) {
       // Axios errors usually hold message in response.data.message
       const message = err.response?.data?.message || "로그인에 실패했습니다.";
@@ -55,14 +55,11 @@ export default function Login() {
   return (
     <>
       <Helmet>
-        <title>
-          알려주잡 | 나에게 필요한 정보를 먼저 알아서 찾아주는 AI 서비스
-        </title>
+        <title>로그인 | 알려주잡</title>
         <meta
           name="description"
-          content="나에게 필요한 정보를 먼저 찾아주는 AI 서비스 알려주잡에 로그인하세요."
+          content="나에게 필요한 취업 정보를 먼저 찾아주는 AI 서비스 알려주잡에 로그인하세요."
         />
-        {/* <meta name="description">NoInfluences Search Engine ranking and click-through rates.<meta property="og:..." />NoControls how the link looks when shared on KakaoTalk/Slack. */}
       </Helmet>
       <PageWrapper>
         <LoginLayout>

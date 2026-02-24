@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { jobCategories } from "../data/jobCategories";
+import { jobCategories } from "../../data/jobCategories";
 
 interface JobCategoryModalProps {
   isOpen: boolean;
