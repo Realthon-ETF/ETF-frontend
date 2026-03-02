@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useAuth } from "../../AuthContext";
 
-type TabType = "basic" | "summary" | "website";
+type TabType = "basic" | "summary" | "website" | "likes";
 
 interface SidebarProps {
   activeTab: TabType;
@@ -50,6 +50,14 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
               onClick={() => setActiveTab("website")}
             >
               내 웹사이트
+            </NavButton>
+          </li>
+          <li>
+            <NavButton
+              $isActive={activeTab === "likes"}
+              onClick={() => setActiveTab("likes")}
+            >
+              좋아요
             </NavButton>
           </li>
           <li className="logout-item">

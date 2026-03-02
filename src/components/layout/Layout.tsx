@@ -328,15 +328,30 @@ export function Layout() {
             </LogoLink>
             <DesktopNavList>
               <li>
-                <NavLink to="/upload" $active={pathname.startsWith("/upload")}>정보설정</NavLink>
+                <NavLink
+                  to="/settings"
+                  $active={pathname.startsWith("/settings")}
+                >
+                  정보설정
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/recommendations" $active={pathname.startsWith("/recommendations")}>수집함</NavLink>
+                <NavLink
+                  to="/collection"
+                  $active={pathname.startsWith("/collection")}
+                >
+                  수집함
+                </NavLink>
               </li>
             </DesktopNavList>
           </FlexGroup>
 
-          <DesktopProfileLink to="/profile" $active={pathname.startsWith("/profile")}>마이페이지</DesktopProfileLink>
+          <DesktopProfileLink
+            to="/profile"
+            $active={pathname.startsWith("/profile")}
+          >
+            내 정보
+          </DesktopProfileLink>
 
           {/* Mobile Hamburger/Close Button */}
           <HamburgerButton
@@ -364,18 +379,30 @@ export function Layout() {
 
           <MobileNavList>
             <li>
-              <MobileNavLink to="/upload" onClick={closeMobileMenu} $active={pathname.startsWith("/upload")}>
-                정보설정
+              <MobileNavLink
+                to="/settings"
+                onClick={closeMobileMenu}
+                $active={pathname.startsWith("/settings")}
+              >
+                정보 설정
               </MobileNavLink>
             </li>
             <li>
-              <MobileNavLink to="/recommendations" onClick={closeMobileMenu} $active={pathname.startsWith("/recommendations")}>
+              <MobileNavLink
+                to="/collection"
+                onClick={closeMobileMenu}
+                $active={pathname.startsWith("/collection")}
+              >
                 수집함
               </MobileNavLink>
             </li>
             <li>
-              <MobileNavLink to="/profile" onClick={closeMobileMenu} $active={pathname.startsWith("/profile")}>
-                마이페이지
+              <MobileNavLink
+                to="/profile"
+                onClick={closeMobileMenu}
+                $active={pathname.startsWith("/profile")}
+              >
+                내 정보
               </MobileNavLink>
             </li>
           </MobileNavList>

@@ -5,14 +5,13 @@ import api from "../api";
 import { Sidebar } from "../components/profile/Sidebar";
 import { BasicInfoSection } from "../components/profile/BasicInfoSection";
 import { ResumeSection } from "../components/profile/ResumeSection";
-import { LikedSection } from "../components/profile/LikedSection";
 import { WebsiteSection } from "../components/profile/WebsiteSection";
+import { LikedSection } from "../components/profile/LikedSection";
 
 import type { ProfileFormData, ProfileResponse } from "../types/auth";
 import type { ResumeFormData, ResumeResponse } from "../types/resume";
-import type { LikedResponse, NotificationItem } from "../types/notification";
 import type { TargetUrl, TargetUrlsResponse } from "../types/website";
-
+import type { NotificationItem, LikedResponse } from "../types/notification";
 import type { CategoryType } from "../components/notifications/constants";
 
 import { Helmet } from "react-helmet-async";
@@ -46,11 +45,8 @@ export default function Profile() {
     summary: "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.",
   });
 
-  const [likedNotifications, setLikedNotifications] = useState<
-    NotificationItem[]
-  >([]);
-
   const [websiteUrls, setWebsiteUrls] = useState<TargetUrl[]>([]);
+  const [likedNotifications, setLikedNotifications] = useState<NotificationItem[]>([]);
 
   const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
   const [isResumeEditable, setIsResumeEditable] = useState<boolean>(false);
@@ -74,14 +70,14 @@ export default function Profile() {
           console.error(err);
           return null;
         });
-      const likedPromise = api
-        .get<LikedResponse>("/notifications/likes")
+      const websitePromise = api
+        .get<TargetUrlsResponse>("/users/me/target-urls")
         .catch((err) => {
           console.error(err);
           return null;
         });
-      const websitePromise = api
-        .get<TargetUrlsResponse>("/users/me/target-urls")
+      const likedPromise = api
+        .get<LikedResponse>("/notifications/likes")
         .catch((err) => {
           console.error(err);
           return null;
@@ -89,8 +85,8 @@ export default function Profile() {
 
       try {
         // 2. Wait for everything
-        const [profileRes, resumeRes, likedRes, websiteRes] = await Promise.all(
-          [profilePromise, resumePromise, likedPromise, websitePromise],
+        const [profileRes, resumeRes, websiteRes, likedRes] = await Promise.all(
+          [profilePromise, resumePromise, websitePromise, likedPromise],
         );
 
         // 3. Update Profile State
@@ -115,9 +111,14 @@ export default function Profile() {
           setResumeData({ summary: resumeRes.data.summary });
         }
 
-        // 5. Update and TRANSFORM Liked Notifications
+        // 5. Update Website URLs
+        if (websiteRes?.data) {
+          setWebsiteUrls(websiteRes.data.targetUrls);
+        }
+
+        // 6. Update Liked Notifications
         if (likedRes?.data) {
-          const transformed: NotificationItem[] =
+          setLikedNotifications(
             likedRes.data.notifications.map((notif) => ({
               id: notif.notificationId.toString(),
               category: (notif.category as CategoryType) || "취업 포털",
@@ -125,16 +126,8 @@ export default function Profile() {
               source: notif.sourceName,
               url: notif.originalUrl,
               isLiked: notif.liked,
-              // // Add any defaults your UI expects
-              // isNew: false,
-            }));
-
-          setLikedNotifications(transformed);
-        }
-
-        // 6. Update Website URLs
-        if (websiteRes?.data) {
-          setWebsiteUrls(websiteRes.data.targetUrls);
+            })),
+          );
         }
       } catch (err) {
         console.error("Parallel fetch failed:", err);
@@ -216,25 +209,6 @@ export default function Profile() {
     setIsResumeEditable((prev) => !prev);
   };
 
-  const handleToggleLike = async (id: string) => {
-    // Optimistic Update: Remove from list immediately if it's the "Likes" page
-    // because unliking something here means it should disappear.
-    const previousState = [...likedNotifications];
-
-    // Remove the item from view immediately
-    setLikedNotifications((prev) => prev.filter((item) => item.id !== id));
-
-    try {
-      // API Call (Assuming you have an endpoint for this)
-      await api.post(`/notifications/${id}/like`);
-    } catch (err) {
-      console.error("Like toggle failed", err);
-      // Revert if API fails
-      setLikedNotifications(previousState);
-      alert("요청을 처리하는 중 오류가 발생했습니다.");
-    }
-  };
-
   const handleWebsiteEditToggle = () => {
     setIsWebsiteEditable((prev) => !prev);
   };
@@ -260,11 +234,20 @@ export default function Profile() {
     setWebsiteUrls((prev) => prev.filter((item) => item.targetUrlId !== id));
   };
 
+  const handleLikedToggleLike = (id: string) => {
+    const previousState = [...likedNotifications];
+    setLikedNotifications((prev) => prev.filter((item) => item.id !== id));
+
+    api.post(`/notifications/${id}/like`).catch(() => {
+      setLikedNotifications(previousState);
+    });
+  };
+
   return (
     <>
       <Helmet>
-        <title>내 프로필 | 알려주잡</title>
-        <meta name="description" content="프로필 페이지" />
+        <title>내 정보 | 알려주잡</title>
+        <meta name="description" content="내 정보 페이지" />
       </Helmet>
       <PageWrapper>
         <ProfileContainer>
@@ -302,7 +285,7 @@ export default function Profile() {
             {activeTab === "likes" && (
               <LikedSection
                 notifications={likedNotifications}
-                onToggleLike={handleToggleLike}
+                onToggleLike={handleLikedToggleLike}
               />
             )}
           </MainContent>
