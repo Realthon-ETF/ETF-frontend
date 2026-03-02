@@ -25,6 +25,8 @@ interface LoginResponse {
 
 interface AuthContextType {
   user: User | null;
+  hasResume: boolean;
+  setHasResume: (value: boolean) => void;
   login: (id: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -33,13 +35,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const isAuthChecked = useRef(false);
+  const [hasResume, setHasResume] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const isAuthChecked = useRef<boolean>(false);
+
+  const checkResumeStatus = async () => {
+    try {
+      const { data } = await api.get<{ summary: string }>("/auth/resume");
+      setHasResume(!!data.summary);
+    } catch {
+      setHasResume(false);
+    }
+  };
 
   const fetchUserProfile = async () => {
     try {
       const { data } = await api.get<User>("/auth/me");
       setUser(data);
+      await checkResumeStatus();
     } catch (e) {
       setUser(null);
     }
@@ -75,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         const userRes = await api.get<User>("/auth/me");
         setUser(userRes.data);
+        await checkResumeStatus();
       } catch (e) {
         console.log("Session expired or invalid");
         localStorage.removeItem("refreshToken"); // Cleanup
@@ -106,17 +120,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async (): Promise<void> => {
     try {
+      // is logout function implemented?
       await api.post("/auth/logout");
     } finally {
       // 6. Cleanup Storage on Logout
       localStorage.removeItem("refreshToken");
       setUser(null);
       setClientToken(null);
+      // navigate("/login");
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, hasResume, setHasResume, login, logout }}>
       {/* 4. Don't show the app until auth check is done */}
       {!loading ? children : <div>Checking session...</div>}
     </AuthContext.Provider>

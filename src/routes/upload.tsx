@@ -11,7 +11,7 @@ type Step = "upload" | "result" | "confirmed";
 
 export default function UploadFlow() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setHasResume } = useAuth();
   const name = user?.username ?? "사용자";
 
   // Step management
@@ -136,6 +136,7 @@ export default function UploadFlow() {
       });
 
       setCurrentStep("confirmed");
+      setHasResume(true);
 
       // Event 5: complete_apply_service
       Mixpanel.track("complete_apply_service");
