@@ -378,18 +378,37 @@ export default function CreateAccount() {
                   <label>
                     관심 직무<span style={{ color: "red" }}> *</span>
                   </label>
-                  <SelectorInput
-                    type="button"
-                    onClick={() => !isLoading && setIsInterestModalOpen(true)}
-                    $hasValue={selectedInterests.length > 0}
-                    disabled={isLoading}
-                  >
-                    {selectedInterests.length > 0
-                      ? selectedInterests
-                          .map((key) => key.split("|").join(" - "))
-                          .join(", ")
-                      : "관심 직무를 선택하세요"}
-                  </SelectorInput>
+                  <InterestRight>
+                    <SelectorInput
+                      type="button"
+                      onClick={() => !isLoading && setIsInterestModalOpen(true)}
+                      $hasValue={false}
+                      disabled={isLoading}
+                    >
+                      관심 직무를 선택하세요
+                    </SelectorInput>
+                    {selectedInterests.length > 0 && (
+                      <ChipList>
+                        {selectedInterests.map((key) => (
+                          <Chip key={key}>
+                            <span>{key.split("|").join(" - ")}</span>
+                            <ChipRemoveButton
+                              type="button"
+                              onClick={() => {
+                                const next = selectedInterests.filter((k) => k !== key);
+                                setSelectedInterests(next);
+                                const display = next.map((k) => k.split("|").join(" - ")).join(", ");
+                                setFormData((prev) => ({ ...prev, interest: display || "" }));
+                              }}
+                              aria-label={`${key.split("|").join(" - ")} 삭제`}
+                            >
+                              &times;
+                            </ChipRemoveButton>
+                          </Chip>
+                        ))}
+                      </ChipList>
+                    )}
+                  </InterestRight>
                 </InterestField>
 
                 <InputGroup
@@ -589,7 +608,7 @@ const InterestField = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
   min-height: 2.125rem;
 
@@ -599,6 +618,7 @@ const InterestField = styled.div`
     font-weight: 500;
     flex: 0 0 4.5rem;
     white-space: nowrap;
+    padding-top: 0.5rem;
   }
 
   @media (min-width: 769px) {
@@ -609,6 +629,14 @@ const InterestField = styled.div`
       flex: 0 0 6rem;
     }
   }
+`;
+
+const InterestRight = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
 `;
 
 const SelectorInput = styled.button<{ $hasValue: boolean }>`
@@ -637,4 +665,37 @@ const SelectorInput = styled.button<{ $hasValue: boolean }>`
     color: #999;
     cursor: not-allowed;
   }
+`;
+
+const ChipList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+const Chip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 1rem;
+  background: #eef3ff;
+  color: #3b6de0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+`;
+
+const ChipRemoveButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #3b6de0;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
 `;
