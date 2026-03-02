@@ -19,23 +19,8 @@ function getHostname(url: string): string {
   }
 }
 
-function getOrigin(url: string): string {
-  try {
-    return new URL(url).origin;
-  } catch {
-    return url;
-  }
-}
-
 function googleFaviconUrl(url: string): string {
   return `https://www.google.com/s2/favicons?domain=${getHostname(url)}&sz=32`;
-}
-
-function resolveFaviconHref(href: string, pageUrl: string): string {
-  if (href.startsWith("http")) return href;
-  if (href.startsWith("//")) return `https:${href}`;
-  if (href.startsWith("/")) return `${getOrigin(pageUrl)}${href}`;
-  return `${getOrigin(pageUrl)}/${href}`;
 }
 
 async function fetchMetadata(url: string): Promise<SiteMeta> {
@@ -46,28 +31,15 @@ async function fetchMetadata(url: string): Promise<SiteMeta> {
 
   try {
     const res = await fetch(
-      `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
     );
     const html = await res.text();
     if (!html) return fallback;
 
-    // Parse title
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
     const title = titleMatch?.[1]?.trim() || fallback.title;
 
-    // Parse favicon from <link rel="icon" ...> or <link rel="shortcut icon" ...>
-    const iconMatch =
-      html.match(
-        /<link[^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*href=["']([^"']+)["'][^>]*>/i,
-      ) ??
-      html.match(
-        /<link[^>]*href=["']([^"']+)["'][^>]*rel=["'](?:shortcut\s+)?icon["'][^>]*>/i,
-      );
-    const favicon = iconMatch?.[1]
-      ? resolveFaviconHref(iconMatch[1], url)
-      : fallback.favicon;
-
-    return { title, favicon };
+    return { title, favicon: fallback.favicon };
   } catch {
     return fallback;
   }

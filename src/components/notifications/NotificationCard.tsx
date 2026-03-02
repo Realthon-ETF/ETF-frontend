@@ -3,6 +3,15 @@ import type { NotificationItem } from "./types";
 import { getNotificationBadgeColor } from "./constants";
 import api from "../../api";
 
+function getFaviconUrl(url: string): string {
+  try {
+    const hostname = new URL(url).hostname;
+    return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+  } catch {
+    return "";
+  }
+}
+
 export interface NotificationCardProps {
   item: NotificationItem;
   // Callback to update parent state
@@ -47,7 +56,11 @@ export function NotificationCard({
         <h3>{item.title}</h3>
 
         <div className="meta-info">
-          <span className="source-icon" aria-hidden="true" />
+          {item.url ? (
+            <SourceFavicon src={getFaviconUrl(item.url)} alt="" />
+          ) : (
+            <span className="source-icon" aria-hidden="true" />
+          )}
           <span className="source-name">{item.source}</span>
         </div>
       </article>
@@ -124,6 +137,14 @@ const CardItem = styled.li`
       }
     }
   }
+`;
+
+const SourceFavicon = styled.img`
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.125rem;
+  object-fit: contain;
+  flex-shrink: 0;
 `;
 
 const Badge = styled.span<{ $bgColor: string }>`
