@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useAuth } from "../../AuthContext";
 
-type TabType = "basic" | "summary" | "website" | "likes";
+type TabType = "basic" | "summary" | "website";
 
 interface SidebarProps {
   activeTab: TabType;
@@ -21,7 +21,7 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
         <h1>
           {user?.username}님의
           <br />
-          마이페이지
+          내 정보
         </h1>
       </div>
       <div className="divider" />
@@ -52,20 +52,14 @@ export const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
               내 웹사이트
             </NavButton>
           </li>
-          <li>
-            <NavButton
-              $isActive={activeTab === "likes"}
-              onClick={() => setActiveTab("likes")}
-            >
-              좋아요
-            </NavButton>
+          <li className="logout-item">
+            <LogoutNavButton onClick={handleLogout}>
+              로그아웃
+            </LogoutNavButton>
           </li>
         </ul>
       </nav>
 
-      <button className="logout-btn" onClick={handleLogout}>
-        로그아웃
-      </button>
     </SidebarWrapper>
   );
 };
@@ -145,21 +139,11 @@ const SidebarWrapper = styled.aside`
     }
   }
 
-  .logout-btn {
+  .logout-item {
     display: none;
 
     @media (min-width: 769px) {
-      display: block;
-      margin-top: auto;
-      text-decoration: underline;
-      color: #878a93;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      font-weight: 500;
-      text-align: left;
+      display: list-item;
     }
   }
 `;
@@ -198,5 +182,31 @@ const NavButton = styled.button<{ $isActive: boolean }>`
       color: #06f;
       background: none;
     }
+  }
+`;
+
+const LogoutNavButton = styled.button`
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.375rem 0.625rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  background: none;
+  color: #878a93;
+  border: none;
+  text-decoration: underline;
+  font-family: inherit;
+  white-space: nowrap;
+
+  &:hover {
+    color: #141618;
+  }
+
+  @media (min-width: 769px) {
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0;
+    text-align: left;
+    width: 100%;
   }
 `;
