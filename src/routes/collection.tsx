@@ -276,22 +276,20 @@ export default function Collection() {
           <ContentLayout>
             {isLikesLoading ? (
               <LoadingText>불러오는 중...</LoadingText>
+            ) : likedNotifications.length === 0 ? (
+              <EmptyText>저장된 알림이 없습니다.</EmptyText>
             ) : (
               <ContentContainer>
                 <NotificationList>
-                  {paginatedLikes.length > 0 ? (
-                    paginatedLikes.map((notification) => (
-                      <NotificationCard
-                        key={notification.id}
-                        item={notification}
-                        onToggleLike={() =>
-                          handleLikedToggleLike(notification.id)
-                        }
-                      />
-                    ))
-                  ) : (
-                    <div className="no-result">저장된 알림이 없습니다.</div>
-                  )}
+                  {paginatedLikes.map((notification) => (
+                    <NotificationCard
+                      key={notification.id}
+                      item={notification}
+                      onToggleLike={() =>
+                        handleLikedToggleLike(notification.id)
+                      }
+                    />
+                  ))}
                 </NotificationList>
 
                 {likesTotalPages > 1 && (
