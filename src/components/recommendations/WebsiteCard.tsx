@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { ExternalLinkIcon, PlusIcon } from "./icons";
 
 export interface WebsiteItem {
   id: number;
@@ -26,38 +25,37 @@ export function WebsiteCard({
 }) {
   return (
     <Card>
-      <CardTop>
-        <CardHeaderRow>
-          <CardFavicon src={getFaviconUrl(item.url)} alt="" />
-          <ExternalLink
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ExternalLinkIcon />
-          </ExternalLink>
-        </CardHeaderRow>
+      <CardContent>
+        <CardFavicon src={getFaviconUrl(item.url)} alt="" />
         <CardTitle>{item.title}</CardTitle>
         <CardDesc>{item.description}</CardDesc>
-      </CardTop>
-      <AddButton
-        type="button"
-        onClick={() => onAdd(item.url, item.title)}
-        aria-label="웹사이트 등록"
-      >
-        <PlusIcon />
-      </AddButton>
+      </CardContent>
+      <ButtonRow>
+        <OutlineButton
+          as="a"
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          확인하기
+        </OutlineButton>
+        <FilledButton
+          type="button"
+          onClick={() => onAdd(item.url, item.title)}
+        >
+          추가하기
+        </FilledButton>
+      </ButtonRow>
     </Card>
   );
 }
 
 const Card = styled.div`
   flex-shrink: 0;
-  width: 20rem;
-  height: 14.375rem;
-  min-width: 17.5rem;
-  padding: 2rem;
+  width: 15.625rem;
+  height: 11.25rem;
+  min-width: 15.625rem;
+  padding: 1.5rem;
   border: 1px solid #eaebec;
   border-radius: 1.5rem;
   background: #fff;
@@ -66,42 +64,28 @@ const Card = styled.div`
   justify-content: space-between;
 `;
 
-const CardTop = styled.div`
+const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
 `;
 
-const CardHeaderRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-`;
-
 const CardFavicon = styled.img`
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 0.125rem;
   object-fit: contain;
-`;
-
-const ExternalLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.375rem;
-  height: 1.375rem;
+  margin-bottom: 0.375rem;
 `;
 
 const CardTitle = styled.p`
   font-size: 1.25rem;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.5;
   color: #141618;
   margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
@@ -119,20 +103,38 @@ const CardDesc = styled.p`
   white-space: nowrap;
 `;
 
-const AddButton = styled.button`
+const ButtonRow = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.125rem;
-  height: 2.125rem;
-  border-radius: 50%;
-  background: #171719;
-  border: none;
+  gap: 0.375rem;
+`;
+
+const buttonBase = `
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 1.25rem;
   cursor: pointer;
-  padding: 0;
-  transition: background 0.2s;
+  text-decoration: none;
+  text-align: center;
+  transition: opacity 0.2s;
+  font-family: inherit;
 
   &:hover {
-    background: #333;
+    opacity: 0.85;
   }
+`;
+
+const OutlineButton = styled.button`
+  ${buttonBase}
+  background: #fff;
+  border: 1px solid #06f;
+  color: #06f;
+`;
+
+const FilledButton = styled.button`
+  ${buttonBase}
+  background: #06f;
+  border: 1px solid #06f;
+  color: #fff;
 `;

@@ -211,7 +211,7 @@ export default function Settings() {
 
 const PageWrapper = styled.div`
   width: 100%;
-  background: #fff;
+  background: #f7f9fb;
   min-height: calc(100vh - 4rem);
 `;
 
@@ -225,26 +225,26 @@ const TabBarWrapper = styled.div`
 
 const TabBar = styled.div`
   display: flex;
-  align-items: flex-start;
-  border-bottom: none;
+  align-items: center;
+  gap: 0.5rem;
   padding-top: 1rem;
 `;
 
 const Tab = styled.button<{ $active: boolean }>`
-  padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  padding: 0.375rem 0.8125rem;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.2;
-  background: none;
+  background: #dbdcdf;
   border: none;
-  border-bottom: ${({ $active }) =>
-    $active ? "2px solid #141618" : "2px solid transparent"};
-  color: ${({ $active }) => ($active ? "#141618" : "#9B9B9B")};
+  border-radius: 1.375rem;
+  color: #141618;
+  opacity: ${({ $active }) => ($active ? 1 : 0.3)};
   cursor: pointer;
-  transition: color 0.2s;
+  transition: opacity 0.2s;
 
   &:hover {
-    color: #141618;
+    opacity: ${({ $active }) => ($active ? 1 : 0.6)};
   }
 `;
 
