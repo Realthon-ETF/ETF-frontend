@@ -371,10 +371,10 @@ export function Layout() {
       <MobileMenuOverlay $isOpen={isMobileMenuOpen}>
         <MobileMenuContent>
           {user && (
-            <>
+            <UserSection>
               <UserName>{user.username}님</UserName>
               <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-            </>
+            </UserSection>
           )}
 
           <MobileNavList>
@@ -384,7 +384,7 @@ export function Layout() {
                 onClick={closeMobileMenu}
                 $active={pathname.startsWith("/settings")}
               >
-                정보 설정
+                정보설정
               </MobileNavLink>
             </li>
             <li>
@@ -402,7 +402,7 @@ export function Layout() {
                 onClick={closeMobileMenu}
                 $active={pathname.startsWith("/profile")}
               >
-                내 정보
+                마이페이지
               </MobileNavLink>
             </li>
           </MobileNavList>
@@ -605,11 +605,18 @@ const MobileMenuOverlay = styled.div<{ $isOpen: boolean }>`
 const MobileMenuContent = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1.25rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: 4rem;
+`;
+
+const UserSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
 `;
 
 const UserName = styled.p`
@@ -618,21 +625,20 @@ const UserName = styled.p`
   color: #141618;
   margin: 0;
   letter-spacing: -0.02em;
-  text-align: left;
+  text-align: right;
 `;
 
 const LogoutButton = styled.button`
   background: transparent;
   border: none;
-  color: #878a93;
+  color: #737373;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
-  margin-bottom: 2.5rem;
   transition: color 0.2s ease;
-  text-align: left;
+  text-align: right;
 
   &:hover {
     color: #141618;
@@ -642,25 +648,26 @@ const LogoutButton = styled.button`
 const MobileNavList = styled.ul`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2rem;
+  align-items: flex-end;
+  gap: 0.75rem;
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
   width: 100%;
 `;
 
 const MobileNavLink = styled(Link)<{ $active?: boolean }>`
   text-decoration: none;
-  color: ${({ $active }) => ($active ? "#007bff" : "#141618")};
+  color: ${({ $active }) => ($active ? "#06f" : "#141618")};
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.2s ease;
-  letter-spacing: -0.01em;
-  text-align: left;
+  text-align: right;
+  padding: 0.5rem;
 
   &:hover {
-    color: #007bff;
+    color: #06f;
   }
 `;
 
