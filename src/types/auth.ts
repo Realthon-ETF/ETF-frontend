@@ -4,7 +4,7 @@ export interface ProfileFormData {
   email: string;
   school: string;
   major: string;
-  interest: string;
+  interestFields: string[];
   alarmPeriod: string;
   alarmTime: string;
 }
@@ -19,5 +19,7 @@ export interface ProfileResponse {
   major: string;
   interestFields: string[];
   intervalDays: number;
+  // response는 "09:30:00"와 같이 받지만,
+  // 실제 저장은 '시/분/초' 중 '시'만 저장함
   alarmTime: string;
 }
