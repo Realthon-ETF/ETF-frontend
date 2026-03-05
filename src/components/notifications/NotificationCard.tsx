@@ -2,6 +2,7 @@ import styled from "styled-components";
 import type { NotificationItem } from "./types";
 import { getNotificationBadgeColor } from "./constants";
 import api from "../../api";
+import { Mixpanel } from "../../utils/mixpanel";
 
 function getFaviconUrl(url: string): string {
   try {
@@ -28,6 +29,8 @@ export function NotificationCard({
 
     const newStatus = !item.isLiked;
 
+    Mixpanel.track("interact_favorite", { is_active: newStatus });
+
     // 1. Optimistic Update: Notify parent immediately so UI updates
     onToggleLike(item.id, newStatus);
 
@@ -41,9 +44,19 @@ export function NotificationCard({
     }
   };
 
+  const handleCardClick = () => {
+    Mixpanel.track("click_announcement", {
+      announcement_id: item.id,
+      is_new: false,
+    });
+    if (item.url) {
+      window.open(item.url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <CardItem>
-      <article>
+      <article onClick={handleCardClick} style={{ cursor: item.url ? "pointer" : "default" }}>
         <div className="badge-row">
           <Badge $bgColor={getNotificationBadgeColor(item.category)}>
             {item.category}

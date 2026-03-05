@@ -2,6 +2,7 @@ import { useRef, useCallback } from "react";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "./icons";
 import { WebsiteCard, type WebsiteItem } from "./WebsiteCard";
+import { Mixpanel } from "../../utils/mixpanel";
 
 function useCarousel() {
   const ref = useRef<HTMLDivElement>(null);
@@ -20,6 +21,7 @@ interface CardSectionProps {
   titleLine2: string;
   websites: WebsiteItem[];
   onAdd: (url: string, title: string) => void;
+  tabName?: "AI추천" | "카테고리";
 }
 
 export function CardSection({
@@ -28,8 +30,19 @@ export function CardSection({
   titleLine2,
   websites,
   onAdd,
+  tabName,
 }: CardSectionProps) {
   const { ref, scrollLeft, scrollRight } = useCarousel();
+
+  const handleScrollLeft = () => {
+    scrollLeft();
+    if (tabName) Mixpanel.track("scroll_recommendation", { tab_name: tabName });
+  };
+
+  const handleScrollRight = () => {
+    scrollRight();
+    if (tabName) Mixpanel.track("scroll_recommendation", { tab_name: tabName });
+  };
 
   return (
     <SectionBlock>
@@ -41,18 +54,24 @@ export function CardSection({
           <SectionTitleLine>{titleLine2}</SectionTitleLine>
         </div>
         <ArrowGroup>
-          <ArrowBtn type="button" onClick={scrollLeft} $position="left">
+          <ArrowBtn type="button" onClick={handleScrollLeft} $position="left">
             <ChevronLeft />
           </ArrowBtn>
-          <ArrowBtn type="button" onClick={scrollRight} $position="right">
+          <ArrowBtn type="button" onClick={handleScrollRight} $position="right">
             <ChevronRight />
           </ArrowBtn>
         </ArrowGroup>
       </SectionHeader>
       <CarouselWrapper>
         <ScrollContainer ref={ref}>
-          {websites.map((w) => (
-            <WebsiteCard key={w.id} item={w} onAdd={onAdd} />
+          {websites.map((w, index) => (
+            <WebsiteCard
+              key={w.id}
+              item={w}
+              onAdd={onAdd}
+              tabName={tabName}
+              rank={index + 1}
+            />
           ))}
         </ScrollContainer>
         <FadeOverlay />
@@ -79,9 +98,9 @@ const SectionHeader = styled.div`
 `;
 
 const SectionTitleLine = styled.p`
-  font-size: 1.625rem;
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.5;
   color: #141618;
   margin: 0;
 
@@ -125,7 +144,7 @@ const CarouselWrapper = styled.div`
 
 const ScrollContainer = styled.div`
   display: flex;
-  gap: 0.75rem;
+  gap: 0.75rem; /* 12px */
   overflow-x: auto;
   scroll-behavior: smooth;
   padding: 0 3rem;

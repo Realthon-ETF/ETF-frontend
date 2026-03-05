@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Mixpanel } from "../../utils/mixpanel";
 
 export interface WebsiteItem {
   id: number;
@@ -19,10 +20,34 @@ function getFaviconUrl(url: string): string {
 export function WebsiteCard({
   item,
   onAdd,
+  tabName,
+  rank,
 }: {
   item: WebsiteItem;
   onAdd: (url: string, title: string) => void;
+  tabName?: string;
+  rank?: number;
 }) {
+  const handleCheckClick = () => {
+    Mixpanel.track("click_recommend_item", {
+      tab_name: tabName,
+      button_type: "확인하기",
+      item_name: item.title,
+      rank,
+    });
+  };
+
+  const handleAddClick = () => {
+    Mixpanel.track("click_recommend_item", {
+      tab_name: tabName,
+      button_type: "추가하기",
+      item_name: item.title,
+      rank,
+    });
+    Mixpanel.track("click_add_button");
+    onAdd(item.url, item.title);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -36,13 +61,11 @@ export function WebsiteCard({
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={handleCheckClick}
         >
           확인하기
         </OutlineButton>
-        <FilledButton
-          type="button"
-          onClick={() => onAdd(item.url, item.title)}
-        >
+        <FilledButton type="button" onClick={handleAddClick}>
           추가하기
         </FilledButton>
       </ButtonRow>

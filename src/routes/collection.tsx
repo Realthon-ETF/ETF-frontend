@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import { Helmet } from "react-helmet-async";
 import api from "../api";
+import { Mixpanel } from "../utils/mixpanel";
 import {
   COLORS,
   type CategoryType,
@@ -29,6 +30,31 @@ const FILTER_OPTIONS = [
 
 export default function Collection() {
   const [activeTab, setActiveTab] = useState<CollectionTab>("notifications");
+  const hasInteracted = useRef(false);
+  const enteredAt = useRef(Date.now());
+
+  // view_page on mount
+  useEffect(() => {
+    Mixpanel.track("view_page", {
+      page_name: "수집함",
+      prev_page: document.referrer,
+      has_new_badge: false,
+    });
+  }, []);
+
+  // check_without_action on unmount
+  useEffect(() => {
+    return () => {
+      if (!hasInteracted.current) {
+        const duration = Math.round((Date.now() - enteredAt.current) / 1000);
+        Mixpanel.track("check_without_action", {
+          page_name: "수집함",
+          stay_duration: duration,
+          is_from_ai_tab: false,
+        });
+      }
+    };
+  }, []);
 
   // --- Notifications tab state ---
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -108,12 +134,14 @@ export default function Collection() {
   }, [notifications, filterType]);
 
   const handleFilterSelect = (type: string) => {
+    hasInteracted.current = true;
     setFilterType(type);
     setIsDropdownOpen(false);
     setNotifPage(1);
   };
 
   const handleNotifToggleLike = (id: string, newStatus: boolean) => {
+    hasInteracted.current = true;
     setNotifications((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, isLiked: newStatus } : item,
@@ -122,6 +150,7 @@ export default function Collection() {
   };
 
   const handleLikedToggleLike = (id: string) => {
+    hasInteracted.current = true;
     const previousState = [...likedNotifications];
     setLikedNotifications((prev) => prev.filter((item) => item.id !== id));
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import api from "../api";
+import { Mixpanel } from "../utils/mixpanel";
 
 import { Sidebar } from "../components/profile/Sidebar";
 import { BasicInfoSection } from "../components/profile/BasicInfoSection";
@@ -51,6 +52,14 @@ export default function Profile() {
   const [isProfileEditable, setIsProfileEditable] = useState<boolean>(false);
   const [isResumeEditable, setIsResumeEditable] = useState<boolean>(false);
   const [isWebsiteEditable, setIsWebsiteEditable] = useState<boolean>(false);
+
+  // view_page on mount
+  useEffect(() => {
+    Mixpanel.track("view_page", {
+      page_name: "마이페이지",
+      prev_page: document.referrer,
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {

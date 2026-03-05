@@ -297,6 +297,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import { Footer } from "../common/Footer";
 import { useAuth } from "../../AuthContext";
+import { Mixpanel } from "../../utils/mixpanel";
 
 export function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -322,7 +323,13 @@ export function Layout() {
         <NavigationContainer aria-label="Global Navigation">
           {/* Desktop Navigation */}
           <FlexGroup>
-            <LogoLink to="/" onClick={closeMobileMenu}>
+            <LogoLink
+              to="/"
+              onClick={() => {
+                closeMobileMenu();
+                Mixpanel.track("click_navigation", { target_page: "로고" });
+              }}
+            >
               <img src={logo} alt="알려주잡 로고" />
               <span>알려주잡</span>
             </LogoLink>
@@ -331,6 +338,11 @@ export function Layout() {
                 <NavLink
                   to="/settings"
                   $active={pathname.startsWith("/settings")}
+                  onClick={() =>
+                    Mixpanel.track("click_navigation", {
+                      target_page: "정보설정",
+                    })
+                  }
                 >
                   정보설정
                 </NavLink>
@@ -339,6 +351,11 @@ export function Layout() {
                 <NavLink
                   to="/collection"
                   $active={pathname.startsWith("/collection")}
+                  onClick={() =>
+                    Mixpanel.track("click_navigation", {
+                      target_page: "수집함",
+                    })
+                  }
                 >
                   수집함
                 </NavLink>
@@ -349,6 +366,11 @@ export function Layout() {
           <DesktopProfileLink
             to="/profile"
             $active={pathname.startsWith("/profile")}
+            onClick={() =>
+              Mixpanel.track("click_navigation", {
+                target_page: "마이페이지",
+              })
+            }
           >
             내 정보
           </DesktopProfileLink>
@@ -381,7 +403,12 @@ export function Layout() {
             <li>
               <MobileNavLink
                 to="/settings"
-                onClick={closeMobileMenu}
+                onClick={() => {
+                  closeMobileMenu();
+                  Mixpanel.track("click_navigation", {
+                    target_page: "정보설정",
+                  });
+                }}
                 $active={pathname.startsWith("/settings")}
               >
                 정보설정
@@ -390,7 +417,12 @@ export function Layout() {
             <li>
               <MobileNavLink
                 to="/collection"
-                onClick={closeMobileMenu}
+                onClick={() => {
+                  closeMobileMenu();
+                  Mixpanel.track("click_navigation", {
+                    target_page: "수집함",
+                  });
+                }}
                 $active={pathname.startsWith("/collection")}
               >
                 수집함
@@ -399,7 +431,12 @@ export function Layout() {
             <li>
               <MobileNavLink
                 to="/profile"
-                onClick={closeMobileMenu}
+                onClick={() => {
+                  closeMobileMenu();
+                  Mixpanel.track("click_navigation", {
+                    target_page: "마이페이지",
+                  });
+                }}
                 $active={pathname.startsWith("/profile")}
               >
                 마이페이지

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -8,6 +8,7 @@ import { ArrowForward } from "../components/recommendations/icons";
 import { CardSection } from "../components/recommendations/CardSection";
 import { AddWebsiteModal } from "../components/recommendations/AddWebsiteModal";
 import type { WebsiteItem } from "../components/recommendations/WebsiteCard";
+import { Mixpanel } from "../utils/mixpanel";
 
 // --- Types ---
 
@@ -72,6 +73,27 @@ export default function Settings() {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
   const [modalOpen, setModalOpen] = useState(false);
   const [userInterest, setUserInterest] = useState("관심 직무");
+  const tabEnteredAt = useRef(Date.now());
+
+  // view_page on mount
+  useEffect(() => {
+    Mixpanel.track("view_page", {
+      page_name: "정보설정",
+      prev_page: document.referrer,
+    });
+  }, []);
+
+  // stay_tab: track duration when switching tabs or unmounting
+  useEffect(() => {
+    tabEnteredAt.current = Date.now();
+    return () => {
+      const duration = Math.round((Date.now() - tabEnteredAt.current) / 1000);
+      Mixpanel.track("stay_tab", {
+        tab_name: activeTab === "ai" ? "AI추천" : "카테고리",
+        duration_sec: duration,
+      });
+    };
+  }, [activeTab]);
 
   useEffect(() => {
     api
@@ -87,6 +109,10 @@ export default function Settings() {
   const handleAddWebsite = async (url: string, _title: string) => {
     try {
       await api.post("/users/me/target-urls", { targetUrl: url });
+      Mixpanel.track("manage_website", {
+        action_type: "직접등록",
+        source: "AI추천전환",
+      });
       setModalOpen(true);
     } catch (err) {
       console.error(err);
@@ -133,9 +159,12 @@ export default function Settings() {
             <Banner>
               <BannerTitle>원하는 웹사이트를 직접 등록하고 싶다면?</BannerTitle>
               <BannerLink
-                onClick={() =>
-                  navigate("/profile", { state: { activeTab: "website" } })
-                }
+                onClick={() => {
+                  Mixpanel.track("click_direct_register", {
+                    location: "AI추천_배너",
+                  });
+                  navigate("/profile", { state: { activeTab: "website" } });
+                }}
               >
                 웹사이트 등록 페이지 바로가기
                 <ArrowForward />
@@ -149,6 +178,7 @@ export default function Settings() {
                 titleLine2="많이 등록한 웹사이트예요"
                 websites={MOCK_WEBSITES}
                 onAdd={handleAddWebsite}
+                tabName="AI추천"
               />
               <CardSection
                 highlightText={userInterest}
@@ -156,6 +186,7 @@ export default function Settings() {
                 titleLine2="좋은 인사이트를 주는 웹사이트예요"
                 websites={MOCK_WEBSITES}
                 onAdd={handleAddWebsite}
+                tabName="AI추천"
               />
             </SectionsWrapper>
           </Content>
@@ -184,6 +215,7 @@ export default function Settings() {
                 titleLine2="알람이 갈 수 있어요"
                 websites={MOCK_WEBSITES}
                 onAdd={handleAddWebsite}
+                tabName="카테고리"
               />
               <CardSection
                 highlightText={categoryParts[categoryParts.length - 1]}
@@ -191,6 +223,7 @@ export default function Settings() {
                 titleLine2="좋은 인사이트를 주는 웹사이트예요"
                 websites={MOCK_WEBSITES}
                 onAdd={handleAddWebsite}
+                tabName="카테고리"
               />
             </SectionsWrapper>
           </Content>
@@ -211,7 +244,7 @@ export default function Settings() {
 
 const PageWrapper = styled.div`
   width: 100%;
-  background: #f7f9fb;
+  background: #fff;
   min-height: calc(100vh - 4rem);
 `;
 

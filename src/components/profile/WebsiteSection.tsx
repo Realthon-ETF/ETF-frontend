@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Section } from "./Profile.style";
 import { EditButton } from "../common/EditButton";
 import type { TargetUrl } from "../../types/website";
+import { Mixpanel } from "../../utils/mixpanel";
 
 // --- Utility helpers ---
 
@@ -131,6 +132,10 @@ export const WebsiteSection = ({
     const trimmed = newUrl.trim();
     if (!trimmed) return;
     await onAdd(trimmed);
+    Mixpanel.track("manage_website", {
+      action_type: "직접등록",
+      source: "직접입력",
+    });
     setNewUrl("");
   };
 
@@ -186,7 +191,12 @@ export const WebsiteSection = ({
               {isEditable && (
                 <DeleteBtn
                   type="button"
-                  onClick={() => onDelete(item.targetUrlId)}
+                  onClick={() => {
+                    Mixpanel.track("manage_website", {
+                      action_type: "삭제",
+                    });
+                    onDelete(item.targetUrlId);
+                  }}
                 >
                   삭제
                 </DeleteBtn>
