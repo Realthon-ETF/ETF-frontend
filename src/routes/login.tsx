@@ -108,9 +108,10 @@ export default function Login() {
             </LoginButton>
           </form>
 
-          <Link to="/create-account" style={{ color: "#70737C" }}>
-            회원가입
-          </Link>
+          <LinkRow>
+            <Link to="/create-account">회원가입</Link>
+            <Link to="/change-password">비밀번호 찾기</Link>
+          </LinkRow>
         </LoginLayout>
       </PageWrapper>
     </>
@@ -257,19 +258,6 @@ const LoginLayout = styled.main`
     }
   }
 
-  > a {
-    font-size: 0.875rem;
-    text-decoration: none;
-    margin-top: 0.5rem;
-
-    &:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      font-size: 0.8125rem;
-    }
-  }
 `;
 
 const ErrorMessage = styled.p`
@@ -280,6 +268,26 @@ const ErrorMessage = styled.p`
 
   @media (max-width: 768px) {
     font-size: 0.8125rem;
+  }
+`;
+
+const LinkRow = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+  a {
+    color: #70737c;
+    font-size: 0.875rem;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 0.8125rem;
+    }
   }
 `;
 
