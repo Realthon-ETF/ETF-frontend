@@ -11,6 +11,7 @@ interface InputGroupProps
   label: string;
   id: string;
   duplicateCheck?: boolean;
+  duplicateCheckLabel?: string;
   onCheckDuplicate?: (value: string) => Promise<void>;
   validationStatus?: ValidationStatus;
   validationMessage?: string;
@@ -24,6 +25,7 @@ export const InputGroup = ({
   label,
   id,
   duplicateCheck,
+  duplicateCheckLabel,
   onCheckDuplicate,
   validationStatus = "default",
   validationMessage,
@@ -85,7 +87,7 @@ export const InputGroup = ({
                 onClick={handleBtnClick}
                 disabled={isChecking}
               >
-                {isChecking ? "확인 중..." : "중복 확인"}
+                {isChecking ? "확인 중..." : duplicateCheckLabel || "중복 확인"}
               </DuplicateCheckBtn>
             ) : null}
           </>
