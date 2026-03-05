@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import api from "../api";
 import { JobCategoryModal } from "../components/common/JobCategoryModal";
+import { compositeKeysToEnums } from "../data/jobCategoryEnums";
 
 type VerificationState = {
   status: ValidationStatus;
@@ -232,7 +233,7 @@ export default function CreateAccount() {
         email: formData.email,
         school: formData.school,
         major: formData.major,
-        interestFields: selectedInterests.map((key) => key.split("|")[2]),
+        interestFields: compositeKeysToEnums(selectedInterests),
         intervalDays: parseInt(formData.alarmPeriod, 10),
         alarmTime: `${formData.alarmTime.padStart(2, "0")}:00:00`,
       };

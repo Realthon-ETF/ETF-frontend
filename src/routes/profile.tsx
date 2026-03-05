@@ -10,6 +10,11 @@ import { WebsiteSection } from "../components/profile/WebsiteSection";
 import { LikedSection } from "../components/profile/LikedSection";
 
 import type { ProfileFormData, ProfileResponse } from "../types/auth";
+import { JobCategoryModal } from "../components/common/JobCategoryModal";
+import {
+  displayListToCompositeKeys,
+  compositeKeysToEnums,
+} from "../data/jobCategoryEnums";
 import type { ResumeFormData, ResumeResponse } from "../types/resume";
 import type { TargetUrl, TargetUrlsResponse } from "../types/website";
 import type { NotificationItem, LikedResponse } from "../types/notification";
@@ -37,10 +42,15 @@ export default function Profile() {
     email: "",
     school: "",
     major: "",
-    interest: "",
+    interestFields: [],
     alarmPeriod: "",
     alarmTime: "",
   });
+
+  const [selectedInterestKeys, setSelectedInterestKeys] = useState<string[]>(
+    [],
+  );
+  const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
 
   const [resumeData, setResumeData] = useState<ResumeFormData>({
     summary: "요약문을 넣습니다. 유저가 수정할 수 있는 내용입니다.",
@@ -108,11 +118,14 @@ export default function Profile() {
             email: data.email,
             school: data.school, // not necessary
             major: data.major, // not necessary
-            interest: data.interestFields.join(", "), // Array to string
+            interestFields: data.interestFields,
             alarmPeriod: data.intervalDays.toString(),
             alarmTime: data.alarmTime ? data.alarmTime.split(":")[0] : "09", // Default value exists
             // "09:30:00" -> "09"
           }));
+          setSelectedInterestKeys(
+            displayListToCompositeKeys(data.interestFields),
+          );
         }
 
         // 4. Update Resume State
@@ -181,6 +194,7 @@ export default function Profile() {
           email: formData.email,
           school: formData.school,
           major: formData.major,
+          interestFields: compositeKeysToEnums(selectedInterestKeys),
           intervalDays: parseInt(formData.alarmPeriod, 10), // reverse formatting
           alarmTime: `${(formData.alarmTime || "09").padStart(2, "0")}:00:00`,
         });
@@ -263,13 +277,42 @@ export default function Profile() {
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
           <MainContent>
             {activeTab === "basic" && (
-              <BasicInfoSection
-                data={formData}
-                isEditable={isProfileEditable}
-                isLoading={isLoading}
-                onEditToggle={handleProfileEditBtnClick}
-                onChange={onChange}
-              />
+              <>
+                <BasicInfoSection
+                  data={formData}
+                  isEditable={isProfileEditable}
+                  isLoading={isLoading}
+                  onEditToggle={handleProfileEditBtnClick}
+                  onChange={onChange}
+                  onOpenInterestModal={() => setIsInterestModalOpen(true)}
+                  onRemoveInterest={(idx) => {
+                    const nextKeys = selectedInterestKeys.filter(
+                      (_, i) => i !== idx,
+                    );
+                    setSelectedInterestKeys(nextKeys);
+                    setFormData((prev) => ({
+                      ...prev,
+                      interestFields: nextKeys.map((k) =>
+                        k.split("|").join(" - "),
+                      ),
+                    }));
+                  }}
+                />
+                <JobCategoryModal
+                  isOpen={isInterestModalOpen}
+                  onClose={() => setIsInterestModalOpen(false)}
+                  initialSelected={selectedInterestKeys}
+                  onConfirm={(items) => {
+                    setSelectedInterestKeys(items);
+                    setFormData((prev) => ({
+                      ...prev,
+                      interestFields: items.map((k) =>
+                        k.split("|").join(" - "),
+                      ),
+                    }));
+                  }}
+                />
+              </>
             )}
             {activeTab === "summary" && (
               <ResumeSection
